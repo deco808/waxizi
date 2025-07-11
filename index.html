@@ -5,38 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鹫巢外传 - 漫画汉化</title>
     <style>
-        /* 基础样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
         }
         
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
             background: #f5f7fa;
             color: #333;
             line-height: 1.6;
             max-width: 1000px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 20px 40px;
         }
         
-        /* 头部样式 */
         header {
             padding: 30px 0;
             text-align: center;
+            border-bottom: 1px solid #e0e6ed;
+            margin-bottom: 30px;
         }
         
         .logo {
             max-width: 280px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
         }
         
         h1 {
             color: #2c3e50;
-            margin: 20px 0 10px;
+            margin-bottom: 10px;
             font-size: 2.2rem;
         }
         
@@ -44,11 +50,10 @@
             color: #666;
             font-size: 1.1rem;
             max-width: 700px;
-            margin: 0 auto 25px;
+            margin: 0 auto;
             padding: 0 20px;
         }
         
-        /* 主要内容区域 */
         .section {
             margin: 40px 0;
             background: white;
@@ -65,7 +70,6 @@
             font-size: 1.8rem;
         }
         
-        /* 目录样式 */
         .chapters-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -79,56 +83,50 @@
             padding: 20px 15px;
             text-align: center;
             transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .chapter-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             border-color: #4a6fa5;
+            background: #e6f0ff;
         }
         
         .chapter-card a {
             text-decoration: none;
             color: #2c3e50;
-            font-weight: bold;
             display: block;
+            height: 100%;
+            width: 100%;
         }
         
         .chapter-number {
             font-size: 1.2rem;
             color: #4a6fa5;
             margin-bottom: 8px;
-        }
-        
-        .chapter-title {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-            min-height: 40px;
-        }
-        
-        .new-badge {
-            background-color: #e74c3c;
-            color: white;
-            font-size: 0.8rem;
-            padding: 3px 10px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-        
-        /* 关于部分样式 */
-        .about-content p {
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-        
-        .external-link {
-            color: #4a6fa5;
             font-weight: bold;
         }
         
-        /* 页脚样式 */
+        .chapter-title {
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        .about-content p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .external-link .chapter-number {
+            color: #e74c3c;
+        }
+        
         footer {
             text-align: center;
             padding: 30px 0;
@@ -138,7 +136,6 @@
             border-top: 1px solid #eee;
         }
         
-        /* 响应式设计 */
         @media (max-width: 768px) {
             .chapters-container {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -147,6 +144,10 @@
             
             .section {
                 padding: 25px 20px;
+            }
+            
+            .logo {
+                max-width: 220px;
             }
         }
         
@@ -159,65 +160,59 @@
             .chapter-card {
                 padding: 15px 10px;
             }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <!-- 修正图片路径为 assets/cover.jpg -->
         <img src="assets/cover.jpg" alt="鹫巢外传封面" class="logo">
         <h1>鹫巢外传</h1>
+        <p class="subtitle">独立汉化版 - 由于在微博发布经常被限流，特此建立本站点方便漫画爱好者阅读交流</p>
     </header>
     
     <div class="section">
         <h2 class="section-title">漫画目录</h2>
         <div class="chapters-container">
             <!-- 1-15话合集 -->
-            <div class="chapter-card">
+            <div class="chapter-card external-link" onclick="window.open('https://m.dm5.com/chapterlist8594/', '_blank')">
                 <div class="chapter-number">第1-15话</div>
                 <div class="chapter-title">合集 (外部链接)</div>
-                <a href="https://m.dm5.com/chapterlist8594/" target="_blank" class="external-link">阅读</a>
             </div>
             
             <!-- 16-20话 -->
-            <div class="chapter-card">
-                <span class="new-badge">NEW</span>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter16.html'">
                 <div class="chapter-number">第16话</div>
                 <div class="chapter-title">海贼潮流2</div>
-                <a href="chapters/chapter16.html">阅读</a>
             </div>
             
-            <div class="chapter-card">
-                <span class="new-badge">NEW</span>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter17.html'">
                 <div class="chapter-number">第17话</div>
                 <div class="chapter-title">海贼潮流3</div>
-                <a href="chapters/chapter17.html">阅读</a>
             </div>
             
-            <div class="chapter-card">
-                <span class="new-badge">NEW</span>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter18.html'">
                 <div class="chapter-number">第18话</div>
                 <div class="chapter-title">海贼潮流4</div>
-                <a href="chapters/chapter18.html">阅读</a>
             </div>
             
-            <div class="chapter-card">
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter19.html'">
                 <div class="chapter-number">第19话</div>
                 <div class="chapter-title">海贼潮流5</div>
-                <a href="chapters/chapter19.html">阅读</a>
             </div>
             
-            <div class="chapter-card">
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter20.html'">
                 <div class="chapter-number">第20话</div>
                 <div class="chapter-title">海贼潮流6</div>
-                <a href="chapters/chapter20.html">阅读</a>
             </div>
             
             <!-- 26话 -->
-            <div class="chapter-card">
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter26.html'">
                 <div class="chapter-number">第26话</div>
                 <div class="chapter-title">26</div>
-                <a href="chapters/chapter26.html">阅读</a>
             </div>
         </div>
     </div>
@@ -228,6 +223,7 @@
             <p>本站由独立汉化爱好者创建，致力于提供《鹫巢外传》的优质汉化版本。</p>
             <p>由于在微博发布内容经常被限流，因此建立了这个专门的阅读网站，方便漫画爱好者阅读和交流。</p>
             <p>本站所有汉化内容均为个人兴趣制作，仅供学习交流使用，请支持正版漫画。</p>
+            <p>点击目录卡片即可阅读对应章节，无需额外操作。</p>
         </div>
     </div>
     
