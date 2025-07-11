@@ -235,3 +235,75 @@ footer {
         padding: 15px 10px;
     }
 }
+/* 添加封面部分样式 */
+.cover-section {
+    margin-bottom: 40px;
+}
+
+.cover-container {
+    display: flex;
+    gap: 30px;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.cover-image {
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.cover-info {
+    flex: 1;
+}
+
+.cover-info h2 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.cover-info p {
+    line-height: 1.8;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.stats {
+    display: flex;
+    gap: 30px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.stats div {
+    text-align: center;
+}
+
+.stats span {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    color: #4a6fa5;
+    margin-top: 5px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .cover-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cover-image {
+        width: 200px;
+    }
+    
+    .stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

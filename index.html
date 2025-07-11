@@ -22,41 +22,37 @@
     </header>
     
     <!-- 主要内容 -->
-    <main>
-        <!-- 首页介绍 -->
-        <section id="home" class="section active">
-            <div class="intro">
-                <h2>欢迎阅读《鹫巢外传》汉化版</h2>
-                <p>本网站由独立汉化者制作，持续更新中...</p>
-                <div class="latest-chapter">
-                    <h3>最新更新</h3>
-                    <div id="latest-chapter-info">加载中...</div>
+    <!-- 在<main>部分 -->
+<main>
+    <!-- 漫画封面和简介 -->
+    <section class="cover-section">
+        <div class="cover-container">
+            <img src="assets/cover.jpg" alt="鹫巢外传封面" class="cover-image">
+            <div class="cover-info">
+                <h2>鹫巢外传</h2>
+                <p>《鹫巢外传》是XXX创作的漫画作品，讲述了一个关于...的故事。</p>
+                <div class="stats">
+                    <div>总章节: <span>53</span></div>
+                    <div>最新更新: <span>第53话</span></div>
+                    <div>更新日期: <span>2023-11-15</span></div>
                 </div>
             </div>
-        </section>
-        
-        <!-- 漫画目录 -->
-        <section id="catalog" class="section">
-            <h2>漫画目录</h2>
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="搜索章节...">
-                <button id="search-btn">搜索</button>
-            </div>
-            <div id="chapters-list" class="chapters-container">
-                <!-- 章节列表将由JavaScript动态生成 -->
-            </div>
-        </section>
-        
-        <!-- 关于页面 -->
-        <section id="about" class="section">
-            <h2>关于本站</h2>
-            <div class="about-content">
-                <p>《鹫巢外传》是由XXX创作的漫画作品，本汉化版由独立汉化者制作。</p>
-                <p>本站仅供学习交流，禁止用于任何商业用途。</p>
-                <p>如有任何问题或建议，请联系：2166498714@qq.com</p>
-            </div>
-        </section>
-    </main>
+        </div>
+    </section>
+    
+    <!-- 目录部分 -->
+    <section class="catalog">
+        <h2>漫画目录</h2>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="搜索章节...">
+            <button id="search-btn">搜索</button>
+        </div>
+        <div id="chapters-list" class="chapters-container">
+            <!-- 章节列表将由JavaScript动态生成 -->
+        </div>
+    </section>
+</main>
+
     
     <!-- 页脚 -->
     <footer>
