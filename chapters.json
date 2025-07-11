@@ -1,17 +1,39 @@
-// chapters.json
 {
     "chapters": [
         {
             "number": "1-15",
             "title": "合集 (外部链接)",
-            "url": "https://原汉化组链接",
-            "external": true
+            "url": "https://m.dm5.com/chapterlist8594/",
         },
         {
             "number": 16,
-            "title": "新的征程",
-            "url": "chapter16.html"
+            "title": "海贼潮流2",
+            "url": "chapters/chapter16.html",
         },
-        // ...其他章节
+        {
+            "number": 17,
+            "title": "海贼潮流3",
+            "url": "chapters/chapter17.html",
+        },
+        {
+            "number": 18,
+            "title": "海贼潮流4",
+            "url": "chapters/chapter18.html",
+        },
+        {
+            "number": 19,
+            "title": "海贼潮流5",
+            "url": "chapters/chapter19.html",
+        },
+        {
+            "number": 20,
+            "title": "海贼潮流6",
+            "url": "chapters/chapter20.html",
+        },
+        {
+            "number": 26,
+            "title": "26",
+            "url": "chapters/chapter26.html",
+        }
     ]
 }
