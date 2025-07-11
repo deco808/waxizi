@@ -1,0 +1,29 @@
+{
+    "chapters": [
+        {
+            "number": 1,
+            "title": "开端",
+            "url": "https://你的图床链接/chapter1.html"
+        },
+        {
+            "number": 2,
+            "title": "相遇",
+            "url": "https://你的图床链接/chapter2.html"
+        },
+        {
+            "number": 15,
+            "title": "转折点",
+            "url": "https://你的图床链接/chapter15.html"
+        },
+        {
+            "number": 16,
+            "title": "新的征程",
+            "url": "https://你的图床链接/chapter16.html"
+        },
+        {
+            "number": 53,
+            "title": "最终章",
+            "url": "https://你的图床链接/chapter53.html"
+        }
+    ]
+}

@@ -1,13 +1,68 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鹫巢外传 - 汉化漫画</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header>
+        <div class="header-content">
+            <img src="assets/logo.png" alt="鹫巢外传" class="logo">
+            <h1>鹫巢外传 - 汉化漫画</h1>
+            <nav>
+                <a href="#home">首页</a>
+                <a href="#catalog">目录</a>
+                <a href="#about">关于</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- 主要内容 -->
+    <main>
+        <!-- 首页介绍 -->
+        <section id="home" class="section active">
+            <div class="intro">
+                <h2>欢迎阅读《鹫巢外传》汉化版</h2>
+                <p>本网站由独立汉化者制作，持续更新中...</p>
+                <div class="latest-chapter">
+                    <h3>最新更新</h3>
+                    <div id="latest-chapter-info">加载中...</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 漫画目录 -->
+        <section id="catalog" class="section">
+            <h2>漫画目录</h2>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="搜索章节...">
+                <button id="search-btn">搜索</button>
+            </div>
+            <div id="chapters-list" class="chapters-container">
+                <!-- 章节列表将由JavaScript动态生成 -->
+            </div>
+        </section>
+        
+        <!-- 关于页面 -->
+        <section id="about" class="section">
+            <h2>关于本站</h2>
+            <div class="about-content">
+                <p>《鹫巢外传》是由XXX创作的漫画作品，本汉化版由独立汉化者制作。</p>
+                <p>本站仅供学习交流，禁止用于任何商业用途。</p>
+                <p>如有任何问题或建议，请联系：2166498714@qq.com</p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2023 鹫巢外传汉化组 | 更新日期: <span id="update-date"></span></p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
 </html>
