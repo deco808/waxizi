@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鹫巢外传 - 漫画汉化</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        /* 简洁版样式覆盖 */
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Microsoft YaHei', sans-serif;
             background: #f5f7fa;
@@ -17,6 +22,7 @@
             padding: 0 20px;
         }
         
+        /* 头部样式 */
         header {
             padding: 30px 0;
             text-align: center;
@@ -42,6 +48,7 @@
             padding: 0 20px;
         }
         
+        /* 主要内容区域 */
         .section {
             margin: 40px 0;
             background: white;
@@ -58,6 +65,7 @@
             font-size: 1.8rem;
         }
         
+        /* 目录样式 */
         .chapters-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -109,6 +117,7 @@
             margin-bottom: 5px;
         }
         
+        /* 关于部分样式 */
         .about-content p {
             margin-bottom: 15px;
             line-height: 1.8;
@@ -119,6 +128,7 @@
             font-weight: bold;
         }
         
+        /* 页脚样式 */
         footer {
             text-align: center;
             padding: 30px 0;
@@ -128,6 +138,7 @@
             border-top: 1px solid #eee;
         }
         
+        /* 响应式设计 */
         @media (max-width: 768px) {
             .chapters-container {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -153,9 +164,9 @@
 </head>
 <body>
     <header>
-        <img src="Assets/cover.jpg" alt="鹫巢外传封面" class="logo">
+        <!-- 修正图片路径为 assets/cover.jpg -->
+        <img src="assets/cover.jpg" alt="鹫巢外传封面" class="logo">
         <h1>鹫巢外传</h1>
-        <p class="subtitle">独立汉化版 - 由于在微博发布经常被限流，特此建立本站点方便漫画爱好者阅读交流</p>
     </header>
     
     <div class="section">
@@ -208,43 +219,6 @@
                 <div class="chapter-title">26</div>
                 <a href="chapters/chapter26.html">阅读</a>
             </div>
-            
-            <!-- 示例更多章节 -->
-            <div class="chapter-card">
-                <div class="chapter-number">第27话</div>
-                <div class="chapter-title">新的旅程</div>
-                <a href="chapters/chapter27.html">阅读</a>
-            </div>
-            
-            <div class="chapter-card">
-                <div class="chapter-number">第28话</div>
-                <div class="chapter-title">风暴前夕</div>
-                <a href="chapters/chapter28.html">阅读</a>
-            </div>
-            
-            <div class="chapter-card">
-                <div class="chapter-number">第29话</div>
-                <div class="chapter-title">决战开始</div>
-                <a href="chapters/chapter29.html">阅读</a>
-            </div>
-            
-            <div class="chapter-card">
-                <div class="chapter-number">第30话</div>
-                <div class="chapter-title">最终对决</div>
-                <a href="chapters/chapter30.html">阅读</a>
-            </div>
-            
-            <div class="chapter-card">
-                <div class="chapter-number">第31话</div>
-                <div class="chapter-title">胜利的代价</div>
-                <a href="chapters/chapter31.html">阅读</a>
-            </div>
-            
-            <div class="chapter-card">
-                <div class="chapter-number">第32话</div>
-                <div class="chapter-title">新的开始</div>
-                <a href="chapters/chapter32.html">阅读</a>
-            </div>
         </div>
     </div>
     
@@ -254,12 +228,12 @@
             <p>本站由独立汉化爱好者创建，致力于提供《鹫巢外传》的优质汉化版本。</p>
             <p>由于在微博发布内容经常被限流，因此建立了这个专门的阅读网站，方便漫画爱好者阅读和交流。</p>
             <p>本站所有汉化内容均为个人兴趣制作，仅供学习交流使用，请支持正版漫画。</p>
-            <p>本站结构简单，易于维护，所有章节链接清晰明了，方便读者直接访问所需内容。</p>
         </div>
     </div>
     
     <footer>
         <p>© 2025 鹫巢外传汉化站 | 独立汉化爱好者制作</p>
+        <p>最后更新: 2025年7月11日</p>
     </footer>
 </body>
 </html>
