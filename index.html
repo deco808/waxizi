@@ -3,66 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鹫巢外传 - 汉化漫画</title>
+    <title>鹫巢外传 - 漫画汉化</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <!-- 顶部导航 -->
     <header>
         <div class="header-content">
-            <img src="assets/logo.png" alt="鹫巢外传" class="logo">
-            <h1>鹫巢外传 - 汉化漫画</h1>
+            <img src="Assets/cover.jpg" alt="鹫巢外传封面" class="logo">
+            <h1>鹫巢外传</h1>
             <nav>
-                <a href="#home">首页</a>
+                <a href="#home" class="active">首页</a>
                 <a href="#catalog">目录</a>
                 <a href="#about">关于</a>
             </nav>
         </div>
     </header>
-    
-    <!-- 主要内容 -->
+
     <main>
-        <!-- 首页介绍 -->
+        <!-- 首页 -->
         <section id="home" class="section active">
-            <div class="intro">
-                <h2>欢迎阅读《鹫巢外传》汉化版</h2>
-                <p>本网站由独立汉化者制作，持续更新中...</p>
-                <div class="latest-chapter">
-                    <h3>最新更新</h3>
-                    <div id="latest-chapter-info">加载中...</div>
+            <div class="cover-section">
+                <div class="cover-container">
+                    <img src="Assets/cover.jpg" alt="鹫巢外传封面" class="cover-image">
+                    <div class="cover-info">
+                        <h2>鹫巢外传</h2>
+                        <p>《鹫巢外传》是日本漫画家创作的经典漫画作品。本网站提供由独立汉化爱好者制作的汉化版本。</p>
+                        <p>由于在微博上发布经常被限流，特此建立本站点方便漫画爱好者阅读交流。</p>
+                        
+                        <div class="stats">
+                            <div>
+                                <div>已汉化</div>
+                                <span>53</span>
+                                <div>话</div>
+                            </div>
+                            <div>
+                                <div>最新更新</div>
+                                <span>第53话</span>
+                                <div>2025.07.10</div>
+                            </div>
+                        </div>
+                        
+                        <div class="latest-chapter">
+                            <h3>最新一话</h3>
+                            <div id="latest-chapter-info">
+                                <!-- 由JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-        
-        <!-- 漫画目录 -->
+
+        <!-- 目录页 -->
         <section id="catalog" class="section">
-            <h2>漫画目录</h2>
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="搜索章节...">
-                <button id="search-btn">搜索</button>
+            <div class="intro">
+                <h2>漫画目录</h2>
+                <p>选择章节开始阅读</p>
             </div>
+                        
             <div id="chapters-list" class="chapters-container">
-                <!-- 章节列表将由JavaScript动态生成 -->
+                <!-- 由JavaScript动态加载 -->
             </div>
         </section>
-        
-        <!-- 关于页面 -->
+
+        <!-- 关于页 -->
         <section id="about" class="section">
-            <h2>关于本站</h2>
             <div class="about-content">
-                <p>《鹫巢外传》是由XXX创作的漫画作品，本汉化版由独立汉化者制作。</p>
-                <p>本站仅供学习交流，禁止用于任何商业用途。</p>
-                <p>如有任何问题或建议，请联系：234968669@qq.com</p>
+                <h2>关于本站</h2>
+                <p>本站由独立汉化爱好者创建，致力于提供《鹫巢外传》的优质汉化版本。</p>
+                <p>由于在微博发布内容经常被限流，因此建立了这个专门的阅读网站，方便漫画爱好者阅读和交流。</p>
+                <p>本站所有汉化内容均为个人兴趣制作，仅供学习交流使用，请支持正版漫画。</p>
+                <p>如有任何问题或建议，欢迎通过社交媒体联系我。</p>
             </div>
         </section>
     </main>
-    
-    <!-- 页脚 -->
+
     <footer>
-        <p>© 2023 鹫巢外传汉化组 | 更新日期: <span id="update-date"></span></p>
+        <p>© 2025 鹫巢外传汉化站 | 最后更新: <span id="update-date"></span></p>
     </footer>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
