@@ -719,8 +719,8 @@
                 // 计算距离底部的距离
                 const distanceToBottom = documentHeight - (currentScroll + windowHeight);
                 
-                // 如果接近底部（300像素内），显示所有元素
-                if (distanceToBottom < 1000) {
+                // 如果接近底部（1200像素内），显示所有元素
+                if (distanceToBottom < 1200) {
                     header.classList.remove('hidden');
                     footer.classList.remove('hidden');
                     statusBarEl.classList.remove('hidden');
