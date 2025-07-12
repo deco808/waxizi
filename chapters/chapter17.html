@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鹫巢外传</title>
@@ -14,6 +15,7 @@
             --card-bg: #ffffff;
             --text-color: #333333;
             --border-color: #d1e3f6;
+            --talk-bg: #eef7ff;
         }
         
         * {
@@ -29,6 +31,67 @@
             line-height: 1.6;
             min-height: 100vh;
             transition: padding 0.3s ease;
+            padding-bottom: 60px; /* 为状态栏预留空间 */
+        }
+
+                /* 导航提示样式 */
+        .nav-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 204, 0, 0.9);
+            color: #16213e;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeInUp 0.5s ease, pulse 2s infinite;
+        }
+
+        .nav-hint i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 5px 25px rgba(255, 204, 0, 0.5); }
+            100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        }
+
+        .hint-enter {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .hint-exit {
+            animation: fadeOutDown 0.5s ease forwards;
+        }
+
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
         }
         
         .header {
@@ -120,6 +183,26 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        /* 碎碎念区域样式 */
+        .talk-section {
+            background: var(--talk-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 800px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .talk-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .talk-content p {
+            margin-bottom: 15px;
         }
         
         .footer {
@@ -300,6 +383,14 @@
             transform: translateY(100%);
         }
         
+        /* 最后一页检测 */
+        .end-indicator {
+            height: 1px;
+            position: absolute;
+            bottom: 300px; /* 在底部留出空间 */
+            width: 100%;
+        }
+        
         @media (max-width: 600px) {
             .title {
                 font-size: 1.8rem;
@@ -327,12 +418,17 @@
             .nav-btn i {
                 font-size: 2rem;
             }
+            
+            .talk-section {
+                padding: 20px;
+                margin: 20px 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header" id="header">
-        <div class="title" id="chapterTitle">鹫巢 阎魔的斗牌</div>
+        <div class="title" id="chapterTitle">鹫巢外传</div>
         <div class="subtitle" id="chapterSubtitle">中文汉化版 | Cloudinary CDN加速</div>
     </div>
     
@@ -345,6 +441,13 @@
             <div class="loading-spinner"></div>
             <p>正在加载漫画，请稍候...</p>
             <p><i class="fas fa-cloud"></i> 使用Cloudinary CDN加速中</p>
+        </div>
+    </div>
+    
+    <!-- 碎碎念区域 -->
+    <div class="talk-section" id="talkSection">
+        <div class="talk-content" id="talkContent">
+            <!-- 由JavaScript动态生成 -->
         </div>
     </div>
     
@@ -382,7 +485,49 @@
         </div>
     </div>
     
-    <script>
+    <!-- 最后一页检测元素 -->
+    <div class="end-indicator" id="endIndicator"></div>
+    
+<script>
+            // 显示导航提示
+        function showNavHint() {
+            // 创建提示元素
+            const hint = document.createElement('div');
+            hint.className = 'nav-hint hint-enter';
+            hint.innerHTML = '<i class="fas fa-hand-pointer"></i> 点击页面任意位置显示导航菜单';
+            document.body.appendChild(hint);
+            
+            // 3秒后自动隐藏
+            const hideTimer = setTimeout(() => {
+                hint.classList.remove('hint-enter');
+                hint.classList.add('hint-exit');
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    if (document.body.contains(hint)) {
+                        document.body.removeChild(hint);
+                    }
+                }, 500);
+            }, 8000);
+            
+            // 点击页面时立即隐藏提示
+            document.body.addEventListener('click', function hideOnClick() {
+                clearTimeout(hideTimer);
+                hint.classList.remove('hint-enter');
+                hint.classList.add('hint-exit');
+                
+                setTimeout(() => {
+                    if (document.body.contains(hint)) {
+                        document.body.removeChild(hint);
+                    }
+                    // 移除事件监听
+                    document.body.removeEventListener('click', hideOnClick);
+                }, 500);
+            }, { once: true });
+        }
+
+        // 页面加载完成后显示提示
+        document.addEventListener('DOMContentLoaded', showNavHint);
         // ========================
         // 配置区域 - 只需修改这部分
         // ========================
@@ -448,7 +593,7 @@
                 { role: "修图", name: "Deco, 桦冬" },
                 { role: "嵌字", name: "Deco" },
                 { role: "校对", name: "lilocat" },
-                { role: "网页制作", name: "deepseek" }
+                { role: "网页制作", name: "deepseek，Deco" }
             ]
         };
         
@@ -473,6 +618,9 @@
                 staffGrid.appendChild(staffItem);
             });
             
+            // 设置碎碎念内容
+            document.getElementById('talkContent').innerHTML = chapterConfig.talkContent;
+            
             const comicContainer = document.getElementById('comic-container');
             const statusBar = document.getElementById('statusBar');
             const loadedCount = document.getElementById('loadedCount');
@@ -485,9 +633,12 @@
             const prevBtn = document.getElementById('prevBtn');
             const homeBtn = document.getElementById('homeBtn');
             const nextBtn = document.getElementById('nextBtn');
+            const endIndicator = document.getElementById('endIndicator');
+            const talkSection = document.getElementById('talkSection');
             
             // 滚动变量
             let lastScrollTop = 0;
+            let isNearBottom = false;
             
             totalCount.textContent = chapterConfig.imageUrls.length;
             
@@ -521,6 +672,9 @@
                         setTimeout(() => {
                             statusBar.innerHTML = '<i class="fas fa-check-circle"></i> 所有图片加载完成!';
                             statusBar.style.color = '#28a745';
+                            
+                            // 将最后一页检测元素放在所有内容之后
+                            document.body.appendChild(endIndicator);
                         }, 500);
                     }
                 };
@@ -552,9 +706,31 @@
                 comicContainer.appendChild(imgContainer);
             });
             
-            // 滚动时隐藏页眉页脚
+            // 滚动时隐藏页眉页脚（优化版）
             window.addEventListener('scroll', function() {
                 const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = Math.max(
+                    document.body.scrollHeight, 
+                    document.body.offsetHeight, 
+                    document.documentElement.clientHeight, 
+                    document.documentElement.scrollHeight, 
+                    document.documentElement.offsetHeight
+                );
+                
+                // 计算距离底部的距离
+                const distanceToBottom = documentHeight - (currentScroll + windowHeight);
+                
+                // 如果接近底部（300像素内），显示所有元素
+                if (distanceToBottom < 800) {
+                    header.classList.remove('hidden');
+                    footer.classList.remove('hidden');
+                    statusBarEl.classList.remove('hidden');
+                    isNearBottom = true;
+                    return;
+                } else {
+                    isNearBottom = false;
+                }
                 
                 // 向下滚动超过50px时隐藏
                 if (currentScroll > lastScrollTop && currentScroll > 50) {
@@ -584,7 +760,7 @@
             // 导航按钮功能
             prevBtn.addEventListener('click', function() {
                 // 跳转到上一章
-                window.location.href = `chapter${chapterConfig.chapterNumber - 1}.html`;
+                window.location.href = `chapter_${chapterConfig.chapterNumber - 1}.html`;
             });
             
             homeBtn.addEventListener('click', function() {
@@ -594,7 +770,24 @@
             
             nextBtn.addEventListener('click', function() {
                 // 跳转到下一章
-                window.location.href = `chapter${chapterConfig.chapterNumber + 1}.html`;
+                window.location.href = `chapter_${chapterConfig.chapterNumber + 1}.html`;
+            });
+            
+            // 初始时隐藏碎碎念区域，在滚动到末尾时显示
+            talkSection.style.opacity = '0';
+            talkSection.style.transform = 'translateY(20px)';
+            talkSection.style.transition = 'all 0.5s ease';
+            
+            // 滚动到末尾时显示碎碎念区域
+            window.addEventListener('scroll', function() {
+                const talkSectionRect = talkSection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                
+                // 当碎碎念区域进入视口时显示
+                if (talkSectionRect.top < windowHeight * 0.8) {
+                    talkSection.style.opacity = '1';
+                    talkSection.style.transform = 'translateY(0)';
+                }
             });
         });
     </script>

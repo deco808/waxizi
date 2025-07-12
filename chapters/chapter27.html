@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鹫巢外传19 - 优化版</title>
+    <title>鹫巢外传</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -31,6 +32,66 @@
             min-height: 100vh;
             transition: padding 0.3s ease;
             padding-bottom: 60px; /* 为状态栏预留空间 */
+        }
+
+                /* 导航提示样式 */
+        .nav-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 204, 0, 0.9);
+            color: #16213e;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeInUp 0.5s ease, pulse 2s infinite;
+        }
+
+        .nav-hint i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 5px 25px rgba(255, 204, 0, 0.5); }
+            100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        }
+
+        .hint-enter {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .hint-exit {
+            animation: fadeOutDown 0.5s ease forwards;
+        }
+
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
         }
         
         .header {
@@ -133,18 +194,6 @@
             max-width: 800px;
             border-left: 4px solid var(--primary-color);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .talk-title {
-            color: var(--primary-color);
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .talk-title i {
-            margin-right: 10px;
         }
         
         .talk-content {
@@ -440,6 +489,45 @@
     <div class="end-indicator" id="endIndicator"></div>
     
 <script>
+            // 显示导航提示
+        function showNavHint() {
+            // 创建提示元素
+            const hint = document.createElement('div');
+            hint.className = 'nav-hint hint-enter';
+            hint.innerHTML = '<i class="fas fa-hand-pointer"></i> 点击页面任意位置显示导航菜单';
+            document.body.appendChild(hint);
+            
+            // 3秒后自动隐藏
+            const hideTimer = setTimeout(() => {
+                hint.classList.remove('hint-enter');
+                hint.classList.add('hint-exit');
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    if (document.body.contains(hint)) {
+                        document.body.removeChild(hint);
+                    }
+                }, 500);
+            }, 8000);
+            
+            // 点击页面时立即隐藏提示
+            document.body.addEventListener('click', function hideOnClick() {
+                clearTimeout(hideTimer);
+                hint.classList.remove('hint-enter');
+                hint.classList.add('hint-exit');
+                
+                setTimeout(() => {
+                    if (document.body.contains(hint)) {
+                        document.body.removeChild(hint);
+                    }
+                    // 移除事件监听
+                    document.body.removeEventListener('click', hideOnClick);
+                }, 500);
+            }, { once: true });
+        }
+
+        // 页面加载完成后显示提示
+        document.addEventListener('DOMContentLoaded', showNavHint);
         // ========================
         // 配置区域 - 只需修改这部分
         // ========================
@@ -632,7 +720,7 @@
                 const distanceToBottom = documentHeight - (currentScroll + windowHeight);
                 
                 // 如果接近底部（300像素内），显示所有元素
-                if (distanceToBottom < 300) {
+                if (distanceToBottom < 800) {
                     header.classList.remove('hidden');
                     footer.classList.remove('hidden');
                     statusBarEl.classList.remove('hidden');
