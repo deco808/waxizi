@@ -508,7 +508,7 @@
                         document.body.removeChild(hint);
                     }
                 }, 500);
-            }, 8000);
+            }, 5000);
             
             // 点击页面时立即隐藏提示
             document.body.addEventListener('click', function hideOnClick() {
@@ -713,7 +713,7 @@
                 const distanceToBottom = documentHeight - (currentScroll + windowHeight);
                 
                 // 如果接近底部（300像素内），显示所有元素
-                if (distanceToBottom < 800) {
+                if (distanceToBottom < 1000) {
                     header.classList.remove('hidden');
                     footer.classList.remove('hidden');
                     statusBarEl.classList.remove('hidden');
