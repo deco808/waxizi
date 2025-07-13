@@ -444,6 +444,13 @@
         </div>
     </div>
     
+        <!-- 碎碎念区域 -->
+    <div class="talk-section" id="talkSection">
+        <div class="talk-content" id="talkContent">
+            <!-- 由JavaScript动态生成 -->
+        </div>
+    </div>
+    
     <div class="footer" id="footer">
         <div class="footer-title">制作人员</div>
         <div class="staff-grid" id="staffGrid">
@@ -527,58 +534,39 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 17, // 当前章节号
-            chapterTitle: "海贼潮流3", // 章节标题
+            chapterNumber: 19, // 当前章节号
+            chapterTitle: "海贼潮流5", // 章节标题
             imageUrls: [ // 图片URL数组
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241343/17_1_aapat4.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241344/17_2_cvbxp8.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241341/17_3_cmhgmv.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241344/17_4_uj3wmf.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241345/17_5_kuyxvu.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241352/17_6_hlmrzb.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241355/17_7_vermiu.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241348/17_8_hcokmd.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241355/17_9_ei9zqx.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241352/17_10_rycfqa.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241359/17_11_yfqjuz.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241351/17_12_wstjzs.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241354/17_13_bq5vtf.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241367/17_14_snbxaq.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241372/17_15_ies8pw.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241357/17_16_dpp3hd.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_17_r2n2p8.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241368/17_18_psrw6s.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241360/17_19_yaritq.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_20_f4inia.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241363/17_21_nhj2wt.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241366/17_22_ynos2x.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241370/17_23_kzho31.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241382/17_24_xa9qrh.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241378/17_25_uayoha.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241373/17_26_qvgtff.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241391/17_27_oz3i2v.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_28_rkouvm.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241384/17_29_sf8g15.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_30_lyr2vj.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241379/17_31_eg7jkc.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241384/17_32_lz2rdm.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241385/17_33_inawuv.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241395/17_34_fj61ee.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_35_u3ey7g.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241393/17_36_lpl2yr.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_37_mp9yeh.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241396/17_38_jedldi.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241393/17_39_mjd7nz.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241398/17_40_vgljxy.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241412/17_41_p7ovzd.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241413/17_42_kthcll.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241402/17_43_hmcf4q.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241414/17_44_b7dhgp.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241407/17_45_pfbwnd.jpg",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241410/17_46_frri1e.jpg",
-            
-                 
-        ],
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777874/1_yrhvcz.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777881/2_hokgwc.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777873/3_lu3vvf.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777872/4_hbifmi.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777879/5_iolzsy.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777881/6_m3zhzn.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777883/7_voprve.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777875/8_itgctd.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777873/9_c00vvm.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777879/10_ao0y8z.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777882/11_beedi9.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777885/12_djokip.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777886/13_ygaz6r.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/14_zlcfjf.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/15_jionmx.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/16_qecdpb.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777896/17_bbnga0.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777891/18_uonqve.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777896/19_xpuxwx.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/20_kwbwir.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/21_nvlhbk.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/22_dzpayq.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777899/23_dfpss0.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777910/24_i8qiwx.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/25_kxxfyt.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/26_frhsjy.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777903/27_l7jppj.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777902/28_ki1zil.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/29_jn0owp.png"
+            ],
             staffMembers: [ // 制作人员
                 { role: "图源", name: "lilocat" },
                 { role: "文字提取", name: "6k" },

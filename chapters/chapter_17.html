@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鹫巢外传</title>
@@ -30,10 +31,10 @@
             line-height: 1.6;
             min-height: 100vh;
             transition: padding 0.3s ease;
-            padding-bottom: 60px;
+            padding-bottom: 60px; /* 为状态栏预留空间 */
         }
 
-        /* 导航提示样式 */
+                /* 导航提示样式 */
         .nav-hint {
             position: fixed;
             bottom: 30px;
@@ -193,9 +194,6 @@
             max-width: 800px;
             border-left: 4px solid var(--primary-color);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
         }
         
         .talk-content {
@@ -389,7 +387,7 @@
         .end-indicator {
             height: 1px;
             position: absolute;
-            bottom: 300px;
+            bottom: 300px; /* 在底部留出空间 */
             width: 100%;
         }
         
@@ -446,14 +444,17 @@
         </div>
     </div>
     
-    <!-- 碎碎念区域 -->
-    <div class="talk-section" id="talkSection">
-        <div class="talk-content" id="talkContent"></div>
-    </div>
-    
     <div class="footer" id="footer">
         <div class="footer-title">制作人员</div>
-        <div class="staff-grid" id="staffGrid"></div>
+        <div class="staff-grid" id="staffGrid">
+            <!-- 由JavaScript动态生成 -->
+        </div>
+    </div>
+        <!-- 碎碎念区域 -->
+    <div class="talk-section" id="talkSection">
+        <div class="talk-content" id="talkContent">
+            <!-- 由JavaScript动态生成 -->
+        </div>
     </div>
     
     <div class="status-bar" id="statusBar">
@@ -486,15 +487,8 @@
     <!-- 最后一页检测元素 -->
     <div class="end-indicator" id="endIndicator"></div>
     
-    <script>
-        // 全局配置
-        const baseUrl = "https://deco808.github.io/waxizi";
-        const configPath = "/chapters/configs/";
-        
-        // 章节配置将由外部文件提供
-        let chapterConfig = {};
-        
-        // 显示导航提示
+<script>
+            // 显示导航提示
         function showNavHint() {
             // 创建提示元素
             const hint = document.createElement('div');
@@ -513,7 +507,7 @@
                         document.body.removeChild(hint);
                     }
                 }, 500);
-            }, 5000);
+            }, 8000);
             
             // 点击页面时立即隐藏提示
             document.body.addEventListener('click', function hideOnClick() {
@@ -530,63 +524,89 @@
                 }, 500);
             }, { once: true });
         }
+
+        // 页面加载完成后显示提示
+        document.addEventListener('DOMContentLoaded', showNavHint);
+        // ========================
+        // 配置区域 - 只需修改这部分
+        // ========================
         
-        // 获取当前章节号
-        function getChapterNumber() {
-            const path = window.location.pathname;
-            const match = path.match(/chapter_(\d+)/);
-            return match ? parseInt(match[1]) : 1;
-        }
-        
-        // 初始化页面
-        function initPage() {
-            const chapterNumber = getChapterNumber();
+        // 当前章节配置
+        const chapterConfig = {
+            chapterNumber: 17, // 当前章节号
+            chapterTitle: "海贼潮流3", // 章节标题
+            imageUrls: [ // 图片URL数组
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241343/17_1_aapat4.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241344/17_2_cvbxp8.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241341/17_3_cmhgmv.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241344/17_4_uj3wmf.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241345/17_5_kuyxvu.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241352/17_6_hlmrzb.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241355/17_7_vermiu.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241348/17_8_hcokmd.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241355/17_9_ei9zqx.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241352/17_10_rycfqa.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241359/17_11_yfqjuz.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241351/17_12_wstjzs.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241354/17_13_bq5vtf.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241367/17_14_snbxaq.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241372/17_15_ies8pw.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241357/17_16_dpp3hd.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_17_r2n2p8.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241368/17_18_psrw6s.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241360/17_19_yaritq.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_20_f4inia.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241363/17_21_nhj2wt.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241366/17_22_ynos2x.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241370/17_23_kzho31.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241382/17_24_xa9qrh.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241378/17_25_uayoha.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241373/17_26_qvgtff.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241391/17_27_oz3i2v.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241376/17_28_rkouvm.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241384/17_29_sf8g15.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_30_lyr2vj.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241379/17_31_eg7jkc.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241384/17_32_lz2rdm.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241385/17_33_inawuv.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241395/17_34_fj61ee.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_35_u3ey7g.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241393/17_36_lpl2yr.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241389/17_37_mp9yeh.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241396/17_38_jedldi.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241393/17_39_mjd7nz.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241398/17_40_vgljxy.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241412/17_41_p7ovzd.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241413/17_42_kthcll.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241402/17_43_hmcf4q.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241414/17_44_b7dhgp.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241407/17_45_pfbwnd.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1752241410/17_46_frri1e.jpg",
             
-            // 加载章节配置
-            loadChapterConfig(chapterNumber);
-            
-            // 页面加载完成后显示提示
-            showNavHint();
-        }
+                 
+        ],
+            staffMembers: [ // 制作人员
+                { role: "图源", name: "lilocat" },
+                { role: "文字提取", name: "6k" },
+                { role: "翻译", name: "青空朝颜" },
+                { role: "修图", name: "Deco, 桦冬" },
+                { role: "嵌字", name: "Deco" },
+                { role: "校对", name: "lilocat" },
+                { role: "网页制作", name: "deepseek，Deco" }
+            ]
+        };
         
-        // 加载章节配置
-        function loadChapterConfig(chapterNumber) {
-            // 尝试从外部文件加载配置
-            fetch(`${configPath}chapter_${chapterNumber}.config.js`)
-                .then(response => response.text())
-                .then(configText => {
-                    // 解析配置
-                    const configMatch = configText.match(/chapterConfig\s*=\s*({[\s\S]*?});/);
-                    if (configMatch) {
-                        chapterConfig = eval('(' + configMatch[1] + ')');
-                        renderPage();
-                    } else {
-                        throw new Error('配置格式错误');
-                    }
-                })
-                .catch(error => {
-                    console.error('加载配置失败:', error);
-                    // 使用默认配置作为后备
-                    chapterConfig = {
-                        chapterNumber: chapterNumber,
-                        chapterTitle: `章节 ${chapterNumber}`,
-                        imageUrls: [],
-                        staffMembers: [],
-                        talkContent: ""
-                    };
-                    renderPage();
-                });
-        }
+        // ========================
+        // 脚本代码 - 无需修改
+        // ========================
         
-        // 渲染页面内容
-        function renderPage() {
-            // 设置标题
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置章节标题
             document.getElementById('chapterTitle').textContent = `鹫巢外传${chapterConfig.chapterNumber}`;
             document.getElementById('chapterSubtitle').textContent = `${chapterConfig.chapterTitle} | 中文汉化版`;
             
             // 设置制作人员
             const staffGrid = document.getElementById('staffGrid');
-            staffGrid.innerHTML = '';
             chapterConfig.staffMembers.forEach(member => {
                 const staffItem = document.createElement('div');
                 staffItem.className = 'staff-item';
@@ -597,38 +617,34 @@
                 staffGrid.appendChild(staffItem);
             });
             
-            // 设置碎碎念内容（如果有）
-            const talkSection = document.getElementById('talkSection');
-            const talkContent = document.getElementById('talkContent');
-            if (chapterConfig.talkContent && chapterConfig.talkContent.trim() !== '') {
-                talkContent.innerHTML = chapterConfig.talkContent;
-            } else {
-                talkSection.style.display = 'none';
-            }
+            // 设置碎碎念内容
+            document.getElementById('talkContent').innerHTML = chapterConfig.talkContent;
             
-            // 加载漫画图片
-            loadComicImages();
-            
-            // 设置导航按钮
-            setupNavigation();
-            
-            // 设置滚动行为
-            setupScrollBehavior();
-        }
-        
-        // 加载漫画图片
-        function loadComicImages() {
             const comicContainer = document.getElementById('comic-container');
-            comicContainer.innerHTML = '';
-            
-            const totalCount = document.getElementById('totalCount');
+            const statusBar = document.getElementById('statusBar');
             const loadedCount = document.getElementById('loadedCount');
+            const totalCount = document.getElementById('totalCount');
             const progressBar = document.getElementById('progressBar');
+            const header = document.getElementById('header');
+            const footer = document.getElementById('footer');
+            const statusBarEl = document.getElementById('statusBar');
+            const navOverlay = document.getElementById('navOverlay');
+            const prevBtn = document.getElementById('prevBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const endIndicator = document.getElementById('endIndicator');
+            const talkSection = document.getElementById('talkSection');
+            
+            // 滚动变量
+            let lastScrollTop = 0;
+            let isNearBottom = false;
             
             totalCount.textContent = chapterConfig.imageUrls.length;
             
-            let loadedImages = 0;
+            // 移除加载提示
+            comicContainer.innerHTML = '';
             
+            // 创建并添加所有漫画图片
             chapterConfig.imageUrls.forEach((url, index) => {
                 const imgContainer = document.createElement('div');
                 imgContainer.className = 'img-container';
@@ -641,21 +657,23 @@
                 // 添加图片加载状态监听
                 img.onload = function() {
                     this.classList.add('loaded');
-                    loadedImages++;
-                    loadedCount.textContent = loadedImages;
+                    
+                    // 更新加载计数
+                    const loaded = parseInt(loadedCount.textContent) + 1;
+                    loadedCount.textContent = loaded;
                     
                     // 更新进度条
-                    const progress = Math.floor((loadedImages / chapterConfig.imageUrls.length) * 100);
+                    const progress = Math.floor((loaded / chapterConfig.imageUrls.length) * 100);
                     progressBar.style.width = `${progress}%`;
                     
                     // 当所有图片加载完成时
-                    if (loadedImages === chapterConfig.imageUrls.length) {
+                    if (loaded === chapterConfig.imageUrls.length) {
                         setTimeout(() => {
-                            document.querySelector('.fa-spinner').style.display = 'none';
-                            document.getElementById('completedMessage').style.display = 'inline';
+                            statusBar.innerHTML = '<i class="fas fa-check-circle"></i> 所有图片加载完成!';
+                            statusBar.style.color = '#28a745';
                             
                             // 将最后一页检测元素放在所有内容之后
-                            document.body.appendChild(document.getElementById('endIndicator'));
+                            document.body.appendChild(endIndicator);
                         }, 500);
                     }
                 };
@@ -663,11 +681,13 @@
                 img.onerror = function() {
                     this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600"><rect width="400" height="600" fill="%23f8f9fa"/><text x="200" y="300" font-family="Arial" font-size="20" fill="%236c757d" text-anchor="middle">图片加载失败</text></svg>';
                     this.classList.add('loaded');
-                    loadedImages++;
-                    loadedCount.textContent = loadedImages;
+                    
+                    // 更新加载计数
+                    const loaded = parseInt(loadedCount.textContent) + 1;
+                    loadedCount.textContent = loaded;
                     
                     // 更新进度条
-                    const progress = Math.floor((loadedImages / chapterConfig.imageUrls.length) * 100);
+                    const progress = Math.floor((loaded / chapterConfig.imageUrls.length) * 100);
                     progressBar.style.width = `${progress}%`;
                 };
                 
@@ -684,58 +704,8 @@
                 imgContainer.appendChild(pageNum);
                 comicContainer.appendChild(imgContainer);
             });
-        }
-        
-        // 设置导航功能
-        function setupNavigation() {
-            const navOverlay = document.getElementById('navOverlay');
-            const prevBtn = document.getElementById('prevBtn');
-            const homeBtn = document.getElementById('homeBtn');
-            const nextBtn = document.getElementById('nextBtn');
             
-            // 上一章按钮
-            if (chapterConfig.chapterNumber > 1) {
-                prevBtn.addEventListener('click', function() {
-                    window.location.href = `chapter_${chapterConfig.chapterNumber - 1}.html`;
-                });
-            } else {
-                prevBtn.classList.add('disabled');
-            }
-            
-            // 目录按钮
-            homeBtn.addEventListener('click', function() {
-                window.location.href = `${baseUrl}/index.html`;
-            });
-            
-            // 下一章按钮
-            if (chapterConfig.chapterNumber < 100) {
-                nextBtn.addEventListener('click', function() {
-                    window.location.href = `chapter_${chapterConfig.chapterNumber + 1}.html`;
-                });
-            } else {
-                nextBtn.classList.add('disabled');
-            }
-            
-            // 点击显示导航菜单
-            document.body.addEventListener('click', function(e) {
-                // 排除按钮点击
-                if (e.target.closest('.nav-btn')) return;
-                
-                // 切换导航菜单显示状态
-                navOverlay.classList.toggle('active');
-            });
-        }
-        
-        // 设置滚动行为
-        function setupScrollBehavior() {
-            const header = document.getElementById('header');
-            const footer = document.getElementById('footer');
-            const statusBar = document.getElementById('statusBar');
-            const talkSection = document.getElementById('talkSection');
-            
-            let lastScrollTop = 0;
-            
-            // 滚动时隐藏页眉页脚
+            // 滚动时隐藏页眉页脚（优化版）
             window.addEventListener('scroll', function() {
                 const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 const windowHeight = window.innerHeight;
@@ -750,44 +720,75 @@
                 // 计算距离底部的距离
                 const distanceToBottom = documentHeight - (currentScroll + windowHeight);
                 
-                // 如果接近底部（1200像素内），显示所有元素
+                // 如果接近底部（300像素内），显示所有元素
                 if (distanceToBottom < 1200) {
                     header.classList.remove('hidden');
                     footer.classList.remove('hidden');
-                    statusBar.classList.remove('hidden');
+                    statusBarEl.classList.remove('hidden');
+                    isNearBottom = true;
                     return;
+                } else {
+                    isNearBottom = false;
                 }
                 
                 // 向下滚动超过50px时隐藏
                 if (currentScroll > lastScrollTop && currentScroll > 50) {
                     header.classList.add('hidden');
                     footer.classList.add('hidden');
-                    statusBar.classList.add('hidden');
+                    statusBarEl.classList.add('hidden');
                 } 
                 // 向上滚动或到顶部时显示
                 else {
                     header.classList.remove('hidden');
                     footer.classList.remove('hidden');
-                    statusBar.classList.remove('hidden');
+                    statusBarEl.classList.remove('hidden');
                 }
                 
                 lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+            });
+            
+            // 点击中间区域显示导航菜单
+            document.body.addEventListener('click', function(e) {
+                // 排除按钮点击
+                if (e.target.closest('.nav-btn')) return;
+                
+                // 切换导航菜单显示状态
+                navOverlay.classList.toggle('active');
+            });
+            
+            // 导航按钮功能
+            prevBtn.addEventListener('click', function() {
+                // 跳转到上一章
+                window.location.href = `chapter_${chapterConfig.chapterNumber - 1}.html`;
+            });
+            
+            homeBtn.addEventListener('click', function() {
+                // 跳转到目录页 - 修正为您的实际路径
+                window.location.href = 'https://deco808.github.io/waxizi/index.html';
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                // 跳转到下一章
+                window.location.href = `chapter_${chapterConfig.chapterNumber + 1}.html`;
+            });
+            
+            // 初始时隐藏碎碎念区域，在滚动到末尾时显示
+            talkSection.style.opacity = '0';
+            talkSection.style.transform = 'translateY(20px)';
+            talkSection.style.transition = 'all 0.5s ease';
+            
+            // 滚动到末尾时显示碎碎念区域
+            window.addEventListener('scroll', function() {
+                const talkSectionRect = talkSection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
                 
                 // 当碎碎念区域进入视口时显示
-                if (talkSection) {
-                    const talkSectionRect = talkSection.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
-                    
-                    if (talkSectionRect.top < windowHeight * 0.8) {
-                        talkSection.style.opacity = '1';
-                        talkSection.style.transform = 'translateY(0)';
-                    }
+                if (talkSectionRect.top < windowHeight * 0.8) {
+                    talkSection.style.opacity = '1';
+                    talkSection.style.transform = 'translateY(0)';
                 }
             });
-        }
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', initPage);
+        });
     </script>
 </body>
 </html>
