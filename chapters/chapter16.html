@@ -443,13 +443,13 @@
             <p><i class="fas fa-cloud"></i> 使用Cloudinary CDN加速中</p>
         </div>
     </div>
-    
-        <!-- 碎碎念区域 -->
+    <!-- 碎碎念区域 -->
     <div class="talk-section" id="talkSection">
         <div class="talk-content" id="talkContent">
             <!-- 由JavaScript动态生成 -->
         </div>
-    </div>
+    </div>    
+
     
     <div class="footer" id="footer">
         <div class="footer-title">制作人员</div>
@@ -508,7 +508,7 @@
                         document.body.removeChild(hint);
                     }
                 }, 500);
-            }, 8000);
+            }, 5000);
             
             // 点击页面时立即隐藏提示
             document.body.addEventListener('click', function hideOnClick() {
@@ -534,42 +534,52 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 20, // 当前章节号
-            chapterTitle: "海贼潮流6", // 章节标题
+            chapterNumber: 16, // 当前章节号
+            chapterTitle: "海贼潮流2", // 章节标题
             imageUrls: [ // 图片URL数组
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777874/1_yrhvcz.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777881/2_hokgwc.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777873/3_lu3vvf.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777872/4_hbifmi.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777879/5_iolzsy.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777881/6_m3zhzn.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777883/7_voprve.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777875/8_itgctd.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777873/9_c00vvm.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777879/10_ao0y8z.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777882/11_beedi9.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777885/12_djokip.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777886/13_ygaz6r.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/14_zlcfjf.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/15_jionmx.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777889/16_qecdpb.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777896/17_bbnga0.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777891/18_uonqve.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777896/19_xpuxwx.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/20_kwbwir.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/21_nvlhbk.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777897/22_dzpayq.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777899/23_dfpss0.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777910/24_i8qiwx.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/25_kxxfyt.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/26_frhsjy.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777903/27_l7jppj.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777902/28_ki1zil.png",
-                "https://res.cloudinary.com/dayfb4276/image/upload/v1751777905/29_jn0owp.png"
-            ],
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239583/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_1_ndkoq3.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239566/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_2_dvzdoz.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239563/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_3_dn6ipw.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239719/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_4_nd6dam.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239695/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_5_ie7kcs.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239758/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_6_lelll7.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239703/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_7_qpqmdz.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239567/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_8_hd9wy7.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239948/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_9_cwptrn.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239944/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_10_kq4k18.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239881/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_11_aue69u.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239961/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_12-13_dccwqd.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239661/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_14-15_wre0wa.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239584/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_16_ujwwvw.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239717/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_17_pzsfiw.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239802/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_18_n1l0su.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239833/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_19_v4fevc.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239891/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_20_s5jqgc.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752239971/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_21_fdbkau.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240124/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_22-23_jobx3j.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240011/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_24_ky5gey.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240092/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_25_yeaymh.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240105/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_26_kk3a1j.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240179/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_27_wl9cjr.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240194/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_28_hiiopw.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240269/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_29_ibi8kp.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240279/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_30_fxtbrv.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240293/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_31_t6tauj.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240311/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_32_yxzkrp.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240342/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_33_byxvsu.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240408/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_34_aqmt0i.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240441/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_35_rgcmij.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240728/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_36-37_bl9bin.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240447/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_38_fojnq5.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240451/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_39_wqraus.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240468/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_40_adjmgu.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240543/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_41_wl4wm9.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240572/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_42_cxgn5n.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240692/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_43_gpv7kq.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240485/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_44-45_ybjid0.png",
+                "https://res.cloudinary.com/dayfb4276/image/upload/v1752240697/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A018_46_jst3ab.png",            ],
             staffMembers: [ // 制作人员
                 { role: "图源", name: "lilocat" },
-                { role: "文字提取", name: "6k" },
                 { role: "翻译", name: "青空朝颜" },
                 { role: "修图", name: "Deco, 桦冬" },
                 { role: "嵌字", name: "Deco" },
@@ -741,7 +751,7 @@
             // 导航按钮功能
             prevBtn.addEventListener('click', function() {
                 // 跳转到上一章
-                window.location.href = `chapter_${chapterConfig.chapterNumber - 1}.html`;
+                window.location.href = `chapter${chapterConfig.chapterNumber - 1}.html`;
             });
             
             homeBtn.addEventListener('click', function() {
@@ -751,7 +761,7 @@
             
             nextBtn.addEventListener('click', function() {
                 // 跳转到下一章
-                window.location.href = `chapter_${chapterConfig.chapterNumber + 1}.html`;
+                window.location.href = `chapter${chapterConfig.chapterNumber + 1}.html`;
             });
             
             // 初始时隐藏碎碎念区域，在滚动到末尾时显示
