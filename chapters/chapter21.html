@@ -631,14 +631,38 @@
             comicContainer.innerHTML = '';
             
             // 创建并添加所有漫画图片
-            chapterConfig.imageUrls.forEach((url, index) => {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'img-container';
-                
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = `第 ${index + 1} 页`;
-                img.className = 'comic-image';
+// 在现有代码中找到这部分，替换图片加载方式
+chapterConfig.imageUrls.forEach((url, index) => {
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'img-container';
+    
+    const img = document.createElement('img');
+    // 修改这里，初始时不加载图片
+    img.dataset.src = url; // 使用data-src代替src
+    img.alt = `第 ${index + 1} 页`;
+    img.className = 'comic-image';
+    img.loading = "lazy"; // 添加懒加载属性
+    
+    // 修改图片加载逻辑
+    const loadImage = function() {
+        if (img.dataset.src) {
+            img.src = img.dataset.src;
+            delete img.dataset.src;
+        }
+    };
+    
+    // 当图片进入视口时加载
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                loadImage();
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+    
+    observer.observe(img);
+    
                 
                 // 添加图片加载状态监听
                 img.onload = function() {
