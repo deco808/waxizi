@@ -543,43 +543,41 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 35, // 当前章节号
-            chapterTitle: "黎明experience 1", // 章节标题
+            chapterNumber: 38, // 当前章节号
+            chapterTitle: "黎明experience 4", // 章节标题
             imageUrls: [ // 图片URL数组
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624437/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_1_z5azey.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624438/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_2_yuevwa.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624440/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_3_phz4vm.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624440/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_4_ihmztk.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624489/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_6_uf8q10.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624589/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_7_esxzso.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624591/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_8_erfjuh.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624593/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_9_jkscce.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624594/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_10_zef670.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624596/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_11_topx38.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624597/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_12_ggfscb.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624598/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_13_otqlx0.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624599/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_14_yf0ilq.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624601/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_15_njirr3.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624602/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_16_iqrjjj.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624603/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_17_idknbb.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624605/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_18_ns1hfd.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624606/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_19_vx5vky.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624608/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_20_s018o6.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624609/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_21_zwkwmm.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624610/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_22_w85l6f.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1755314011/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_23_x0dgfx.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624613/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_24_yqq5ks.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624615/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_25_k6ldop.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624616/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_26_xsql4e.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624617/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_28_o1heyd.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624619/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_29_qbmnhi.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624620/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_30_wt1of3.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624621/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_31_mq1axb.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624623/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_32_vlx8bk.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624624/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_33_hwjitx.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624627/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_34_ou9zop.png",
-            "https://res.cloudinary.com/dayfb4276/image/upload/v1754624627/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A035_36_ywt1g3.png"
-           
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319564/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_1_m13izw.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319564/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_2_pk1d5c.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319564/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_3_dxsvr1.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319564/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_4_i5ltms.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319564/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_5_sbthdn.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319566/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_6_qp2pyo.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319565/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_7_kxonud.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319566/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_8_w6iaqr.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319565/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_9_egfklb.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319566/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_10_gszykz.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319568/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_11_a0aqeb.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319567/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_12_y2sqpr.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319567/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_13_dxrmgm.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319567/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_14_ma2hcb.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319567/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_16_ttv4hf.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319569/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_17_jpyao6.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319568/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_18_scwqnx.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319570/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_19_imslyx.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319569/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_20_sgtilb.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319569/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_22_mdpt9x.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319569/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_23_wzxmll.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319571/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_24_uwffjt.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319571/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_25_j4hmmp.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319570/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_26_irvjip.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319570/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_27_fgy3w4.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319570/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_28_ervtnl.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319572/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_29_xfsldw.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319571/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_30_qdxmcy.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319571/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_31_ihn7tr.png",
+        "https://res.cloudinary.com/dayfb4276/image/upload/v1755319571/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A038_32_hp4ivb.png"
+
+
         ],
             staffMembers: [ // 制作人员
                 { role: "图源", name: "lilocat" },
@@ -588,7 +586,7 @@
                 { role: "嵌字", name: "Deco" },
             ],
             talkContent: `
-                <p>话说我都快把这个8章的故事搞完了，还不是很懂题目里的experience是啥意思</p>`
+                <p>这一章差点没笑死我</p>`
         };
         
         // ========================
