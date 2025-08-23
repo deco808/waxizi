@@ -543,43 +543,45 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 36, // 当前章节号
-            chapterTitle: "黎明体验 2", // 章节标题
+            chapterNumber: 42, // 当前章节号
+            chapterTitle: "黎明体验 8", // 章节标题
             imageUrls: [ // 图片URL数组
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_1_yn0smj.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_2_n31enj.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619866/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_3_b49rul.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_4_jepcow.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619861/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_6_lnhpui.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619862/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_7_mw5nlw.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619861/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_8_r1z8w6.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619861/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_9_q7n48t.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619861/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_10_xaikvq.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619866/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_11_ey4o9e.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619863/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_12_f6c5s0.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619863/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_13_joaxzu.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619862/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_14_jdtdvo.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_15_sxfvii.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_16_ga6vz6.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619860/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_17_dwfsbl.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619862/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_18_wfjzjp.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619862/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_19_uh2sov.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619862/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_20_bp7jla.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619864/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_21_xsrp7i.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619864/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_22_ywfip4.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619865/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_23_mcbcjj.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619865/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_24_wq1qxw.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619865/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_25_aqdmbi.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619865/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_26_vb4koa.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619866/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_27_tp00g3.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619866/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_28_uditgd.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619866/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_29_opytdp.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619867/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_30_sslua8.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619867/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_32_tkxqtg.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619867/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_33_l8b1mg.png",
-          "https://res.cloudinary.com/dayfb4276/image/upload/v1754619867/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A036_34_nih4ae.png"
-            
-
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924813/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_1_pq3zzv.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924809/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_2_nknxor.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924810/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_3_nxpdho.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924811/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_4_zrfsae.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924813/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_5_yoqukk.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924811/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_6_ke4b9k.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924814/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_7_e7jihe.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755924813/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_8_vwk8dm.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925344/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_9_mrvwi9.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925345/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_10_xnmlxn.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925363/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_11_zfofwd.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925359/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_12_aev6ut.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925346/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_13_cmkp78.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925348/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_14_nngk6a.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925350/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_15_pv4h63.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925351/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_16_h44dfd.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925353/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_17_f1ocwb.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925354/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_18_wcu4nt.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925356/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_19_adoi8r.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925357/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_20_js9on2.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925359/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_21_hnjsfz.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925362/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_22_gqw317.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925379/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_23_yynijl.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925364/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_24_euqn8u.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925367/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_25_bsoeyt.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925382/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_26_w8otpa.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925370/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_27_efz5rx.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925371/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_28_afftty.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925373/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_29_q7u3bw.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925376/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_30_jwykpa.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925377/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_31_vutrxm.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925378/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_32_hgzpfv.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925399/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_33_g9oejj.png",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925386/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_34_dgjq8e.jpg",
+            "https://res.cloudinary.com/dayfb4276/image/upload/v1755925385/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A042_35_u9dipa.jpg"
+       
         ],
             staffMembers: [ // 制作人员
                 { role: "图源", name: "lilocat" },
@@ -588,10 +590,9 @@
                 { role: "嵌字", name: "Deco" },
             ],
             talkContent: `
-                <p>大概是从上一章起，我修改了一下阅读器的代码，还下载了一个把图片智能压缩的软件，图片在上传到仓库之前会压一次，然后从仓库里刷新到网页里又会压一次，据说这样能少节约流量and提高图片刷新速度，但愿真的有用。</p>
-                <p>我自己肉眼比了一下压缩前后的两张图片，感觉没有多少区别，可是从实际大小上看就是小了一大半，感叹现在的智能压缩技术真牛皮，我对压缩图片的刻板印象还停留在贴吧里那种用多了就会多的一层电子铜绿呢。</p>`
-        
-            };
+                <p>我的震撼无以言表，鹫巢大人果然就是神</p>
+                <p>虽然知道外传和斗牌的鹫巢是俩人，不过还是很感慨，能打赢这个鹫巢的赤木得是多么牛啤啊</p>`
+        };
         
         // ========================
         // 自动优化模块 - 自动添加压缩参数 (您无需修改此部分)
