@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>船长的观察室 - 简洁版</title>
+    <title>船长的观察室</title>
     <style>
         * {
             margin: 0;
@@ -282,6 +282,12 @@
             background: rgba(30, 41, 59, 0.5);
             border-radius: 8px;
             border-left: 3px solid #3b82f6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(30, 41, 59, 0.7);
         }
         
         .history-time {
@@ -293,6 +299,14 @@
         
         .history-content {
             line-height: 1.6;
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(100, 130, 220, 0.2);
+        }
+        
+        .history-content.show {
+            display: block;
         }
         
         /* 乘客信息面板 */
@@ -377,6 +391,87 @@
             font-size: 1.1rem;
         }
         
+        /* 录像选择面板 */
+        .review-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.98);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(100, 130, 220, 0.15);
+            z-index: 100;
+            overflow-y: auto;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(100, 130, 220, 0.2);
+        }
+        
+        .review-title {
+            font-size: 2rem;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .close-review {
+            padding: 8px 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #3b82f6;
+            border-radius: 6px;
+            color: #f1f5f9;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .close-review:hover {
+            background: #3b82f6;
+        }
+        
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .review-item {
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .review-item:hover {
+            background: rgba(30, 41, 59, 0.7);
+            transform: translateY(-3px);
+        }
+        
+        .review-time {
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .review-location {
+            font-weight: 500;
+            color: #94a3b8;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 950px) {
             .title {
@@ -409,6 +504,10 @@
             .passenger-details {
                 flex-direction: column;
             }
+            
+            .review-list {
+                grid-template-columns: 1fr;
+            }
         }
         
         /* 动画效果 */
@@ -424,27 +523,31 @@
         /* 内容区域滚动条 */
         .content-area::-webkit-scrollbar,
         .passenger-list::-webkit-scrollbar,
-        .history-panel::-webkit-scrollbar {
+        .history-panel::-webkit-scrollbar,
+        .review-panel::-webkit-scrollbar {
             width: 8px;
         }
         
         .content-area::-webkit-scrollbar-track,
         .passenger-list::-webkit-scrollbar-track,
-        .history-panel::-webkit-scrollbar-track {
+        .history-panel::-webkit-scrollbar-track,
+        .review-panel::-webkit-scrollbar-track {
             background: rgba(30, 41, 59, 0.3);
             border-radius: 4px;
         }
         
         .content-area::-webkit-scrollbar-thumb,
         .passenger-list::-webkit-scrollbar-thumb,
-        .history-panel::-webkit-scrollbar-thumb {
+        .history-panel::-webkit-scrollbar-thumb,
+        .review-panel::-webkit-scrollbar-thumb {
             background: #3b82f6;
             border-radius: 4px;
         }
         
         .content-area::-webkit-scrollbar-thumb:hover,
         .passenger-list::-webkit-scrollbar-thumb:hover,
-        .history-panel::-webkit-scrollbar-thumb:hover {
+        .history-panel::-webkit-scrollbar-thumb:hover,
+        .review-panel::-webkit-scrollbar-thumb:hover {
             background: #60a5fa;
         }
         
@@ -456,6 +559,43 @@
             border-radius: 50%;
             background: #10b981;
             margin-right: 8px;
+        }
+        
+        /* 拒绝提示 */
+        .rejection-message {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            margin-top: 15px;
+        }
+
+             .special-highlight {
+            color: #ffcc00 !important;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 2px;
+        }
+          .key-term {
+            color: #ffcc00;
+            font-weight: 600;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+        
+        /* 结束提示 */
+        .ending-message {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            margin-top: 15px;
+            text-align: center;
         }
     </style>
 </head>
@@ -484,19 +624,15 @@
             <ul style="padding-left: 20px; margin-top: 10px;">
                 <li>邀请乘客：输入乘客编号，如 <span class="example">1-3-7</span></li>
                 <li>回看录像：输入时间-地点，如 <span class="example">16-餐厅</span></li>
-                <li>查看乘客信息：输入 <span class="example">乘客 [编号]</span>，如 <span class="example">乘客 3</span></li>
+                <li>查看乘客信息：输入 <span class="example">乘客</span></li>
                 <li>查看历史记录：输入 <span class="example">历史</span></li>
+                <li>你可以邀请1-4位乘客进入观察室，或回看其他房间的录像</li>
             </ul>
         </div>
         
         <div class="input-section">
-            <input type="text" class="search-bar" id="searchBar" placeholder="输入操作指令 (例如：1-3-7 或 16-餐厅 或 乘客 3)" autofocus>
+            <input type="text" class="search-bar" id="searchBar" placeholder="输入操作指令 (例如：1-3-7 或 16-餐厅 或 乘客)" autofocus>
             <button class="action-button" onclick="processInput()">执行操作</button>
-        </div>
-        
-        <div class="info-panel" id="infoPanel">
-            <p>提示：当前时间 <span class="highlight" id="currentTimeInfo">15:00</span>，你可以邀请1-4位乘客进入观察室，或回看其他房间的录像。</p>
-            <p>输入 <span class="example">历史</span> 查看所有观察记录，输入 <span class="example">乘客 [编号]</span> 查看乘客详情。</p>
         </div>
     </div>
     
@@ -521,6 +657,15 @@
             <button class="close-passenger" onclick="closePassengerInfo()">关闭</button>
         </div>
         <div id="passengerContent"></div>
+    </div>
+    
+    <!-- 录像选择面板 -->
+    <div class="review-panel" id="reviewPanel">
+        <div class="review-header">
+            <h2 class="review-title">所有录像记录</h2>
+            <button class="close-review" onclick="closeReviewPanel()">关闭</button>
+        </div>
+        <div id="reviewContent"></div>
     </div>
     
     <script>
@@ -659,65 +804,159 @@
             "7": { name: "涯" },
             "8": { name: "平山" },
             "9": { name: "一条-村上" },
-            "10": { name: "鹫巢岩-隼"},
+            "10": { name: "鹫巢-隼"},
             "11": { name: "银二-森田" }
         };
         
         // 当前时间（15:00开始）
         let currentTime = 15;
+        let dayCount = 1; // 天数计数器
         
         // 历史记录
         let history = [];
         
-        // 更新时间和提示信息
-        function updateTime() {
-            // 更新时间显示
-            document.getElementById('timeDisplay').textContent = 
-                `${currentTime.toString().padStart(2, '0')}:00`;
-            
-            // 更新信息面板中的时间
-            document.getElementById('currentTimeInfo').textContent = 
-                `${currentTime.toString().padStart(2, '0')}:00`;
-            
-            // 根据时间更新可邀请乘客
-            let availablePassengers = "";
-            if (currentTime === 15) {
-                availablePassengers = "开司 (1), 赤木(19) (3), 涯 (7)";
-            } else if (currentTime === 16) {
-                availablePassengers = "零 (6), 平山 (8), 银二-森田 (11)";
-            } else if (currentTime === 17) {
-                availablePassengers = "赤木(13) (4), 赤木(53) (5), 鹫巢岩-隼 (10)";
-            } else {
-                availablePassengers = "所有乘客";
+        // 获取当前时间段可邀请的乘客ID
+        function getAvailablePassengerIds() {
+            if (currentTime === 15 && dayCount === 1) {
+                return ["1", "3", "7"];
+            } else if (currentTime === 16 && dayCount === 1) {
+                return ["6", "8", "11"];
+            } else if (currentTime === 17 && dayCount === 1) {
+                return ["4", "5", "10"];
             }
-            
-            // 更新内容区域的提示
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <p><span class="status-indicator"></span>现在是 ${currentTime.toString().padStart(2, '0')}:00，${currentTime < 12 ? "上午" : "下午"}</p>
-                <br>
-                <p>当前可以邀请的乘客有：</p>
-                <div style="margin-top: 15px;">
-                    ${availablePassengers.split(', ').map(p => 
-                        `<span class="passenger-tag">${p}</span>`
-                    ).join('')}
-                </div>
-                <br>
-                <p>请在输入框中输入操作指令：</p>
-                <ul style="padding-left: 20px; margin-top: 10px;">
-                    <li>邀请乘客：输入乘客编号，如 <span class="example">1-3-7</span></li>
-                    <li>回看录像：输入时间-地点，如 <span class="example">16-餐厅</span></li>
-                    <li>查看乘客信息：输入 <span class="example">乘客</span></li>
-                    <li>查看历史记录：输入 <span class="example">历史</span></li>
-                </ul>
-            `;
+            return []; // 第二天及以后不再有可邀请的乘客
         }
+
+   const timeSpecificContent = {
+            15: `
+                <p><span class="special-highlight">欢迎上船！船长！</span></p>
+                <br>
+                <p>您既然能点进这个游戏，想必也听说过<span class="special-highlight">希望号</span>的大名吧</p>
+                <br>
+                <p>没错，现在您就是豪华游轮，希望号的船长了！</p>
+                <br>
+                <p>今天，您的船被一位富有的企业家承包了下来，进行一次为期一天的邮轮之旅</p>
+                <br>
+                <p>您的船上共有<span class="key-term">14</span>位乘客，分别住在<span class="key-term">11</span>间房间内，在输入框中输入<span class="key-term">乘客</span>二字即可查看乘客信息。</p>
+                <br>
+                <p>您对他们的邮轮之旅感兴趣吗？呵呵，或许您还记得，希望号上那无处不在的单向玻璃吧</p>
+                <br>
+                <p>依照雇主的要求，您不能直接参与乘客们的旅程，但您可以通过那些单向玻璃旁观</p>
+                <br>
+                <p>在您的船长室中，也有这样一个安装了单向玻璃的观察室</p>
+                <br>
+                <p>您可以依照自己的喜好，将您希望观察的对象邀请到观察室里来，透过那扇玻璃，作为船长的您，将能观察他们的故事。</p>
+                <br>
+               
+            <p>在真的开始您的观察旅程之前，我有一些小的注意事项需要提醒：</p>
+                    <br>
+                
+            <p>首先，您<span class="key-term">每隔一小时</span>才可以选择一次行动，除了<span class="key-term">邀请乘客</span>来观察室外，您还可以选择<span class="key-term">去其他房间</span>，或者<span class="key-term">回看</span>其他房间的录像，这些行动都会<span class="key-term">持续一个小时</span>的时间</p>
+                        <br>
+            <p>第二，您每次只能邀请<span class="key-term">1-4</span>位乘客进入观察室，会有明确的提示告诉您哪些乘客可以被邀请，请不要打扰无法被邀请的乘客，有部分乘客是<span class="key-term">互相绑定</span>的，您输入他们的编号后会一次性邀请进来两个人，这在乘客信息里都有写</p>
+                        <br>
+             <p>第三，若您想回顾之前曾经看过的内容，可以在输入框中输入<span class="command-example">历史</span>二字，这个操作不花费时间</p>
+                        <br>
+             <p>第四，船上有哪些房间，具体在什么时候会有人，这些您都无法提前得知（或许您能知道房间，但有没有人这个谁都不知道），您可以通过角色之间的对话推理一下，旅行结束后会给您机会观看船上曾发生过的所有内容</p>
+                        <br>
+            <p>第五，您在此次航行中，<span class="key-term">有且仅有一次</span>机会绕过第二条的限制，邀请您想邀请的<span class="key-term">任意两位</span>乘客进入观察室，之后所有的乘客都会拒绝您的邀请，您选择会影响故事的发展，做某些事的时候请谨言慎行</p>
+                        <br>
+             <p>第六，本游戏<span class="key-term">没有存档功能</span>，无意外尽量不要刷新</p>
+                        <br>
+            <p>最后，您的观察旅程将持续两天，第二天之后，乘客们将会下船，您的观察之旅也将结束</p>
+                    
+                <br>
+                <p>好了，船长，现在是下午15:00，航程刚刚开始，请享受您的旅程吧</p>
+            `,
+            16: "阳光正好，许多乘客在甲板上欣赏海景。",
+            17: "傍晚时分，乘客们开始前往餐厅准备用晚餐。",
+            // 其他时间的内容...
+        };
+
+    
+
+function updateTime() {
+    // 更新时间显示
+    document.getElementById('timeDisplay').textContent = 
+        `${currentTime.toString().padStart(2, '0')}:00`;
+    
+    // 获取当前时间的特定描述
+    const timeDescription = timeSpecificContent[currentTime] || 
+        `现在是第${dayCount}天 ${currentTime.toString().padStart(2, '0')}:00`;
+    
+    // 获取当前可邀请的乘客
+    const availableIds = getAvailablePassengerIds();
+    
+    // 更新内容区域
+    const content = document.getElementById('content');
+    
+    if (availableIds.length > 0) {
+        content.innerHTML = `
+            <p><span class="status-indicator"></span>${timeDescription}</p>
+            <br>
+            <p>当前可以邀请的乘客有：</p>
+            <div style="margin-top: 15px;">
+                ${availableIds.map(id => 
+                    `<span class="passenger-tag">${passengers[id].name} (${id})</span>`
+                ).join('')}
+            </div>
+            <br>
+            <p>请在输入框中输入操作指令：</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>邀请乘客：输入乘客编号，如 <span class="example">1-3-7</span></li>
+                <li>去其他房间：输入地点，如 <span class="example">酒吧</span></li>
+                <li>回看录像：输入时间-地点，如 <span class="example">16-餐厅</span></li>
+                <li>查看乘客信息：输入 <span class="example">乘客</span></li>
+                <li>查看历史记录：输入 <span class="example">历史</span></li>
+                <li>你可以邀请1-4位乘客进入观察室，或回看其他房间的录像</li>
+            </ul>
+        `;
+    } else if (dayCount === 1) {
+        content.innerHTML = `
+            <p><span class="status-indicator"></span>${timeDescription}</p>
+            <br>
+            <div class="ending-message">
+                <p>当前时间没有可邀请的乘客。</p>
+                <p>你可以回看其他地点的录像。</p>
+            </div>
+            <br>
+            <p>请在输入框中输入操作指令：</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>去其他房间：输入地点，如 <span class="example">酒吧</span></li>
+                <li>回看录像：输入时间-地点，如 <span class="example">16-餐厅</span></li>
+                <li>查看乘客信息：输入 <span class="example">乘客</span></li>
+                <li>查看历史记录：输入 <span class="example">历史</span></li>
+            </ul>
+        `;
+    } else {
+        content.innerHTML = `
+            <p><span class="status-indicator"></span>${timeDescription}</p>
+            <br>
+            <div class="ending-message">
+                <p>乘客们已经下船，你无法再邀请他们到观察室。</p>
+                <p>但你可以回看所有地点的所有录像。</p>
+            </div>
+            <br>
+            <p>请在输入框中输入操作指令：</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>回看录像：输入 <span class="example">回看</span></li>
+                <li>查看乘客信息：输入 <span class="example">乘客</span></li>
+                <li>查看历史记录：输入 <span class="example">历史</span></li>
+            </ul>
+        `;
+    }
+    
+    // 确保输入框保持焦点
+    document.getElementById('searchBar').focus();
+}
+
+    
         
         // 添加历史记录
         function addHistory(type, title, content) {
             history.push({
                 time: new Date().toLocaleTimeString(),
-                gameTime: `${currentTime.toString().padStart(2, '0')}:00`,
+                gameTime: `第${dayCount}天 ${currentTime.toString().padStart(2, '0')}:00`,
                 type: type,
                 title: title,
                 content: content
@@ -735,12 +974,12 @@
             }
             
             let html = '';
-            history.forEach(record => {
+            history.forEach((record, index) => {
                 html += `
-                    <div class="history-item">
-                        <div class="history-time">${record.time} (游戏时间: ${record.gameTime})</div>
-                        <div class="history-content">
-                            <strong>${record.title}</strong>
+                    <div class="history-item" onclick="toggleHistoryContent(${index})">
+                        <div class="history-time">${record.time} (游戏时间: ${record.gameTime}) - ${record.type}</div>
+                        <strong>${record.title}</strong>
+                        <div class="history-content" id="history-content-${index}">
                             <p>${record.content.replace(/\n/g, '<br>')}</p>
                         </div>
                     </div>
@@ -749,6 +988,12 @@
             
             historyContent.innerHTML = html;
             document.getElementById('historyPanel').style.display = 'block';
+        }
+        
+        // 切换历史记录内容的显示/隐藏
+        function toggleHistoryContent(index) {
+            const content = document.getElementById(`history-content-${index}`);
+            content.classList.toggle('show');
         }
         
         // 显示乘客信息
@@ -786,7 +1031,6 @@
                 <h3 class="passenger-name">${passenger.name}</h3>
                 <div class="passenger-meta">
                     <p><strong>乘客编号：</strong> ${passengerId}</p>
-                    <p><strong>房间号：</strong> ${passenger.room}</p>
                 </div>
             `;
             
@@ -795,6 +1039,48 @@
         
         function closePassengerInfo() {
             document.getElementById('passengerInfo').style.display = 'none';
+            document.getElementById('searchBar').focus();
+        }
+        
+        // 显示录像选择面板
+        function showReviewPanel() {
+            const reviewContent = document.getElementById('reviewContent');
+            
+            let html = '<div class="review-list">';
+            
+            // 获取所有非观察室的场景
+            const reviewScenes = Object.entries(scenes).filter(([key]) => !key.includes('观察室'));
+            
+            if (reviewScenes.length === 0) {
+                html += `<p>暂无录像记录。</p>`;
+            } else {
+                reviewScenes.forEach(([key, scene]) => {
+                    const [time, location] = key.split('-');
+                    html += `
+                        <div class="review-item" onclick="selectReview('${key}')">
+                            <div class="review-time">${time}:00</div>
+                            <div class="review-location">${location}</div>
+                            <div>${scene.title}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div>';
+            reviewContent.innerHTML = html;
+            document.getElementById('reviewPanel').style.display = 'block';
+        }
+        
+        // 选择录像
+        function selectReview(sceneKey) {
+            closeReviewPanel();
+            showReadingView(scenes[sceneKey].title, scenes[sceneKey].content);
+            addHistory('回看', scenes[sceneKey].title, `回看录像: ${sceneKey}\n\n${scenes[sceneKey].content}`);
+        }
+        
+        // 关闭录像选择面板
+        function closeReviewPanel() {
+            document.getElementById('reviewPanel').style.display = 'none';
             document.getElementById('searchBar').focus();
         }
         
@@ -831,9 +1117,23 @@
                 return;
             }
             
+            // 处理回看指令（第二天15:00之后）
+            if (input === '回看' && dayCount > 1) {
+                showReviewPanel();
+                document.getElementById('searchBar').value = '';
+                return;
+            }
+            
             // 判断是邀请乘客还是回看录像
             if (/^\d+(-\d+)*$/.test(input)) {
                 // 邀请乘客
+                // 第二天15:00之后不能再邀请乘客
+                if (dayCount > 1) {
+                    alert('乘客已经下船，无法再邀请他们到观察室。');
+                    document.getElementById('searchBar').value = '';
+                    return;
+                }
+                
                 const passengerIds = input.split('-');
                 
                 // 验证输入
@@ -846,6 +1146,23 @@
                 const invalidIds = passengerIds.filter(id => !passengers[id]);
                 if (invalidIds.length > 0) {
                     alert(`无效的乘客ID: ${invalidIds.join(', ')}`);
+                    return;
+                }
+                
+                // 检查是否所有乘客都可邀请
+                const availableIds = getAvailablePassengerIds();
+                const unavailableIds = passengerIds.filter(id => !availableIds.includes(id));
+                
+                if (unavailableIds.length > 0) {
+                    const unavailableNames = unavailableIds.map(id => passengers[id].name).join(', ');
+                    const content = document.getElementById('content');
+                    content.innerHTML += `
+                        <div class="rejection-message">
+                            <p>${unavailableNames}拒绝了你的邀请，他们目前不方便。</p>
+                            <p>请尝试邀请其他乘客。</p>
+                        </div>
+                    `;
+                    document.getElementById('searchBar').value = '';
                     return;
                 }
                 
@@ -873,12 +1190,20 @@
                 }
                 
                 // 推进时间
-                currentTime = (currentTime % 24) + 1;
-                if (currentTime === 24) currentTime = 0;
-                updateTime();
+                advanceTime();
                 
             } else if (/^\d{1,2}-[\u4e00-\u9fa5a-zA-Z]+$/.test(input)) {
-                // 回看录像
+                // 回看录像 - 修复时间逻辑
+                const [inputTime, location] = input.split('-');
+                const timeNum = parseInt(inputTime);
+                
+                // 检查输入的时间是否有效（小于等于当前时间）
+                if (timeNum > currentTime && dayCount === 1) {
+                    alert('无法查看未来的录像！只能查看当前时间及之前的录像。');
+                    document.getElementById('searchBar').value = '';
+                    return;
+                }
+                
                 let found = false;
                 
                 // 查找匹配的场景
@@ -887,6 +1212,9 @@
                         showReadingView(scenes[key].title, scenes[key].content);
                         addHistory('回看', scenes[key].title, `回看录像: ${key}\n\n${scenes[key].content}`);
                         found = true;
+                        
+                        // 回看录像也消耗时间
+                        advanceTime();
                         break;
                     }
                 }
@@ -895,11 +1223,27 @@
                     alert('未找到相关记录！请检查输入格式是否正确。');
                 }
             } else {
-                alert('输入格式不正确！\n邀请乘客示例：1-3-7\n回看录像示例：16-餐厅\n查看乘客：乘客 3\n查看历史：历史');
+                if (dayCount === 1) {
+                    alert('输入格式不正确！\n邀请乘客示例：1-3-7\n回看录像示例：16-餐厅\n查看乘客：乘客 3\n查看历史：历史');
+                } else {
+                    alert('输入格式不正确！\n回看录像：输入 回看\n查看乘客：乘客\n查看历史：历史');
+                }
             }
             
             // 清空输入框
             document.getElementById('searchBar').value = '';
+        }
+        
+        // 推进时间
+        function advanceTime() {
+            currentTime = (currentTime % 24) + 1;
+            
+            // 检查是否到了第二天
+            if (currentTime === 15 && dayCount === 1) {
+                dayCount = 2;
+            }
+            
+            updateTime();
         }
         
         // 显示阅读视图
@@ -933,17 +1277,17 @@
         }
         
         // 初始化
-        window.onload = function() {
-            updateTime();
-            document.getElementById('searchBar').focus();
-            
-            // 支持按Enter键提交
-            document.getElementById('searchBar').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    processInput();
-                }
-            });
-        };
+window.onload = function() {
+  updateTime();
+  document.getElementById('searchBar').focus();
+  
+  // 支持按Enter键提交
+  document.getElementById('searchBar').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      processInput();
+    }
+  });
+};
     </script>
 </body>
 </html>
