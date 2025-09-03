@@ -543,51 +543,63 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 45, // 当前章节号
-            chapterTitle: "监狱六区1", // 章节标题
+            chapterNumber: 25, // 当前章节号
+            chapterTitle: "这个男人，有着铁臂", // 章节标题
             imageUrls: [ // 图片URL数组
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353351/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_1_l8fejt.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353358/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_2_tkzqoo.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353354/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_3_crjied.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353356/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_4_m92rtt.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353355/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_5_ytw7pm.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353357/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_6_u2kxhe.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353356/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_7_jlcrgr.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353359/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_8_c409qz.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353359/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_9_nug1ld.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353361/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_10_c6e6ug.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353351/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_11_miqbm3.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353350/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_12_odnjbu.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353348/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_13_p7ksvd.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353349/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_14_aotbml.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353350/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_15_kq2jig.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353351/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_16_ghaaok.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353353/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_17_afn6dp.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353356/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_18_kj1tz8.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353359/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_19_raxr2i.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353359/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_20_xdlesv.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353361/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_21_ghtyau.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353362/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_22_rhvcve.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756360699/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_23_rau2ve.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353361/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_24_utuvvs.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353365/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_25_ealqux.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353364/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_26_otdwzm.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353362/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_27_hzjgoj.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353368/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_28_slz75m.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353366/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_29_gnr49z.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353367/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_30_fzs7kp.png",
-           "https://res.cloudinary.com/dayfb4276/image/upload/v1756353368/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA1_31_cq2ocd.png",
-           
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892067/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_01_pf9obr.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892063/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_02_q8i59e.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892069/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_03_ygy6jn.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892083/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_04_n4qc4p.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892085/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_05_vybcle.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892084/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_06_fgmurm.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892086/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_07_ak4nhx.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892088/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_08_gyfftm.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892094/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_09_sjl7zs.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892100/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_10_jgg3dc.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892091/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_11_yedz02.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892120/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_12_yb8efo.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892097/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_14_x822dm.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892096/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_15_vsaojf.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892121/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_16_s0ijjc.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892103/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_17_hwktwm.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892112/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_18_xycngb.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892067/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_19_inhkrr.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892069/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_20_ml9fgb.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892067/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_21_kdeovl.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892075/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_22_bpe337.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892089/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_23_pkp9it.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892090/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_24_njxpju.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892092/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_25_ijdnnh.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892138/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_26_jot4mm.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892107/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_28_cxedzv.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892118/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_29_cwekqj.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892126/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_30_eads3c.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892130/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_31_ynmy94.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892140/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_32_zxvy7f.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892135/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_33_saoxac.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892143/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_34_qwaxb8.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892143/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_35_b6vtmv.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892194/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_36_s1n6nq.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892150/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_38_bjhmey.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892149/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_39_np0jse.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892159/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_40_ydlqdx.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892165/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_41_qugjnj.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892193/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_42_rriuto.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892167/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_44_ptckqz.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892167/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_45_twxnxt.png",
+          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892178/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A025_46_naav8b.png"
+            
         ],
-            staffMembers: [ // 制作人员
-                { role: "图源、校对", name: "lilocat" },
-                { role: "翻译", name: "青空朝颜" },
-                { role: "修图", name: "Deco" },
-                { role: "嵌字", name: "Deco" },
+           staffMembers: [ // 制作人员
+                { role: "图源", name: "lilocat" },
+                { role: "翻译", name: "Lolonois" },
+                { role: "修图", name: "Lolonois" },
+                { role: "嵌字", name: "Lolonois" },
+                { role: "监制", name: "Deco" },
 
             ],
             talkContent: `
-                <p>小柴和可爱的泡芙花领结限时返场了</p>`
+                <p>好喜欢现在这样清爽的画风和日常的故事</p>`
         };
         
         // ========================
