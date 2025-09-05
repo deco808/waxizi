@@ -543,40 +543,41 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 46, // 当前章节号
-            chapterTitle: "监狱六区2", // 章节标题
+            chapterNumber: 47, // 当前章节号
+            chapterTitle: "监狱六区3", // 章节标题
             imageUrls: [ // 图片URL数组
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892753/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_1_hkiuvn.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892748/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_2_as1mwb.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892757/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_3_j2todd.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892765/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_4_jw2jdz.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892754/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_5_xlceji.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892752/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_6_xnf0am.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892759/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_7_gb7iia.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892763/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_8_pwc8e1.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892766/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_9_lxkj4y.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892766/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_10_dgupxi.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892780/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_11_qam3dc.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892772/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_12_ddmlek.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892775/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_13_dji8cd.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892791/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_14_wnwt4m.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892787/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_15_fuclzv.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892780/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_16_hmsved.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757050160/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_17_zmmrjw.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892785/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_18_ouyvvv.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892810/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_19_su4q7q.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892794/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_20_ylklts.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892795/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_21_cdlmox.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892797/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_22_cpmcvx.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892804/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_23_anfkmg.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892806/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_24_tsp9ym.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892808/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_25_lnvzte.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892810/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_26_w4javg.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892808/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_27_ngvsxs.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892812/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_28_lns9x0.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892813/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_29_iokr9f.png",
-           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756892813/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA2_30_f7kz6e.png",
-           
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893219/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_1_cdj3zw.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893224/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_2_n5d5yw.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893232/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_3_gzk4vt.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893247/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_4_pmystg.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893236/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_5_afw3py.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893235/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_6_jwk0it.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893239/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_7_zu63ha.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893238/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_8_aya70h.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893244/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_9_z0m20m.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893248/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_10_dggqdd.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893248/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_11_qnufa1.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893246/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_12_o7zuri.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893248/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_13_ylyfcx.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893251/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_14_svuhzb.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893267/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_15_qrvwwt.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893262/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_16_jiyzzt.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893265/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_17_xlujdp.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893264/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_18_v3vorc.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893262/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_19_o4v1tn.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893263/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_20_cxkfx9.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893280/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_21_kk9w84.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893276/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_22_ls9kzm.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893276/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_23_wuvhww.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893272/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_24_pbytcy.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893275/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_25_setfms.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893280/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_26_dnp3ie.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893283/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_27_bxavcx.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893280/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_28_r8dxyb.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893286/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_29_vklplg.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893287/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_30_vpyida.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893289/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_31_fnsnvv.png",
+           "https://res.cloudinary.com/dbulxrm7b/image/upload/v1756893289/%E7%9B%91%E7%8B%B1%E5%85%AD%E5%8C%BA3_32_urmtqf.png",
            
         ],
             staffMembers: [ // 制作人员
@@ -587,7 +588,7 @@
 
             ],
             talkContent: `
-                <p>翻译给第2页的八点做了注释：這裏聊的是おいちょかぶ，一種紙牌游戲賭博，抓三張牌，比拼其綜合數的個位數。其中每個數字都有特定的叫法。8的讀法為おいちょ，9為かぶ，兩個最大的數字叫法組成了這個游戲名稱。4+1+3=8，所以説了おいちょ。下文同理4+1+5=0，稱爲ブタ，是最低的數字。這些黑話稱呼沒有本土化的譯名，姑且就直接按照比較易懂的方式翻譯了</p>`
+                <p>看到这里的诸位先不要着急高血压，之后还有让人血压更高的操作。不过总的来说这个完结篇还行。。。某些离谱的剧情是伏笔，鹫巢大人最后都会打回来。。。不过这个逼作者在这里竟然提到了龙神麻将里的鹫巢直升机，我都惊呆了，我还以为他忘了呢，像龙神麻将一样从头爽到尾多好，现在这种剧情看得我真火大</p>`
         };
         
         // ========================
