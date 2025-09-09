@@ -543,52 +543,32 @@
         
         // 当前章节配置
         const chapterConfig = {
-            chapterNumber: 52, // 当前章节号
-            chapterTitle: "监狱六区8", // 章节标题
+            chapterNumber: 2-1, // 当前章节号
+            chapterTitle: "封面、目录等", // 章节标题
             imageUrls: [ // 图片URL数组
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418163/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_1_f5jgwi.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418163/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_2_xly0y9.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418169/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_3_v4kxqt.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418163/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_4_vmhk6w.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418169/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_5_givzkj.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418165/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_6_tg8bcc.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418165/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_7_cjxhch.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418170/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_8_xitdgx.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418165/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_9_hebtzs.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418166/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_10_cku6rx.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418166/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_11_iwsvbt.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418166/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_12_uxa5he.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418167/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_13_fet0j2.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418169/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_14_ln6oue.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418169/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_15_paqk6q.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418169/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_16_fnszsw.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418170/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_17_gigzvx.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418176/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_18_htamza.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418178/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_19_lvotop.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418171/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_20_cszq0s.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418171/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_21_nfvewr.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418178/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_22_ijykpf.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418172/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_23_h9fvza.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418172/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_24_zxy4nv.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418173/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_25_u5hkqd.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418173/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_26_fqgfnt.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418177/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_27_tpdjjy.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418176/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_28_pkqngr.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418175/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_29_utab9n.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418177/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_30_uors3p.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418182/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_31_psiap1.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418179/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_32_sjazju.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418178/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_33_fzkj2s.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418179/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_34_przouf.png",
-          "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757418183/%E9%B9%AB%E5%B7%A2%E5%A4%96%E4%BC%A052_35_wtovoe.png"
-
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420898/01_001_oo8l4e.png",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420747/01_003_jdl5ko.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420739/01_004_rjluxu.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420742/01_209_tbk4jg.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420908/02_001_u6iaku.png",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420751/02_003_dpvrb6.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420747/02_004_vefmb4.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420749/02_209_apwv5e.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420900/03_001_rfejcz.png",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420771/03_003_even08.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420764/03_004_oiqck4.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420763/03_209_vmv4fd.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420905/04_001_z79sd3.png",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420787/04_003_hrbrtq.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420785/04_004_xdvwcv.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420791/04_209_hgpuyk.jpg",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420807/04_210_yr45hb.png",
+         "https://res.cloudinary.com/dbulxrm7b/image/upload/v1757420805/04_211_bspiji.jpg"
+            
         ],
             staffMembers: [ // 制作人员
                 { role: "图源", name: "lilocat" },
                 { role: "翻译", name: "Deco" },
-                { role: "修图", name: "Deco" },
-                { role: "嵌字", name: "Deco" },
-                { role: "校对", name: "青空朝颜、lilocat" }
             ],
             talkContent: `
                 <p></p>`
