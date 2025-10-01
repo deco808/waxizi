@@ -605,7 +605,21 @@
         // ========================
         // 脚本代码 - 无需修改
         // ========================
-        
+                (function optimizeCloudinaryUrls() {
+            // 智能添加压缩参数到所有Cloudinary URL
+            chapterConfig.imageUrls = chapterConfig.imageUrls.map(url => {
+                if (!url.includes('res.cloudinary.com')) return url; // 非Cloudinary链接保持原样
+                
+                // 检查是否已有优化参数
+                if (url.includes('/f_') || url.includes('/q_')) return url;
+                
+                // 在/upload/后添加优化参数
+                return url.replace(
+                    /(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(v\d+\/)/, 
+                    '$1f_auto,q_auto/$2'
+                );
+            });
+        })();
         document.addEventListener('DOMContentLoaded', function() {
             // 设置章节标题
             document.getElementById('chapterTitle').textContent = `鹫巢外传${chapterConfig.chapterNumber}`;

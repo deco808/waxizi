@@ -595,7 +595,21 @@
             talkContent: `
                 <p>想不明白那些日本人脑子里都是些什么东西。。。</p><p>怎么总是会整这种叫人高血压的离谱操作呢</p>`
         };
-        
+                (function optimizeCloudinaryUrls() {
+            // 智能添加压缩参数到所有Cloudinary URL
+            chapterConfig.imageUrls = chapterConfig.imageUrls.map(url => {
+                if (!url.includes('res.cloudinary.com')) return url; // 非Cloudinary链接保持原样
+                
+                // 检查是否已有优化参数
+                if (url.includes('/f_') || url.includes('/q_')) return url;
+                
+                // 在/upload/后添加优化参数
+                return url.replace(
+                    /(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(v\d+\/)/, 
+                    '$1f_auto,q_auto/$2'
+                );
+            });
+        })();
         // ========================
         // 自动优化模块 - 自动添加压缩参数 (您无需修改此部分)
         // ========================
