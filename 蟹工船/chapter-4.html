@@ -13,18 +13,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鹫巢外传</title>
+    <title>蟹工船</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #6b8cae;
-            --accent-color: #ffcc00;
-            --light-bg: #f5f7fa;
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e74c3c;
+            --light-bg: #ecf0f1;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #d1e3f6;
-            --talk-bg: #eef7ff;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+            --talk-bg: #f8f9fa;
         }
         
         * {
@@ -43,14 +43,14 @@
             padding-bottom: 60px; /* 为状态栏预留空间 */
         }
 
-                /* 导航提示样式 */
+        /* 导航提示样式 */
         .nav-hint {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 204, 0, 0.9);
-            color: #16213e;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
             padding: 15px 25px;
             border-radius: 30px;
             font-weight: bold;
@@ -80,7 +80,7 @@
 
         @keyframes pulse {
             0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 5px 25px rgba(255, 204, 0, 0.5); }
+            50% { box-shadow: 0 5px 25px rgba(231, 76, 60, 0.5); }
             100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
         }
 
@@ -128,7 +128,7 @@
         }
         
         .notice {
-            background: linear-gradient(to right, #b30000, #cc0000);
+            background: linear-gradient(to right, #c0392b, #e74c3c);
             color: #fff;
             font-weight: bold;
             padding: 14px;
@@ -136,15 +136,9 @@
             max-width: 800px;
             margin: 20px auto;
             border-radius: 8px;
-            border: 2px solid #ff5252;
-            box-shadow: 0 0 15px rgba(255, 82, 82, 0.3);
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
             animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px rgba(255, 82, 82, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(255, 82, 82, 0.6); }
-            100% { box-shadow: 0 0 10px rgba(255, 82, 82, 0.3); }
         }
         
         .comic-container {
@@ -182,7 +176,7 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid rgba(74, 111, 165, 0.2);
+            border: 5px solid rgba(44, 62, 80, 0.2);
             border-top: 5px solid var(--primary-color);
             border-radius: 50%;
             margin: 0 auto 20px;
@@ -281,7 +275,7 @@
         .progress-container {
             width: 200px;
             height: 8px;
-            background: rgba(74, 111, 165, 0.1);
+            background: rgba(44, 62, 80, 0.1);
             border-radius: 4px;
             overflow: hidden;
         }
@@ -369,7 +363,7 @@
         }
         
         .nav-btn.center:hover {
-            background: #3a5a80;
+            background: #1a252f;
         }
         
         .nav-btn.disabled {
@@ -437,7 +431,7 @@
 </head>
 <body>
     <div class="header" id="header">
-        <div class="title" id="chapterTitle">鹫巢外传 第二部</div>
+        <div class="title" id="chapterTitle">蟹工船</div>
         <div class="subtitle" id="chapterSubtitle">中文汉化版 | Cloudinary CDN加速</div>
     </div>
     
@@ -498,7 +492,7 @@
     <div class="end-indicator" id="endIndicator"></div>
     
 <script>
-            // 显示导航提示
+        // 显示导航提示
         function showNavHint() {
             // 创建提示元素
             const hint = document.createElement('div');
@@ -543,52 +537,62 @@
         
         // 当前章节配置
         const chapterConfig = {
-            partNumber: 2,
-            chapterNumber: 19, // 章节编号
-            chapterTitle: "最终决战1", // 章节标题
-            imageUrls: [ // 图片URL数组
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963765/%E5%A4%A9%E4%B8%8B19_1_a6kn6y.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963771/%E5%A4%A9%E4%B8%8B19_2_u3ov0y.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963766/%E5%A4%A9%E4%B8%8B19_3_lg2l0f.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963763/%E5%A4%A9%E4%B8%8B19_4_fwpa4f.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963765/%E5%A4%A9%E4%B8%8B19_5_hi4dxy.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963763/%E5%A4%A9%E4%B8%8B19_6_b2ndnh.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963765/%E5%A4%A9%E4%B8%8B19_7_gpeboj.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963765/%E5%A4%A9%E4%B8%8B19_8_rbulqh.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963770/%E5%A4%A9%E4%B8%8B19_9_xk0tax.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963770/%E5%A4%A9%E4%B8%8B19_10_doo5bz.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963767/%E5%A4%A9%E4%B8%8B19_11_kv6pjo.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963767/%E5%A4%A9%E4%B8%8B19_12_rvslch.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963786/%E5%A4%A9%E4%B8%8B19_13_yapaym.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963781/%E5%A4%A9%E4%B8%8B19_14_efghjo.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963782/%E5%A4%A9%E4%B8%8B19_15_p6lwht.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963781/%E5%A4%A9%E4%B8%8B19_16_py8oth.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963779/%E5%A4%A9%E4%B8%8B19_17_byqbcs.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963782/%E5%A4%A9%E4%B8%8B19_18_cxrz4p.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963782/%E5%A4%A9%E4%B8%8B19_19_eze4iy.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963783/%E5%A4%A9%E4%B8%8B19_20_fvsmbh.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963785/%E5%A4%A9%E4%B8%8B19_21_wtde28.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963786/%E5%A4%A9%E4%B8%8B19_22_ph0c0n.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963785/%E5%A4%A9%E4%B8%8B19_23_yiho5q.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963784/%E5%A4%A9%E4%B8%8B19_24_vezvxm.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963785/%E5%A4%A9%E4%B8%8B19_25_mwurvj.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963786/%E5%A4%A9%E4%B8%8B19_26_qkkmvw.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963796/%E5%A4%A9%E4%B8%8B19_27_losv3l.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963796/%E5%A4%A9%E4%B8%8B19_28_waoobk.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963796/%E5%A4%A9%E4%B8%8B19_29_udacpp.png",
-        "https://res.cloudinary.com/dbulxrm7b/image/upload/v1760963796/%E5%A4%A9%E4%B8%8B19_30_xghd19.png"
-            
+            chapterNumber: 4, // 章节编号 (1-5)
+            imageUrls: [ // 图片URL数组 - 请替换为蟹工船的实际图片URL
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029198/128_pgjr4m.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029196/129_kpnyru.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029198/130_ump3li.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029193/131_bq72ox.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029194/132_egxry7.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029196/133_wnlafs.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029195/134_thpukh.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029197/135_coaapn.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029198/136_ssw0ki.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029204/137_uqqxlv.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029201/138_sqskmd.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029202/139_wtnggm.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029208/140_qcaqcr.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029209/141_elxmmb.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029205/142_y0lscg.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029204/143_s4o7rr.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029206/144_us9hhm.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029213/145_f0l469.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029207/146_ray5pq.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029209/147_i2wmt1.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029209/148_sind0r.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029210/149_m8c0ax.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029217/150_npsgv7.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029212/151_ktyocn.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029214/152_mc5iq9.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029213/153_bcyga0.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029218/154_borofa.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029215/155_dgeeya.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029222/156_cgdukc.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029218/157_lro7gy.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029219/158_qqwj3k.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029219/159_tevtwj.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029224/160_n2dvms.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029220/161_hdk28y.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029221/162_fl3i27.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029222/163_cpibhs.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029223/164_tbmvq4.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029224/165_lnjkvs.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029230/166_plf10r.png",
+                "https://res.cloudinary.com/dbulxrm7b/image/upload/v1761029226/167_nu7gzh.png",
+                
 
-        ],
+
+            ],
             staffMembers: [ // 制作人员
-                { role: "图源", name: "lilocat" },
+                { role: "图源", name: "月月公爵" },
                 { role: "翻译", name: "Deco" },
                 { role: "修图", name: "Deco" },
                 { role: "嵌字", name: "Deco" }
             ],
-          talkContent: `
-      
-    `
+            talkContent: `
+                <p></p>
+              
+                `
         };
         
         // ========================
@@ -615,8 +619,8 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             // 设置章节标题
-            document.getElementById('chapterTitle').textContent = `鹫巢外传 第二部${chapterConfig.chapterNumber}`;
-            document.getElementById('chapterSubtitle').textContent = `${chapterConfig.chapterTitle} | 中文汉化版`;
+            document.getElementById('chapterTitle').textContent = `蟹工船 第${chapterConfig.chapterNumber}章`;
+            document.getElementById('chapterSubtitle').textContent = `中文汉化版`;
             
             // 设置制作人员
             const staffGrid = document.getElementById('staffGrid');
@@ -658,40 +662,36 @@
             comicContainer.innerHTML = '';
             
             // 创建并添加所有漫画图片
-// 在现有代码中找到这部分，替换图片加载方式
-chapterConfig.imageUrls.forEach((url, index) => {
-    const imgContainer = document.createElement('div');
-    imgContainer.className = 'img-container';
-    
-    const img = document.createElement('img');
-    // 修改这里，初始时不加载图片
-    img.dataset.src = url; // 使用data-src代替src
-    img.alt = `第 ${index + 1} 页`;
-    img.className = 'comic-image';
-    img.loading = "lazy"; // 添加懒加载属性
-    
-    // 修改图片加载逻辑
-    const loadImage = function() {
-        if (img.dataset.src) {
-            img.src = img.dataset.src;
-            delete img.dataset.src;
-        }
-    };
-    
-    // 当图片进入视口时加载
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                loadImage();
-                observer.unobserve(entry.target);
-            }
-        });
-    });
-    
-    observer.observe(img);
-    
-
-    
+            chapterConfig.imageUrls.forEach((url, index) => {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'img-container';
+                
+                const img = document.createElement('img');
+                // 修改这里，初始时不加载图片
+                img.dataset.src = url; // 使用data-src代替src
+                img.alt = `第 ${index + 1} 页`;
+                img.className = 'comic-image';
+                img.loading = "lazy"; // 添加懒加载属性
+                
+                // 修改图片加载逻辑
+                const loadImage = function() {
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        delete img.dataset.src;
+                    }
+                };
+                
+                // 当图片进入视口时加载
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            loadImage();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                observer.observe(img);
                 
                 // 添加图片加载状态监听
                 img.onload = function() {
@@ -797,18 +797,25 @@ chapterConfig.imageUrls.forEach((url, index) => {
             
             // 导航按钮功能
             prevBtn.addEventListener('click', function() {
-window.location.href = `chapter2-${chapterConfig.chapterNumber - 1}.html`;
+                if (chapterConfig.chapterNumber > 1) {
+                    window.location.href = `chapter-${chapterConfig.chapterNumber - 1}.html`;
+                } else {
+                    alert('已经是第一章了');
+                }
             });
             
             homeBtn.addEventListener('click', function() {
-                // 跳转到目录页 - 修正为您的实际路径
-                window.location.href = 'https://deco808.github.io/waxizi/index.html';
+                // 跳转到目录页 - 请替换为您的实际目录页路径
+                window.location.href = 'index.html';
             });
             
             nextBtn.addEventListener('click', function() {
- window.location.href = `chapter2-${chapterConfig.chapterNumber + 1}.html`;
-});
-
+                if (chapterConfig.chapterNumber < 5) {
+                    window.location.href = `chapter-${chapterConfig.chapterNumber + 1}.html`;
+                } else {
+                    alert('已经是最后一章了');
+                }
+            });
             
             // 初始时隐藏碎碎念区域，在滚动到末尾时显示
             talkSection.style.opacity = '0';
