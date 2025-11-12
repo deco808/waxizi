@@ -1,0 +1,301 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    background: #1a2f1a;
+    overflow: hidden;
+    color: #333;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 50%, #ffd3b6 100%);
+}
+
+/* 背景样式 - 只使用渐变 */
+.background-chapter1 { 
+    background: linear-gradient(45deg, #a8e6cf, #dcedc1);
+}
+
+.background-chapter2 { 
+    background: linear-gradient(45deg, #a8e6cf, #7bcfa4);
+}
+
+.background-chapter3 { 
+    background: linear-gradient(45deg, #7bcfa4, #4a9c7d);
+}
+
+.background-chapter4 { 
+    background: linear-gradient(45deg, #4a9c7d, #2d6a4f);
+}
+
+#background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: all 1s ease;
+    z-index: 1;
+}
+
+/* 修复角色立绘容器 */
+#character-container {
+    position: absolute;
+    width: 100%;
+    height: 75%;
+    bottom: 0;
+    left: 0;
+    z-index: 10; /* 确保在背景之上 */
+    pointer-events: none; /* 不干扰点击事件 */
+}
+
+/* 修复角色立绘样式 */
+.character {
+    position: absolute;
+    height: 90%;
+    max-height: 600px;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    object-fit: contain;
+    object-position: bottom center;
+    z-index: 15;
+    /* 移除任何可能隐藏的样式 */
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* 确保显示状态正确 */
+.character.show {
+    opacity: 1;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* 角色位置 */
+.character.left {
+    left: 5%;
+}
+
+.character.right {
+    right: 5%;
+}
+
+.character.center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 对话框 */
+#dialog-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    z-index: 100;
+}
+
+#dialog-box {
+    background: rgba(168, 230, 207, 0.85);
+    border: 3px solid #4a9c7d;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+#character-name {
+    color: #2d6a4f;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    font-family: 'Comic Sans MS', cursive;
+}
+
+#dialog-text {
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 80px;
+    color: #1b4332;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+#next-btn {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background: #4a9c7d;
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 110;
+}
+
+#next-btn:hover {
+    background: #2d6a4f;
+    transform: scale(1.1);
+}
+
+/* 选择支 */
+#choice-container {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    z-index: 100;
+}
+
+.choice-box {
+    background: rgba(168, 230, 207, 0.9);
+    padding: 25px;
+    border-radius: 20px;
+    border: 3px solid #4a9c7d;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(5px);
+}
+
+.choice-btn {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+    padding: 16px;
+    background: linear-gradient(45deg, #7bcfa4, #4a9c7d);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+}
+
+.choice-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #4a9c7d, #2d6a4f);
+}
+
+/* 回忆物品收集栏 */
+#inventory {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(168, 230, 207, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px solid #4a9c7d;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    backdrop-filter: blur(5px);
+}
+
+.inventory-title {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #2d6a4f;
+    font-weight: bold;
+}
+
+.memory-item {
+    width: 45px;
+    height: 45px;
+    margin: 5px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.memory-item.collected {
+    background: rgba(123, 207, 164, 0.8);
+    border: 2px solid #4a9c7d;
+    transform: scale(1.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 图片加载失败的备用样式 */
+.character:not([src]), 
+.character[src=""],
+.character[src*="undefined"] {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+    border: 3px dashed #2d6a4f;
+    border-radius: 20px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#character-xiaoxiao:not([src]), 
+#character-xiaoxiao[src=""],
+#character-xiaoxiao[src*="undefined"] {
+    background: linear-gradient(45deg, #74b9ff, #0984e3);
+}
+
+#character-xiaoxiao:not([src])::after {
+    content: "潇潇";
+}
+
+#character-xinxin:not([src]), 
+#character-xinxin[src=""],
+#character-xinxin[src*="undefined"] {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+}
+
+#character-xinxin:not([src])::after {
+    content: "心心";
+}
+
+/* 动画效果 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.character.show {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* 调试边框 - 如果还有问题可以取消注释 */
+/*
+#character-container {
+    border: 2px solid red !important;
+}
+
+.character {
+    border: 2px solid blue !important;
+}
+
+.character.show {
+    border: 2px solid green !important;
+}
+*/
