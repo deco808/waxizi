@@ -9,595 +9,589 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 1. 全局设定 --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+      /* --- 1. 全局设定 --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            background-color: #050505; /* 深空黑 */
-            color: #E0E0E0;
-            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
+body {
+    background-color: #050505; /* 深空黑 */
+    color: #E0E0E0;
+    font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+    overflow-x: hidden;
+    font-size: 15px;
+}
 
-        /* --- 2. Deco 星际背景 --- */
-        .deco-space {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #1a1c29 0%, #000000 100%);
-            perspective: 1000px; /* 3D 透视深度 */
-        }
+/* --- 2. Deco 星际背景 --- */
+.deco-space {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #1a1c29 0%, #000000 100%);
+    perspective: 1000px; /* 3D 透视深度 */
+}
 
-        .deco-star {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0; 
-            transform: translateZ(-1000px); 
-            will-change: transform, opacity; /* 性能优化 */
-        }
+.deco-star {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0; 
+    transform: translateZ(-1000px); 
+    will-change: transform, opacity; /* 性能优化 */
+}
 
-        /* 3D 穿梭动画：从远到近再消失 */
-        @keyframes warpSpeed {
-            0% {
-                opacity: 0;
-                transform: translateZ(-800px) scale(0.1); /* 远处 */
-            }
-            20% {
-                opacity: 0.8; /* 渐显 */
-            }
-            80% {
-                opacity: 0.8; 
-            }
-            100% {
-                opacity: 0;
-                transform: translateZ(500px) scale(3); /* 冲到眼前并消失 */
-            }
-        }
+/* 3D 穿梭动画：从远到近再消失 */
+@keyframes warpSpeed {
+    0% {
+        opacity: 0;
+        transform: translateZ(-800px) scale(0.1); /* 远处 */
+    }
+    20% {
+        opacity: 0.8; /* 渐显 */
+    }
+    80% {
+        opacity: 0.8; 
+    }
+    100% {
+        opacity: 0;
+        transform: translateZ(500px) scale(3); /* 冲到眼前并消失 */
+    }
+}
 
-        /* --- 3. 导航栏 (全端适配) --- */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: auto; /* 自适应高度 */
-            min-height: 60px;
-            background: rgba(10, 10, 15, 0.95);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-wrap: wrap; /* 允许换行 */
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px; /* 减小内边距 */
-            z-index: 999;
-        }
+/* --- 3. 导航栏 (全端适配) --- */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto; /* 自适应高度 */
+    min-height: 60px;
+    background: rgba(10, 10, 15, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px; /* 减小内边距 */
+    z-index: 999;
+}
 
-        .logo {
-            font-family: 'ZCOOL KuaiLe', cursive;
-            font-size: 1.4rem;
-            color: #B8A6FF;
-            text-decoration: none;
-            text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
-            margin-bottom: 5px; /* 小间距 */
-        }
+.logo {
+    font-family: 'ZCOOL KuaiLe', cursive;
+    font-size: 1.4rem;
+    color: #B8A6FF;
+    text-decoration: none;
+    text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+    margin-bottom: 5px; /* 小间距 */
+}
 
-        nav {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            gap: 15px; /* 替换margin为gap，更均匀 */
-            margin-top: 5px;
-        }
-        nav a {
-            color: #aaa;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            white-space: nowrap; /* 防止文字折行 */
-        }
-        nav a:hover { color: #fff; }
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px; /* 替换margin为gap，更均匀 */
+    margin-top: 5px;
+}
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    white-space: nowrap; /* 防止文字折行 */
+}
+nav a:hover { color: #fff; }
 
-        /* --- 4. 主布局容器 --- */
-        .wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 100px 20px 60px; /* 避开顶部导航 */
-        }
+/* --- 4. 主布局容器 --- */
+.wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 20px 60px; /* 避开顶部导航 */
+}
 
-        /* --- 5. 自定义文字输入区域 (移到标题下方，更合理的位置) --- */
-        .custom-text-section {
-            max-width: 1100px;
-            margin: 0 auto 30px;
-            padding: 0 20px;
-        }
-        .custom-text-container {
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.2);
-            border-radius: 12px;
-            padding: 15px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-        .custom-text-label {
-            font-size: 0.9rem;
-            color: #ddd;
-            flex: 1;
-            min-width: 200px;
-        }
-        .custom-text-input {
-            flex: 2;
-            min-width: 200px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(184, 166, 255, 0.3);
-            border-radius: 6px;
-            color: #fff;
-            outline: none;
-        }
-        .custom-text-btn {
-            padding: 8px 20px;
-            background: #B8A6FF;
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .custom-text-btn:hover {
-            background: #8EC5FC;
-        }
+/* --- 5. 自定义文字输入区域 (标题下方，主内容上方) --- */
+.custom-text-section {
+    max-width: 1100px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+}
+.custom-text-container {
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.2);
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+.custom-text-label {
+    font-size: 0.9rem;
+    color: #ddd;
+    flex: 1;
+    min-width: 200px;
+}
+.custom-text-input {
+    flex: 2;
+    min-width: 200px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(184, 166, 255, 0.3);
+    border-radius: 6px;
+    color: #fff;
+    outline: none;
+}
+.custom-text-btn {
+    padding: 8px 20px;
+    background: #B8A6FF;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.custom-text-btn:hover {
+    background: #8EC5FC;
+}
 
-        /* --- 6. 欢迎 Header (手机端断句优化) --- */
-        .intro-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 20px;
-            background: rgba(10, 10, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .intro-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            line-height: 1.4; /* 增加行高方便断句 */
-        }
-        .intro-header h1 .deco-title {
-            font-family: 'Noto Sans SC', sans-serif;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #B8A6FF, #8EC5FC);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .intro-header h1 .archive-title {
-            font-family: 'Ma Shan Zheng', cursive;
-            background: linear-gradient(to right, #FF9EBC, #B8A6FF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            /* 强制断句：的 后面换行 */
-            display: inline-block;
-        }
-        .intro-header p {
-            font-size: 0.8rem;
-            color: #888;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+/* --- 6. 欢迎 Header (标题同一行显示，无空行) --- */
+.intro-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px 20px; /* 去掉顶部空行 */
+    background: rgba(10, 10, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.intro-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    line-height: 1.2; /* 紧凑行高，确保同一行 */
+}
+.intro-header h1 .deco-title {
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 2px; /* Deco 字间距适中 */
+    background: linear-gradient(to right, #B8A6FF, #8EC5FC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.intro-header h1 .archive-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    background: linear-gradient(to right, #FF9EBC, #B8A6FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.intro-header p {
+    font-size: 0.8rem;
+    color: #888;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
 
-        /* --- 7. 分区标题样式 --- */
-        .section-header {
-            display: flex;
-            align-items: center;
-            margin: 40px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .section-title {
-            font-size: 1.4rem;
-            font-family: 'ZCOOL KuaiLe', cursive;
-            color: #fff;
-            margin-right: 15px;
-        }
-        .section-subtitle {
-            font-size: 0.75rem;
-            color: #666;
-            font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+/* --- 7. 分区标题样式 --- */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin: 40px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.section-title {
+    font-size: 1.4rem;
+    font-family: 'ZCOOL KuaiLe', cursive;
+    color: #fff;
+    margin-right: 15px;
+}
+.section-subtitle {
+    font-size: 0.75rem;
+    color: #666;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-        /* --- 8. 内容网格布局 (手机端适配核心) --- */
-        .grid {
-            display: grid;
-            gap: 20px;
-        }
+/* --- 8. 内容网格布局 (手机端适配核心) --- */
+.grid {
+    display: grid;
+    gap: 20px;
+}
 
-        /* 小说网格：手机端2列，平板/桌面自适应 */
-        .novel-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 手机端最小宽度150px，实现2列 */
-        }
+/* 小说网格：手机端2列，平板/桌面自适应 */
+.novel-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
 
-        /* 漫画网格：手机端2列，平板/桌面2列（强制2列） */
-        .comic-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 手机端2列 */
-        }
+/* 漫画网格：手机端2列，平板/桌面2列 */
+.comic-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
 
-        /* 卡片通用样式 */
-        .item-card {
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px 15px; /* 减小内边距 */
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        }
+/* 卡片通用样式 */
+.item-card {
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px 15px;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
 
-        .item-card:hover {
-            transform: translateY(-5px);
-            border-color: #B8A6FF;
-            background: rgba(20, 22, 35, 0.9);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
+.item-card:hover {
+    transform: translateY(-5px);
+    border-color: #B8A6FF;
+    background: rgba(20, 22, 35, 0.9);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
 
-        /* 装饰性小标签 */
-        .category-tag {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .tag-orig { background: rgba(184, 166, 255, 0.2); color: #B8A6FF; }
-        .tag-fan { background: rgba(255, 158, 188, 0.2); color: #FF9EBC; }
-        .tag-trans { background: rgba(142, 197, 252, 0.2); color: #8EC5FC; }
+/* 装饰性小标签 */
+.category-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.tag-orig { background: rgba(184, 166, 255, 0.2); color: #B8A6FF; }
+.tag-fan { background: rgba(255, 158, 188, 0.2); color: #FF9EBC; }
+.tag-trans { background: rgba(142, 197, 252, 0.2); color: #8EC5FC; }
 
-        .item-card h3 {
-            font-family: 'Noto Serif SC', serif;
-            font-size: 1.1rem;
-            color: #fff;
-            margin-top: 10px;
-            margin-bottom: 8px;
-        }
+.item-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    color: #fff;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
 
-        .item-card p {
-            font-size: 0.8rem;
-            color: #ddd;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
+.item-card p {
+    font-size: 0.8rem;
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
 
-        .item-card .meta {
-            font-size: 0.7rem;
-            color: #888;
-            margin-bottom: 10px;
-            font-style: italic;
-        }
+.item-card .meta {
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 10px;
+    font-style: italic;
+}
 
-        /* 图片展示容器 */
-        .card-img {
-            width: 100%;
-            height: 160px; /* 减小高度 */
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-        .item-card:hover .card-img img {
-            transform: scale(1.05);
-        }
+/* 图片展示容器 */
+.card-img {
+    width: 100%;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.item-card:hover .card-img img {
+    transform: scale(1.05);
+}
 
-        .btn-link {
-            display: inline-block;
-            text-align: center;
-            padding: 8px 0;
-            width: 100%;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            color: #ccc;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            transition: 0.3s;
-        }
-        .btn-link:hover {
-            background: #B8A6FF;
-            color: #000;
-            border-style: solid;
-        }
+.btn-link {
+    display: inline-block;
+    text-align: center;
+    padding: 8px 0;
+    width: 100%;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: #ccc;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: 0.3s;
+}
+.btn-link:hover {
+    background: #B8A6FF;
+    color: #000;
+    border-style: solid;
+}
 
-        /* 游戏专区 (手机端适配) */
-        .game-banner {
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.3);
-            border-radius: 15px;
-            padding: 20px 15px; /* 减小内边距 */
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .game-info { flex: 1; min-width: 280px; }
-        .game-visual { 
-            width: 180px; height: 100px; /* 减小尺寸 */
-            background: rgba(0,0,0,0.5); 
-            border: 2px solid #B8A6FF; 
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 10px; color: #ccc; font-size: 0.75rem;
-            overflow: hidden;
-        }
-        .game-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+/* 游戏专区 (手机端适配) */
+.game-banner {
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.3);
+    border-radius: 15px;
+    padding: 20px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.game-info { flex: 1; min-width: 280px; }
+.game-visual { 
+    width: 180px; height: 100px;
+    background: rgba(0,0,0,0.5); 
+    border: 2px solid #B8A6FF; 
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; color: #ccc; font-size: 0.75rem;
+    overflow: hidden;
+}
+.game-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        /* --- 9. 碎碎念区域 (修复折叠功能+图片筛选) --- */
-        .diary-section { margin-top: 40px; }
-        
-        /* 检索区：搜索+图片筛选按钮 */
-        .diary-search-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            padding: 10px 12px;
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.2);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        .search-box:focus {
-            border-color: #B8A6FF;
-            box-shadow: 0 0 0 2px rgba(184, 166, 255, 0.1);
-        }
-        .search-box::placeholder {
-            color: #666;
-        }
-        /* 图片筛选按钮 */
-        .filter-img-btn {
-            padding: 10px 15px;
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(184, 166, 255, 0.2);
-            border-radius: 8px;
-            color: #ddd;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            white-space: nowrap;
-        }
-        .filter-img-btn.active {
-            background: #8EC5FC;
-            color: #000;
-            border-color: #8EC5FC;
-        }
-        .filter-img-btn:hover {
-            border-color: #B8A6FF;
-            color: #fff;
-        }
+/* --- 9. 碎碎念区域 (修复折叠功能+图片筛选) --- */
+.diary-section { margin-top: 40px; }
 
-        .toggle-btn {
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ddd;
-            cursor: pointer;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-            margin-bottom: 10px;
-        }
-        .toggle-btn:hover { 
-            color: #fff; 
-            border-color: #B8A6FF;
-            background: rgba(20, 22, 35, 0.9);
-        }
-        .toggle-btn span { margin-right: 10px; }
-        
-        /* 碎碎念容器：默认展开，折叠时设置固定max-height */
-        .toggle-content {
-            max-height: 2000px; /* 足够大的默认值 */
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out; /* 平滑过渡 */
-            background: rgba(10, 12, 20, 0.85);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 20px;
-        }
-        /* 折叠状态 */
-        .toggle-content.collapsed {
-            max-height: 0px !important;
-            padding: 0 20px; /* 保持左右padding */
-        }
+/* 检索区：搜索+图片筛选按钮 */
+.diary-search-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.search-box {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 12px;
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+.search-box:focus {
+    border-color: #B8A6FF;
+    box-shadow: 0 0 0 2px rgba(184, 166, 255, 0.1);
+}
+.search-box::placeholder {
+    color: #666;
+}
+/* 图片筛选按钮 */
+.filter-img-btn {
+    padding: 10px 15px;
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(184, 166, 255, 0.2);
+    border-radius: 8px;
+    color: #ddd;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+.filter-img-btn.active {
+    background: #8EC5FC;
+    color: #000;
+    border-color: #8EC5FC;
+}
+.filter-img-btn:hover {
+    border-color: #B8A6FF;
+    color: #fff;
+}
 
-        /* 碎碎念条目样式 */
-        .diary-item {
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .diary-item:last-child {
-            border-bottom: none;
-        }
-        .diary-item .date { 
-            color: #B8A6FF; 
-            font-size: 0.8rem; 
-            display: block; 
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .diary-item .tags {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
-        .diary-item .tag {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: rgba(142, 197, 252, 0.1);
-            color: #8EC5FC;
-        }
-        .diary-item p {
-            color: #ddd;
-            line-height: 1.7;
-            font-size: 0.85rem;
-        }
-        /* 涂鸦图片容器 */
-        .doodle-img {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-top: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .doodle-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+.toggle-btn {
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #ddd;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+.toggle-btn:hover { 
+    color: #fff; 
+    border-color: #B8A6FF;
+    background: rgba(20, 22, 35, 0.9);
+}
+.toggle-btn span { margin-right: 10px; }
 
-        /* --- 响应式断点优化 --- */
-        /* 手机端 (小于768px) */
-        @media (max-width: 768px) {
-            /* 导航栏优化 */
-            header {
-                padding: 8px 15px;
-            }
-            .logo {
-                font-size: 1.2rem;
-                margin-bottom: 3px;
-            }
-            nav {
-                gap: 10px;
-            }
-            nav a {
-                font-size: 0.75rem;
-            }
+/* 碎碎念容器：默认展开，折叠时设置固定max-height */
+.toggle-content {
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+    background: rgba(10, 12, 20, 0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+/* 折叠状态 */
+.toggle-content.collapsed {
+    max-height: 0px !important;
+    padding: 0 20px;
+}
 
-            /* 主容器内边距 */
-            .wrapper {
-                padding: 90px 15px 40px;
-            }
+/* 碎碎念条目样式 */
+.diary-item {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.diary-item:last-child {
+    border-bottom: none;
+}
+.diary-item .date { 
+    color: #B8A6FF; 
+    font-size: 0.8rem; 
+    display: block; 
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.diary-item .tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+.diary-item .tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(142, 197, 252, 0.1);
+    color: #8EC5FC;
+}
+.diary-item p {
+    color: #ddd;
+    line-height: 1.7;
+    font-size: 0.85rem;
+}
+/* 涂鸦图片容器 */
+.doodle-img {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.doodle-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
 
-            /* 标题断句：的 后面强制换行 */
-            .intro-header h1 {
-                font-size: 2rem;
-            }
-            .intro-header h1 .archive-title::before {
-                content: '\A';
-                white-space: pre;
-            }
+/* --- 响应式断点优化 --- */
+/* 手机端 (小于768px) */
+@media (max-width: 768px) {
+    /* 导航栏优化 */
+    header {
+        padding: 8px 15px;
+    }
+    .logo {
+        font-size: 1.2rem;
+        margin-bottom: 3px;
+    }
+    nav {
+        gap: 10px;
+    }
+    nav a {
+        font-size: 0.75rem;
+    }
 
-            /* 小说/漫画网格：强制2列 */
-            .novel-grid, .comic-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 15px;
-            }
+    /* 主容器内边距 */
+    .wrapper {
+        padding: 90px 15px 40px;
+    }
 
-            /* 卡片优化 */
-            .item-card {
-                padding: 15px 10px;
-            }
-            .card-img {
-                height: 140px;
-            }
+    /* 手机端标题字号适配（确保同一行显示） */
+    .intro-header h1 {
+        font-size: 1.8rem;
+    }
 
-            /* 游戏专区 */
-            .game-banner {
-                padding: 15px 10px;
-            }
-            .game-visual {
-                width: 100%;
-                height: 120px;
-            }
+    /* 小说/漫画网格：强制2列 */
+    .novel-grid, .comic-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px;
+    }
 
-            /* 自定义文字区域 */
-            .custom-text-container {
-                padding: 10px 15px;
-            }
-            .custom-text-label {
-                font-size: 0.8rem;
-                min-width: 100%;
-            }
-            .custom-text-input {
-                min-width: 100%;
-            }
-        }
+    /* 卡片优化 */
+    .item-card {
+        padding: 15px 10px;
+    }
+    .card-img {
+        height: 140px;
+    }
 
-        /* 平板端 (768-1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .novel-grid, .comic-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+    /* 游戏专区 */
+    .game-banner {
+        padding: 15px 10px;
+    }
+    .game-visual {
+        width: 100%;
+        height: 120px;
+    }
 
-        /* 桌面端 (大于1024px) */
-        @media (min-width: 1025px) {
-            .novel-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .comic-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+    /* 自定义文字区域 */
+    .custom-text-container {
+        padding: 10px 15px;
+    }
+    .custom-text-label {
+        font-size: 0.8rem;
+        min-width: 100%;
+    }
+    .custom-text-input {
+        min-width: 100%;
+    }
+}
 
-            /* 导航栏恢复单行 */
-            header {
-                flex-wrap: nowrap;
-                height: 60px;
-                padding: 0 40px;
-            }
-            .logo {
-                margin-bottom: 0;
-            }
-            nav {
-                width: auto;
-                margin-top: 0;
-            }
-        }
-        
-        footer { 
-            text-align: center; 
-            padding: 30px 0; 
-            color: #444; 
-            font-size: 0.75rem;
-            background: rgba(10, 12, 20, 0.85);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 40px;
-        }
+/* 平板端 (768-1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .novel-grid, .comic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 桌面端 (大于1024px) */
+@media (min-width: 1025px) {
+    .novel-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .comic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 导航栏恢复单行 */
+    header {
+        flex-wrap: nowrap;
+        height: 60px;
+        padding: 0 40px;
+    }
+    .logo {
+        margin-bottom: 0;
+    }
+    nav {
+        width: auto;
+        margin-top: 0;
+    }
+}
+
+footer { 
+    text-align: center; 
+    padding: 30px 0; 
+    color: #444; 
+    font-size: 0.75rem;
+    background: rgba(10, 12, 20, 0.85);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 40px;
+}
     </style>
 </head>
 <body>
@@ -611,6 +605,7 @@
             <a href="#novels">书房</a>
             <a href="#comics">漫画室</a>
             <a href="#game">游戏机</a>
+             <a href="#thoughts">感悟集</a>
             <a href="#diary">日记本</a>
         </nav>
     </header>
@@ -618,9 +613,8 @@
     <div class="wrapper">
         <div class="intro-header">
             <h1>
-                <span class="deco-title">Deco的</span>
-                <span class="archive-title">奇想档案</span>
-            </h1>
+        <span class="archive-title">D e c o的奇想档案</span>
+    </h1>
             <p>DESIGN • STORIES • FRIENDSHIP • MEMORIES</p>
         </div>
 
@@ -628,7 +622,7 @@
         <div class="custom-text-section">
             <div class="custom-text-container">
                 <div class="custom-text-label">
-                    <i class="fas fa-rocket"></i> 觉得名字飞过来很有趣吗？你也可以试试！
+                    <i class="fas fa-rocket"></i> 觉得名字飞过来很有趣？你也可以试试！
                 </div>
                 <input type="text" class="custom-text-input" id="customTextInput" placeholder="输入想要展示的文字（如：我的名字）" maxlength="10">
                 <button class="custom-text-btn" id="customTextBtn">更换背景文字</button>
@@ -728,6 +722,54 @@
                 </div>
             </div>
         </div>
+
+                <!-- 新增：长篇吐槽/感悟模块 -->
+        <div id="thoughts" style="margin-top: 60px;">
+            <div class="section-header">
+                <span class="section-title">长篇吐槽 & 感悟</span>
+                <span class="section-subtitle">Books • Movies • Life Thoughts</span>
+            </div>
+            
+            <!-- 感悟卡片容器（和小说/漫画布局一致，手机端2列） -->
+            <div class="grid novel-grid">
+                <!-- 感悟卡片1：书籍 -->
+                <div class="item-card">
+                    <span class="category-tag tag-orig">书籍</span>
+                    <div class="meta">2025.12.01 | 科幻 / 深度</div>
+                    <h3>《星尘漫游指南》读后</h3>
+                    <p>这本书彻底刷新了我对宇宙的认知，不是冰冷的物理公式，而是温柔的生命共鸣。当主角说「孤独是宇宙的底色，但相遇是对抗孤独的唯一答案」时，瞬间破防。</p>
+                    <a href="#" class="btn-link">查看全文</a>
+                </div>
+
+                <!-- 感悟卡片2：电影 -->
+                <div class="item-card">
+                    <span class="category-tag tag-fan">电影</span>
+                    <div class="meta">2025.11.28 | 治愈 / 动画</div>
+                    <h3>《星际便利店》观后感</h3>
+                    <p>画面治愈到想哭，每一个像素都藏着温柔。我们总在追逐远方的星光，却忘了身边的便利店永远亮着灯，就像身边的人永远在等你回头。</p>
+                    <a href="#" class="btn-link">查看全文</a>
+                </div>
+
+                <!-- 感悟卡片3：生活 -->
+                <div class="item-card">
+                    <span class="category-tag tag-trans">生活</span>
+                    <div class="meta">2025.11.25 | 日常 / 碎碎念</div>
+                    <h3>关于创作的碎碎念</h3>
+                    <p>创作不是一蹴而就的事，就像熬汤，需要慢炖。哪怕每天只写100字，画1笔，日积月累也会变成温暖的故事。不要怕不完美，开始就是最好的答案。</p>
+                    <a href="#" class="btn-link">查看全文</a>
+                </div>
+
+                <!-- 感悟卡片4：动漫 -->
+                <div class="item-card">
+                    <span class="category-tag tag-orig">动漫</span>
+                    <div class="meta">2025.11.20 | 热血 / 成长</div>
+                    <h3>《逆风之翼》观后</h3>
+                    <p>「逆风的方向，更适合飞翔」这句话刻进DNA里了。成长从来不是一帆风顺，那些摔过的跤，流过的泪，最后都会变成翅膀的羽毛。</p>
+                    <a href="#" class="btn-link">查看全文</a>
+                </div>
+            </div>
+        </div>
+        <!-- 长篇吐槽/感悟模块结束 -->
 
         <div id="diary" class="diary-section">
             <!-- 检索区：搜索+图片筛选 -->
