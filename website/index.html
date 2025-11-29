@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deco's Universe | 创作归档</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 引入图标库（检索功能用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 全局设定 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #050505; /* 深空黑 */
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+        }
+
+        /* --- 2. Deco 星际背景 (字号缩小+随机大小) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a1c29 0%, #000000 100%);
+            perspective: 1000px; /* 3D 透视深度 */
+        }
+
+        .deco-star {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0; 
+            transform: translateZ(-1000px); 
+            will-change: transform, opacity; /* 性能优化 */
+        }
+
+        /* 3D 穿梭动画：从远到近再消失 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; 
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 冲到眼前并消失 */
+            }
+        }
+
+        /* --- 3. 导航栏 (固定+优化) --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(10, 10, 15, 0.95); /* 提高不透明度，增强区分度 */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 999;
+        }
+
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.5rem;
+            color: #B8A6FF; /* 淡紫 */
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-left: 25px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        nav a:hover { color: #fff; }
+
+        /* --- 4. 主布局容器 --- */
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 100px 20px 60px; /* 避开顶部导航 */
+        }
+
+        /* --- 5. 欢迎 Header (游戏质感透明卡片) --- */
+        .intro-header {
+            text-align: center;
+            margin-bottom: 70px;
+            padding: 40px;
+            background: rgba(10, 10, 20, 0.85); /* 游戏风深色透明 */
+            border: 1px solid rgba(184, 166, 255, 0.2); /* 边框增强区分度 */
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* 投影增强层次感 */
+        }
+        /* 优化标题：Deco 用更宽松的字体，奇想档案保留原有书法体 */
+        .intro-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        .intro-header h1 .deco-title {
+            font-family: 'Noto Sans SC', sans-serif; /* 宽松大气的无衬线体 */
+            letter-spacing: 2px; /* 增加字间距更舒展 */
+            background: linear-gradient(to right, #B8A6FF, #8EC5FC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .intro-header h1 .archive-title {
+            font-family: 'Ma Shan Zheng', cursive; /* 保留喜欢的书法体 */
+            background: linear-gradient(to right, #FF9EBC, #B8A6FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .intro-header p {
+            font-size: 0.9rem;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- 6. 分区标题样式 --- */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin: 60px 0 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            color: #fff;
+            margin-right: 15px;
+        }
+        .section-subtitle {
+            font-size: 0.8rem;
+            color: #666;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- 7. 内容网格布局 (游戏风透明卡片，无磨砂) --- */
+        
+        /* 通用网格 */
+        .grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        /* 小说：竖向卡片（移除插图） */
+        .novel-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        /* 漫画：横向卡片 */
+        .comic-grid {
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        }
+
+        /* 卡片通用样式 (游戏风透明，无磨砂) */
+        .item-card {
+            background: rgba(10, 12, 20, 0.85); /* 游戏风深色透明，提高不透明度 */
+            border: 1px solid rgba(184, 166, 255, 0.2); /* 边框增强区分度 */
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* 投影增强层次感 */
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            border-color: #B8A6FF;
+            background: rgba(20, 22, 35, 0.9); /* hover 提高不透明度 */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 装饰性小标签 */
+        .category-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .tag-orig { background: rgba(184, 166, 255, 0.2); color: #B8A6FF; } /* 原创-紫 */
+        .tag-fan { background: rgba(255, 158, 188, 0.2); color: #FF9EBC; } /* 同人-粉 */
+        .tag-trans { background: rgba(142, 197, 252, 0.2); color: #8EC5FC; } /* 汉化-蓝 */
+
+        .item-card h3 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .item-card p {
+            font-size: 0.85rem;
+            color: #ddd; /* 提高文字亮度，增强可读性 */
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1; /* 让按钮对齐底部 */
+        }
+
+        .item-card .meta {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        /* 图片展示容器（仅漫画/游戏保留） */
+        .card-img {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .item-card:hover .card-img img {
+            transform: scale(1.05); /* 图片hover缩放 */
+        }
+
+        .btn-link {
+            display: inline-block;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        .btn-link:hover {
+            background: #B8A6FF;
+            color: #000;
+            border-style: solid;
+        }
+
+        /* 游戏专区 (宽Banner，游戏风透明) */
+        .game-banner {
+            background: rgba(10, 12, 20, 0.85); /* 游戏风深色透明 */
+            border: 1px solid rgba(184, 166, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .game-info { flex: 1; min-width: 300px; }
+        .game-visual { 
+            width: 200px; height: 120px; 
+            background: rgba(0,0,0,0.5); 
+            border: 2px solid #B8A6FF; 
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; color: #ccc; font-size: 0.8rem;
+            overflow: hidden;
+        }
+        .game-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- 8. 碎碎念区域 (带检索+游戏风卡片) --- */
+        .diary-section { margin-top: 60px; }
+        /* 检索框样式 */
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(10, 12, 20, 0.85);
+            border: 1px solid rgba(184, 166, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .search-box:focus {
+            border-color: #B8A6FF;
+            box-shadow: 0 0 0 2px rgba(184, 166, 255, 0.1);
+        }
+        .search-box::placeholder {
+            color: #666;
+        }
+
+        .toggle-btn {
+            background: rgba(10, 12, 20, 0.85);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ddd;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 8px;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        .toggle-btn:hover { 
+            color: #fff; 
+            border-color: #B8A6FF;
+            background: rgba(20, 22, 35, 0.9);
+        }
+        .toggle-btn span { margin-right: 10px; }
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: rgba(10, 12, 20, 0.85);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        /* 碎碎念条目样式 (增强区分度) */
+        .diary-item {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .diary-item:last-child {
+            border-bottom: none;
+        }
+        .diary-item .date { 
+            color: #B8A6FF; 
+            font-size: 0.85rem; 
+            display: block; 
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .diary-item .tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .diary-item .tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(142, 197, 252, 0.1);
+            color: #8EC5FC;
+        }
+        .diary-item p {
+            color: #ddd;
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+        /* 涂鸦图片容器 */
+        .doodle-img {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .doodle-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 768px) {
+            .wrapper { padding-top: 80px; }
+            .intro-header h1 { font-size: 2rem; }
+            .section-header { flex-direction: column; align-items: flex-start; }
+            .section-title { margin-bottom: 5px; }
+            .card-img { height: 150px; }
+        }
+        
+        footer { 
+            text-align: center; 
+            padding: 50px 0; 
+            color: #444; 
+            font-size: 0.8rem;
+            background: rgba(10, 12, 20, 0.85);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Deco 背景容器 -->
+    <div class="deco-space" id="decoSpace"></div>
+
+    <header>
+        <a href="#" class="logo">Deco.</a>
+        <nav>
+            <a href="#novels">书房</a>
+            <a href="#comics">漫画室</a>
+            <a href="#game">游戏机</a>
+            <a href="#diary">日记本</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="intro-header">
+            <!-- 拆分标题：Deco 用宽松字体，奇想档案保留书法体 -->
+            <h1>
+                <span class="deco-title">Deco</span>
+                <span class="archive-title">的 奇 想 档 案</span>
+            </h1>
+            <p>DESIGN • STORIES • FRIENDSHIP • MEMORIES</p>
+        </div>
+
+        <div id="novels">
+            <div class="section-header">
+                <span class="section-title">文字与故事</span>
+                <span class="section-subtitle">Original & Fan Fiction Novels</span>
+            </div>
+            
+            <div class="grid novel-grid">
+                <!-- 小说卡片：移除插图 -->
+                <div class="item-card">
+                    <span class="category-tag tag-orig">原创</span>
+                    <div class="meta">连载中 | 科幻 / 治愈</div>
+                    <h3>星尘的回响</h3>
+                    <p>在遥远的未来，寻找失落记忆的少年与旧式机器人的星际旅程。</p>
+                    <a href="#" class="btn-link">阅读第一章</a>
+                </div>
+
+                <div class="item-card">
+                    <span class="category-tag tag-fan">同人</span>
+                    <div class="meta">已完结 | XX角色中心</div>
+                    <h3>光影交错的十年</h3>
+                    <p>补完了原作中缺失的十年空白，关于救赎与被救赎的故事。</p>
+                    <a href="#" class="btn-link">阅读全文</a>
+                </div>
+
+                <div class="item-card">
+                    <span class="category-tag tag-fan">同人</span>
+                    <div class="meta">短篇集 | 甜向 / 日常</div>
+                    <h3>周末午后的红茶</h3>
+                    <p>收集了各种突发奇想的脑洞段子，纯糖无刀，放心食用。</p>
+                    <a href="#" class="btn-link">查看列表</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="game" style="margin-top: 60px;">
+            <div class="section-header">
+                <span class="section-title">游戏企划</span>
+                <span class="section-subtitle">Project: xixi</span>
+            </div>
+            
+            <div class="game-banner">
+                <div class="game-visual">
+                    <img src="https://picsum.photos/seed/xixi1/800/480" alt="xixi 像素预览图">
+                </div>
+                <div class="game-info">
+                    <h3 style="color:#B8A6FF; font-family:'ZCOOL KuaiLe'; font-size:1.8rem; margin-bottom:10px;">xixi (友谊记录模拟器)</h3>
+                    <p style="color:#ddd; margin-bottom:20px;">
+                        这不是一个普通的游戏，这是一个时光胶囊。我正在尝试用代码和像素，复刻我们曾经经历过的每一个闪光瞬间。
+                        <br><br>
+                        <span style="color:#8EC5FC">当前进度：</span> 人设图完成 / 核心玩法逻辑测试中
+                    </p>
+                    <a href="#" class="btn-link" style="width:auto; padding: 10px 30px; border-color:#B8A6FF; color:#B8A6FF;">查看开发日志</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="comics">
+            <div class="section-header">
+                <span class="section-title">汉化与搬运</span>
+                <span class="section-subtitle">Translation & Typesetting</span>
+            </div>
+
+            <div class="grid comic-grid">
+                <!-- 漫画卡片保留插图 -->
+                <div class="item-card">
+                    <span class="category-tag tag-trans">汉化</span>
+                    <div class="card-img">
+                        <img src="https://picsum.photos/seed/wujiu1/800/600" alt="鹫巢外传：命运之牌封面">
+                    </div>
+                    <div class="meta">连载中 | 悬疑 / 心理</div>
+                    <h3>鹫巢外传：命运之牌</h3>
+                    <p>深入黑暗麻将世界的番外篇。正在校对第三话，尽力还原原作压抑的氛围。</p>
+                    <a href="#" class="btn-link">开始阅读</a>
+                </div>
+
+                <div class="item-card">
+                    <span class="category-tag tag-trans">汉化</span>
+                    <div class="card-img">
+                        <img src="https://picsum.photos/seed/crab1/800/600" alt="蟹工船封面">
+                    </div>
+                    <div class="meta">全一册 | 现实主义</div>
+                    <h3>蟹工船</h3>
+                    <p>经典文学改编漫画。压迫与反抗的史诗，值得每个人深思的作品。</p>
+                    <a href="#" class="btn-link">开始阅读</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="diary" class="diary-section">
+            <!-- 检索框 -->
+            <input type="text" class="search-box" id="diarySearch" placeholder="搜索日期/关键词 (如：2025.11.29、xixi、蟹工船)...">
+            
+            <button class="toggle-btn" onclick="toggleDiary(this)">
+                <span><i class="fas fa-book-open"></i></span> 
+                <b>Deco 的碎碎念 & 收藏 (点击展开)</b>
+            </button>
+            <div class="toggle-content" id="diaryContent">
+                <div class="diary-item">
+                    <span class="date">2025.11.29</span>
+                    <div class="tags">
+                        <span class="tag">网站开发</span>
+                        <span class="tag">背景效果</span>
+                        <span class="tag">创作</span>
+                    </div>
+                    <p>终于把这个网站修好了！现在的背景是我想要的星际穿越感。看着一个个名字飞过去，感觉自己的创作也有了生命。</p>
+                </div>
+                <div class="diary-item">
+                    <span class="date">2025.11.25</span>
+                    <div class="tags">
+                        <span class="tag">xixi</span>
+                        <span class="tag">像素画</span>
+                        <span class="tag">蟹工船</span>
+                        <span class="tag">汉化</span>
+                    </div>
+                    <p>给《xixi》画了一张新的草图，虽然是像素风，但希望能传达出温暖的感觉。蟹工船的嵌字太难了，头发丝里的字以后谁爱嵌谁嵌（开玩笑的）。</p>
+                    <div class="doodle-img">
+                        <img src="https://picsum.photos/seed/doodle1/1200/600" alt="收藏的图片1">
+                    </div>
+                </div>
+                <div class="diary-item">
+                    <span class="date">2025.11.20</span>
+                    <div class="tags">
+                        <span class="tag">星尘的回响</span>
+                        <span class="tag">小说</span>
+                        <span class="tag">科幻</span>
+                    </div>
+                    <p>《星尘的回响》第二章写完了，加入了机器人的回忆杀情节，自己读的时候都有点想哭。果然科幻的内核还是温柔啊。</p>
+                    <div class="doodle-img">
+                        <img src="https://picsum.photos/seed/doodle2/1200/600" alt="收藏的图片2">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2025 Deco. Crafted with <span style="color:#FF9EBC">♥</span> for the Universe.
+    </footer>
+
+    <script>
+        // --- 1. Deco 星际背景 (字号缩小+随机大小+数量200) ---
+        const space = document.getElementById('decoSpace');
+        const count = 200; // 数量减少到200
+        // 字体池
+        const fonts = [
+            "'ZCOOL KuaiLe', cursive", 
+            "'Ma Shan Zheng', cursive", 
+            "'Montserrat', sans-serif", 
+            "'Noto Serif SC', serif"
+        ];
+        // 颜色池
+        const colors = [
+            'rgba(255, 255, 255, 0.8)', // 纯白
+            'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+            'rgba(142, 197, 252, 0.7)', // 浅蓝
+            'rgba(184, 166, 255, 0.7)', // 淡紫
+            'rgba(128, 203, 196, 0.7)'  // 青绿色
+        ];
+
+        // 循环生成 Deco 文字元素 (字号缩小+随机大小)
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement('div');
+            star.classList.add('deco-star');
+            star.innerText = 'Deco';
+
+            // 1. 随机全屏位置（百分比）
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            // 2. 随机样式：字体、颜色、字号（缩小，0.2~0.8rem 更精致）
+            star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            star.style.color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 0.6 + 0.2 + 'rem'; // 随机字号：0.2~0.8rem
+            
+            // 3. 随机动画：时长（3~7s）、延迟（0~10s），避免同步
+            const duration = Math.random() * 4 + 3 + 's'; 
+            const delay = Math.random() * 10 + 's';
+
+            // 4. 应用样式（负延迟让动画立即开始）
+            star.style.left = x + '%';
+            star.style.top = y + '%';
+            star.style.fontSize = size;
+            star.style.animation = `warpSpeed ${duration} linear infinite`;
+            star.style.animationDelay = `-${delay}`;
+
+            space.appendChild(star);
+        }
+
+        // --- 2. 日记折叠逻辑 ---
+        function toggleDiary(btn) {
+            const content = btn.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        // --- 3. 碎碎念 日期/关键词 检索功能 ---
+        const searchInput = document.getElementById('diarySearch');
+        const diaryContent = document.getElementById('diaryContent');
+        const diaryItems = diaryContent.querySelectorAll('.diary-item');
+
+        searchInput.addEventListener('input', function() {
+            const searchText = this.value.trim().toLowerCase();
+            
+            // 无搜索内容时显示所有条目
+            if (!searchText) {
+                diaryItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+                return;
+            }
+
+            // 遍历条目，匹配日期/标签/内容
+            diaryItems.forEach(item => {
+                const date = item.querySelector('.date').innerText.toLowerCase();
+                const tags = item.querySelector('.tags').innerText.toLowerCase();
+                const content = item.querySelector('p').innerText.toLowerCase();
+                
+                // 匹配任意一项则显示
+                if (date.includes(searchText) || tags.includes(searchText) || content.includes(searchText)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // 重新计算折叠区域高度
+            const toggleContent = document.getElementById('diaryContent');
+            if (toggleContent.style.maxHeight) {
+                toggleContent.style.maxHeight = toggleContent.scrollHeight + "px";
+            }
+        });
+
+        // 初始化展开碎碎念（可选）
+        window.addEventListener('load', function() {
+            const toggleBtn = document.querySelector('.toggle-btn');
+            toggleDiary(toggleBtn);
+        });
+    </script>
+</body>
+</html>
