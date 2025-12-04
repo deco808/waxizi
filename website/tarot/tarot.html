@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神秘学实验室 | 塔罗档案</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+        }
+
+        /* --- 2. Canvas 星际背景 (修复版，使用稳定脚本) --- */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+        
+        /* 标题和简介 */
+        .tarot-intro {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(10, 10, 20, 0.85);
+            border: 1px solid rgba(142, 197, 252, 0.2);
+            border-radius: 5px; 
+        }
+        .tarot-intro h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 10px;
+        }
+        .tarot-intro p {
+            color: #aaa;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        /* 分区标题 - 保持主站风格 */
+        .section-header {
+            display: flex; align-items: center; margin: 40px 0 20px;
+            padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .section-title {
+            font-size: 1.4rem; font-family: 'ZCOOL+KuaiLe', cursive; color: #fff;
+            margin-right: 15px;
+        }
+        .section-subtitle {
+            font-size: 0.75rem; color: #666; font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- 4. 牌意网格 (22张大牌) - 突出图片，极简文字 --- */
+        .major-arcana-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+            gap: 15px;
+        }
+
+        .card-entry {
+            background: rgba(10, 12, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 5px; 
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-entry:hover {
+            transform: translateY(-3px);
+            border-color: #B8A6FF; 
+            box-shadow: 0 5px 15px rgba(184, 166, 255, 0.2);
+        }
+
+        .card-image-box {
+            width: 100%;
+            padding-top: 150%; 
+            position: relative;
+            background: #1a1b25;
+            overflow: hidden;
+        }
+        .card-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .card-entry:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        /* 牌意文字：极简尺寸，突出卡面 */
+        .card-info {
+            padding: 6px 4px; /* 缩小内边距 */
+            background: rgba(0, 0, 0, 0.3);
+            flex-grow: 1;
+        }
+        .card-info h4 {
+            font-size: 0.75rem; /* 极小字体 */
+            color: #ddd; 
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+        .card-info p {
+            font-size: 0.55rem; /* 极致缩小 */
+            color: #666; /* 降低对比度 */
+            line-height: 1.2;
+        }
+
+
+        /* --- 5. 牌阵卡片 (极简高级风 + 图片) --- */
+        .spread-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 调宽，容纳图片 */
+            gap: 20px;
+        }
+        .spread-card {
+            background: rgba(10, 12, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px; 
+            padding: 0; /* 移除 padding，让图片顶边 */
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer; /* 提示点击跳转 */
+        }
+        .spread-card:hover {
+            transform: translateY(-3px); 
+            border-color: #B8A6FF;
+            background: rgba(15, 17, 25, 0.9);
+            box-shadow: 0 5px 15px rgba(184, 166, 255, 0.2);
+        }
+
+        /* 牌阵图片区域 */
+        .spread-image-box {
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 比例留给牌阵图 */
+            position: relative;
+            background: #1a1b25;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .spread-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.7; /* 略微降低透明度，突出文本内容 */
+        }
+        .spread-card:hover .spread-image {
+            opacity: 1; /* 悬停时高亮图片 */
+        }
+
+        .spread-content-box {
+            padding: 15px 20px;
+            flex-grow: 1;
+        }
+        .spread-title {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+        .spread-meta {
+            color: #666;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .spread-desc {
+            color: #aaa;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        /* 移除 btn-draw 样式 */
+
+
+        /* --- 6. 今日运势卡片 (高级面板风，回归简洁) --- */
+        .daily-fortune-card {
+            text-align: center;
+            padding: 40px;
+            /* 回归上个版本高级感：深紫渐变，突出主题色 */
+            background: linear-gradient(135deg, rgba(30, 15, 45, 0.9), rgba(15, 10, 25, 0.9));
+            border: 2px solid #B8A6FF; 
+            border-radius: 5px; 
+            box-shadow: 0 0 20px rgba(184, 166, 255, 0.2);
+            display: block; 
+            transition: all 0.3s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .daily-fortune-card:hover {
+             border-color: #fff;
+             box-shadow: 0 0 30px rgba(184, 166, 255, 0.4);
+             transform: translateY(-2px);
+        }
+        .daily-fortune-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .daily-fortune-card p {
+            color: #ccc;
+            margin-bottom: 0; /* 移除底部间距 */
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .major-arcana-grid { grid-template-columns: repeat(3, 1fr); }
+            .spread-grid { grid-template-columns: 1fr; } /* 移动端单列 */
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗实验室</span>
+        </div>
+        <nav>
+            <a href="#major-arcana">大牌牌意</a>
+            <a href="#spreads">经典牌阵</a>
+            <a href="#daily-draw">今日运势</a>
+            <a href="index.html">返回主页</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="tarot-intro">
+            <h1>神秘学实验室</h1>
+            <p>通过星辰、符号与潜意识的连接，解读此刻的你</p>
+        </div>
+
+        <div id="major-arcana">
+            <div class="section-header">
+                <span class="section-title">大阿卡纳牌意速查</span>
+                <span class="section-subtitle">Major Arcana Reference (22 Cards)</span>
+            </div>
+            
+            <div class="major-arcana-grid">
+                <a href="card_detail_0.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot0/300/450" alt="愚者牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>0. 愚者 (The Fool)</h4>
+                        <p>开始 / 冒险</p>
+                    </div>
+                </a>
+                <a href="card_detail_1.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot1/300/450" alt="魔术师牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>I. 魔术师 (The Magician)</h4>
+                        <p>能力 / 创造</p>
+                    </div>
+                </a>
+                <a href="card_detail_2.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot2/300/450" alt="女祭司牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>II. 女祭司 (High Priestess)</h4>
+                        <p>直觉 / 秘密</p>
+                    </div>
+                </a>
+                <a href="card_detail_3.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot3/300/450" alt="皇后牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>III. 皇后 (The Empress)</h4>
+                        <p>丰饶 / 母性</p>
+                    </div>
+                </a>
+                <a href="card_detail_4.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot4/300/450" alt="皇帝牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>IV. 皇帝 (The Emperor)</h4>
+                        <p>权力 / 掌控</p>
+                    </div>
+                </a>
+                <a href="card_detail_5.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot5/300/450" alt="教皇牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>V. 教皇 (The Hierophant)</h4>
+                        <p>传统 / 教导</p>
+                    </div>
+                </a>
+                <a href="card_detail_6.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot6/300/450" alt="恋人牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>VI. 恋人 (The Lovers)</h4>
+                        <p>选择 / 和谐</p>
+                    </div>
+                </a>
+                <a href="card_detail_7.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot7/300/450" alt="战车牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>VII. 战车 (The Chariot)</h4>
+                        <p>胜利 / 自信</p>
+                    </div>
+                </a>
+                <a href="card_detail_8.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot8/300/450" alt="力量牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>VIII. 力量 (Strength)</h4>
+                        <p>勇气 / 韧性</p>
+                    </div>
+                </a>
+                <a href="card_detail_9.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot9/300/450" alt="隐士牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>IX. 隐士 (The Hermit)</h4>
+                        <p>内省 / 引导</p>
+                    </div>
+                </a>
+                <a href="card_detail_10.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot10/300/450" alt="命运之轮牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>X. 命运之轮 (Wheel of Fortune)</h4>
+                        <p>变化 / 循环</p>
+                    </div>
+                </a>
+                <a href="card_detail_11.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot11/300/450" alt="正义牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XI. 正义 (Justice)</h4>
+                        <p>公平 / 平衡</p>
+                    </div>
+                </a>
+                <a href="card_detail_12.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot12/300/450" alt="倒吊人牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XII. 倒吊人 (The Hanged Man)</h4>
+                        <p>牺牲 / 暂停</p>
+                    </div>
+                </a>
+                <a href="card_detail_13.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot13/300/450" alt="死神牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XIII. 死神 (Death)</h4>
+                        <p>结束 / 转变</p>
+                    </div>
+                </a>
+                <a href="card_detail_14.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot14/300/450" alt="节制牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XIV. 节制 (Temperance)</h4>
+                        <p>中庸 / 调和</p>
+                    </div>
+                </a>
+                <a href="card_detail_15.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot15/300/450" alt="恶魔牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XV. 恶魔 (The Devil)</h4>
+                        <p>诱惑 / 束缚</p>
+                    </div>
+                </a>
+                <a href="card_detail_16.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot16/300/450" alt="高塔牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XVI. 高塔 (The Tower)</h4>
+                        <p>毁灭 / 突变</p>
+                    </div>
+                </a>
+                <a href="card_detail_17.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot17/300/450" alt="星星牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XVII. 星星 (The Star)</h4>
+                        <p>希望 / 灵感</p>
+                    </div>
+                </a>
+                <a href="card_detail_18.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot18/300/450" alt="月亮牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XVIII. 月亮 (The Moon)</h4>
+                        <p>幻觉 / 潜意识</p>
+                    </div>
+                </a>
+                <a href="card_detail_19.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot19/300/450" alt="太阳牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XIX. 太阳 (The Sun)</h4>
+                        <p>成功 / 喜悦</p>
+                    </div>
+                </a>
+                <a href="card_detail_20.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot20/300/450" alt="审判牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XX. 审判 (Judgement)</h4>
+                        <p>复活 / 审视</p>
+                    </div>
+                </a>
+                <a href="card_detail_21.html" class="card-entry">
+                    <div class="card-image-box">
+                        <img src="https://picsum.photos/seed/tarot21/300/450" alt="世界牌面" class="card-image">
+                    </div>
+                    <div class="card-info">
+                        <h4>XXI. 世界 (The World)</h4>
+                        <p>圆满 / 完成</p>
+                    </div>
+                </a>
+                </div>
+        </div>
+
+        <div id="spreads">
+            <div class="section-header">
+                <span class="section-title">经典牌阵档案</span>
+                <span class="section-subtitle">Common Tarot Spreads & Functions (7+ options)</span>
+            </div>
+
+            <div class="spread-grid major-arcana-grid">
+                <a href="spread_draw_3card.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread1/400/225" alt="三张牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">三张牌阵</div>
+                        <div class="spread-meta">时间线 / 过去-现在-未来 | 3 Cards</div>
+                        <div class="spread-desc">最常用且灵活，可用于简单问题分析、时间序列或因果关系。</div>
+                    </div>
+                </a>
+
+                <a href="spread_draw_celtic.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread2/400/225" alt="凯尔特十字牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">凯尔特十字</div>
+                        <div class="spread-meta">全面深度分析 | 10 Cards</div>
+                        <div class="spread-desc">传统且强大，能全面解析一个复杂问题，了解环境、挑战、潜能。</div>
+                    </div>
+                </a>
+
+                <a href="spread_draw_relationship.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread3/400/225" alt="关系牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">关系分析阵</div>
+                        <div class="spread-meta">情感/合作项目 | 6 Cards</div>
+                        <div class="spread-desc">专门用于分析双方的心态、影响因素和关系最终发展走向。</div>
+                    </div>
+                </a>
+                
+                <a href="spread_draw_path.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread4/400/225" alt="路径选择牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">路径选择阵</div>
+                        <div class="spread-meta">二选一决策 | 5 Cards</div>
+                        <div class="spread-desc">帮助你在两个不同的选择（A或B）中，清晰地看到各自的优缺点和结果。</div>
+                    </div>
+                </a>
+
+                <a href="spread_draw_venus.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread5/400/225" alt="维纳斯之爱牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">维纳斯之爱</div>
+                        <div class="spread-meta">单身/感情状态 | 7 Cards</div>
+                        <div class="spread-desc">聚焦于单身或未确定的感情状态，分析自我魅力、吸引力以及潜在发展。</div>
+                    </div>
+                </a>
+                
+                <a href="spread_draw_yearly.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread6/400/225" alt="流年预测牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">流年预测阵</div>
+                        <div class="spread-meta">全年运势展望 | 13 Cards</div>
+                        <div class="spread-desc">在年初或生日时进行，预测未来12个月的每月运势和年度总结。</div>
+                    </div>
+                </a>
+                
+                <a href="spread_draw_star.html" class="spread-card">
+                    <div class="spread-image-box">
+                        <img src="https://picsum.photos/seed/spread7/400/225" alt="星星许愿牌阵图" class="spread-image">
+                    </div>
+                    <div class="spread-content-box">
+                        <div class="spread-title">星星许愿阵</div>
+                        <div class="spread-meta">目标达成分析 | 5 Cards</div>
+                        <div class="spread-desc">帮你找出实现愿望的关键障碍、隐藏资源和成功所需的下一步行动。</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div id="daily-draw">
+            <div class="section-header">
+                <span class="section-title">运势追踪面板</span>
+                <span class="section-subtitle">One-Card Daily Guidance (Focus)</span>
+            </div>
+            
+            <a href="daily_draw.html" class="daily-fortune-card">
+                <h2>🔮 启动每日焦点分析</h2>
+                <p>点击这里，抽取一张牌，解读你此刻最需要的灵感或能量指引。</p>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        const STAR_COUNT = 300; 
+        const starSpeed = 2; 
+
+        const stars = [];
+        
+        // 字体和颜色池
+        const fontFamilies = ["'ZCOOL KuaiLe'", "'Ma Shan Zheng'", "'Montserrat'", "'Noto Serif SC'"];
+        const colors = ["#FFFFFF", "#FF9EBC", "#8EC5FC", "#B8A6FF", "#80CBC4"];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Star {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial) {
+                this.x = (Math.random() - 0.5) * width * 2;
+                this.y = (Math.random() - 0.5) * height * 2;
+                this.z = initial ? Math.random() * width : width;
+                
+                this.text = "Deco"; // 确保文字是 Deco
+                
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.fontFamily = fontFamilies[Math.floor(Math.random() * fontFamilies.length)];
+                this.baseSize = 10 + Math.random() * 20; 
+            }
+
+            update() {
+                this.z -= starSpeed;
+                if (this.z <= 1) { 
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                let scale = width / this.z;
+                let sx = (this.x / this.z) * width + width / 2;
+                let sy = (this.y / this.z) * width + height / 2;
+
+                if (scale > 10) scale = 10;
+
+                let alpha = 1;
+                if (this.z > width * 0.8) alpha = 0; 
+                else if (this.z < 100) alpha = this.z / 100; 
+                else alpha = 1;
+
+                if (alpha <= 0) return;
+
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                
+                let fontSize = this.baseSize * scale * 0.05; 
+                ctx.font = fontSize + "px " + this.fontFamily;
+                
+                ctx.fillText(this.text, sx, sy);
+            }
+        }
+
+        // 初始化
+        for(let i=0; i<STAR_COUNT; i++) {
+            stars.push(new Star());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let star of stars) {
+                star.update();
+                star.draw();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate(); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X. 命运之轮 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght=500;700&family=Montserrat:wght=300;600&family=Noto+Sans+SC:wght=400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; 
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); 
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用和表格内容一致的样式** */
+        p {
+            color: #fff; /* 匹配表格内容颜色 */
+            font-size: 0.95rem; /* 匹配表格内容大小 */
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; /* 保持列表项大小一致 */
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; /* 确保表格内容颜色一致 */
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>X. 命运之轮</h1> 
+            <p>The Wheel of Fortune</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841994/jimeng-2025-12-02-1201-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E7%BB%93%E6%9E%84%E5%92%8C%E5%B8%83%E5%B1%80_%E4%BC%98%E5%8C%96%E5%91%BD%E8%BF%90%E4%B9%8B%E8%BD%AE_The_Wheel_of_Fortune_%E5%8D%A1..._fh6ati.png" alt="命运之轮牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>命运之轮是唯一一张没有人物的大牌，然而它的牌面丰富而寓意深刻。天空中挂着一架蔚蓝的命运之轮，与教皇的三层投管相似，命运之轮也由三层组成。最内层的圆中没有任何符号，代表空无，象征着万物的创造；中间的圆上有四个炼金符号，代表了西方物质构成的四要素，象征着万物的形成；最外层是物质世界的圆圈，上右下左四个方位分别是TARO四个字母，这四个字母可以组成ROTA（轮），ORAT（说），TORA（律法），ATOR（哈托尔女神），形成了一个完整的句子：“塔罗之轮诉说哈托尔女神的律法”。哈托尔女神是埃及的女神，掌管音乐、爱和美，相当于希腊神话中的维纳斯。物质世界圈中的另外四个方位的符号是希伯来字母“YHVH”，这是上帝最古老的名字。</p>
+            <p>在轮盘的左侧是埃及神话中的邪恶之神，蛇头朝下预示着人生中的沉沦；而背负着命运之轮的阿努比斯，则预示了背负命运的渴望；至于命运之轮顶部的是狮身人面像，据说是智慧的象征，其手中的宝剑则代表思考，或许实际上面对人生，思考真谛是获取顺境的方法。牌图的四角分别是狮子、飞鹰、天使和神牛，这四个动物恰恰应验了命运之轮中间那个圆上的符号，分别代表四个固定星座和四个元素，老鹰代表天蝎座，属水；狮子代表狮子座，属火；牛代表金牛座，属土；人代表水瓶座，属风。他们都在看书，汲取智慧，而翅膀赋予了他们在变动中依然保持稳定的能力。</p>
+            <p>命运之轮这张牌是大牌中少数几张不以人物为主题的牌，事实上，这张牌上根本没有人物，所以说到底这张牌与个人没有什么关系。或者更确切地说，无论当事人在这个时候经历高潮还是低谷，造成这种情况的主因都不是当事人本身。因此，当事人完全没有必要因为目前经历的事情而洋洋自得或者自我否定，但同时，当事人也无法通过任何主动行动来改变当时的情况。</p>
+            <p>作为占卜工具，塔罗牌中必然有些许宿命的成分，而命运之轮则是塔罗中少数几张展现世间“不可抗力”的牌。如果相信前世因果的人，可以将这张牌的出现视为业报的显现；至于不相信因果的人，可以将其视为上帝扔骰子刚好扔到某个数字。由于命运之轮所表现的是不可抗拒的天道轮回和自然节律，其影响时间非常长久。</p>
+            <p>重点：人事物不以个人意志为转移，既充满了偶然性，同时又拥有必然性。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>转轮</td><td>转轮象征着生命的周期性、命运和机遇的变化。</td></tr>
+                    <tr><td>法老的头像</td><td>中心的图像可能代表着权力与知识的结合。</td></tr>
+                    <tr><td>四个生物</td><td>图像的四个角落有四个生物分别代表四个福音书中的作者，象征智慧、力量、美和速度。</td></tr>
+                    <tr><td>TORA/תורה</td><td>快速旋转中的文字可以被阅读为“TORA”，可能意味着占星术或犹太人的律法。</td></tr>
+                    <tr><td>狮子</td><td>通常与圣马可基督徒象征勇气和力量。</td></tr>
+                    <tr><td>牛</td><td>代表圣践行者，象征耐心和牺牲。</td></tr>
+                    <tr><td>人</td><td>代表圣马太，象征智力与知识。</td></tr>
+                    <tr><td>鹰</td><td>代表圣约翰，象征高飞和灵视。</td></tr>
+                    <tr><td>化学符号</td><td>转轮边缘的符号象征着炼金术和元素转化的过程。</td></tr>
+                    <tr><td>同心圆</td><td>转轮中心的同心圆象征目标和精神的集中。</td></tr>
+                    <tr><td>云彩</td><td>四角的云象征超自然的力量和神秘。</td></tr>
+                    <tr><td>红色的生物</td><td>可能代表赛特，古埃及的混沌和风暴之神。</td></tr>
+                    <tr><td>蓝色的生物</td><td>可能代表安布利斯，象征智慧和知识。</td></tr>
+                    <tr><td>金色的转轮</td><td>金色通常象征高贵、繁荣和直觉的灵光。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：幸运降临与转折</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：把控时机，机会降临，转变期，意外的收获，当机立断，幸运降临，恢复原状，好运，因果报应，善恶有报，生命周期，生活周期，命运，天理，天命，天数，主宰事物的力量，命运之神，转折点，运势上升，好运，机遇，命运的转折点，幸运的改变。</p>
+            <ul>
+                <li>提示语：好运来临，事情有所改变，命运的转折，交好运，走向成功，得到喜讯，事情有所好转，得到机会，命运的轮盘开始转动，幸运之神的眷顾。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：命运的邂逅，一见钟情，碰到新的心仪对象，突然告白，婚姻幸福，顺利的爱情，爱情运势好，感情进展顺利，婚姻幸福。</p>
+            <ul>
+                <li>现况：现在感情的发展即将进入下一个阶段，应该放下不需要的顾虑和担心，与对方共同去面对接下来要发生的事情。</li>
+                <li>桃花：也许会有一见钟情的爱情，如果想要谈恋爱的话，可以每天把自己打扮的美美的，时刻准备相互遇见。</li>
+                <li>看法：这是命中注定的一段感情，不论如何都要和对方在一起，即使经历过各种的风风雨雨，仍然很珍惜两个人的感情。</li>
+                <li>复合：两个人的复合其实是意料之中的事，即使当时已经撕破脸了，仍然有很大的机会可以复合，一切冥冥之中早已注定。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：好运来临，确定前途，意外的好消息，弹性的计划，会得他人援助，改变学习方式将会有所收益，考运佳，升职有望，事业成功，职业升迁，学业进步，有利的变动。</p>
+            <ul>
+                <li>现况：目前处在非常幸运的时期，即使自己不是很努力的工作，但在工作上也很得心应手。</li>
+                <li>建议：很多事情应该顺势而为，不要和时代潮流作对。面对问题要保持镇定，只要掌握到正确的方向事情就会自然解决。</li>
+                <li>人际：你在这个工作当中的人际关系不错，也可以因此而认识很多新朋友，应该要把握这个机会，好好建立起自己的人脉。</li>
+                <li>发展：这个工作有不错的发展前景，除了乐观应对之外还是要努力工作，否则可能会错过一些升迁或调动的机会。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：临时的收入，意外之财，意外得到贵人相助，面对世事能随机应变，社交环境有利，有眼色，随机应变，非富即贵，人缘好，朋友运佳，人际关系顺利，社交活动频繁。</p>
+            <ul>
+                <li>现况：你是属于朋友很多的人，而且每换一次环境又会有新的朋友出现，久而久之就会累积很多好朋友，成为你的贵人。</li>
+                <li>建议：其实很多事情是机缘巧合，如果真的觉得两个人缘分已尽，那么就不要去强求。</li>
+                <li>财运：现在你的财运很好，也会有一些偏财，可以赚到不少钱，应该把握这个时间做好长期发展的打算。</li>
+                <li>建议：现在正是你投资可以获利的时候，如果之前没有投资，这个时候可以开始试试看，但也要注意投资变化的时机。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>摄影，绘画，受爱好影响较大，获得机会，立即行动。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>在爱情上，命运之轮的正位象征着运势的好转和积极变化。如果你单身，可能会遇到新的恋情；如果已经在一段关系中，关系可能进入下一个幸福的阶段。</td></tr>
+                    <tr><td>财富运势</td><td>财富方面，这张牌表示可能有意外的好运和机遇。你可能会遇到能够改善财务状况的机会，如意外的收益或者升职加薪。</td></tr>
+                    <tr><td>当前情况</td><td>目前你的生活可能正处于变化之中，这些变化将会带来积极的结果，是时候抓住机遇并乘风破浪。</td></tr>
+                    <tr><td>过去</td><td>过去的行动和决定可能开始显示其结果，无论是好是坏，这都是生活循环和变化的一部分。</td></tr>
+                    <tr><td>现在</td><td>现在正是转折点，命运之轮正在为你展开新的篇章，你可能会感到事业或个人生活的动态变化。</td></tr>
+                    <tr><td>未来</td><td>未来将会有更多的机遇和挑战，重要的是保持开放和适应性，以便你能够充分利用即将到来的新局面。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能是接受并适应这些变化，有时候变化可能会带来不确定性，需要你有勇气面对和适应。</td></tr>
+                    <tr><td>障碍</td><td>你自己的抗拒可能是主要障碍，害怕变化或过于拘泥于旧有的方式可能会阻碍你的进步。</td></tr>
+                    <tr><td>环境</td><td>你所处的环境可能正经历着快速的变化，这可能是由外部因素推动的，需要你迅速适应。</td></tr>
+                    <tr><td>支持</td><td>环境和周围的人会提供机遇和帮助你适应变化，可能会有意想不到的助力出现。</td></tr>
+                    <tr><td>建议</td><td>接受变化并积极参与其中，不要害怕未知，而是要看到每个转变背后的机会。</td></tr>
+                    <tr><td>优势</td><td>你的优势可能在于能够迅速适应新情况，以及抓住机遇的能力。</td></tr>
+                    <tr><td>弱点</td><td>如果你过于依赖稳定和安全感，这可能成为你的弱点，因为命运之轮的本质是不断变化的。</td></tr>
+                    <tr><td>正面影响</td><td>正面影响包括新的开始，增长的机会，以及通过变化学到的宝贵经验。</td></tr>
+                    <tr><td>负面影响</td><td>如果你不愿接受变化，负面影响可能体现在失去机会，或感到混乱和不安。</td></tr>
+                    <tr><td>希望发生的事情</td><td>你可能希望变化能够带来积极的效果，如新的关系、事业上的成功或者其他形式的进步。</td></tr>
+                    <tr><td>害怕发生的事情</td><td>你可能害怕变化会打破目前的平衡，带来不确定性和失控的感觉。</td></tr>
+                    <tr><td>你如何看对方</td><td>你可能觉得对方正在经历一段好运期，或者他们的决策和行为正在带来积极的结果。你可能觉得他们能够适应生活的变化，并从中受益。</td></tr>
+                    <tr><td>对方如何看你</td><td>对方可能认为你处于一个积极的阶段，对生活充满了乐观和积极的态度。他们可能觉得你能够适应并接受生活的起伏和变化，而且能够因此而进步。</td></tr>
+                    <tr><td>关系当前状态</td><td>当前，这段关系可能正在经历一个积极的转变或发展。可能你们正在享受一些好运，或者正在看到一些积极的改变。你们可能都在适应这些变化，并从中获得乐趣。</td></tr>
+                    <tr><td>关系未来发展</td><td>未来，这段关系可能会持续发展和进步。可能会有更多的积极变化和好运来临。你们可能会继续适应并享受这些变化，共同创造出一个更加积极、愉快的关系。</td></tr>
+                    <tr><td>结果</td><td>结果可能是巨大的转变，但最终会导致更好的结果，只要你能够勇敢地面对并利用这些变化。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：不顺与变革阻力</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：判定错误，情绪低落，运气不佳，左右为难，稍安毋躁，一时的幸福，爽约，倒霉，霉运，真倒霉，运气不好，拒绝改变，反对改变，抗拒变革的心理，抗拒改革，变革阻力，循环终止，循环断裂，运势下降，不顺，挫折，困难，不利的变化。</p>
+            <ul>
+                <li>提示语：运气不佳，事情可能发生逆转，命运的挫折，交了霉运，遇到挫折，事情发展不顺，失去机会，命运的轮盘停止转动，遭遇不幸，命运的反抗。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：缺乏要领的交往方式，不稳定的恋情，亲事告吹，短暂的恋情，激情冷却，失恋，错失良机，感情问题，爱情运势不佳，婚姻出现问题，感情破裂。</p>
+            <ul>
+                <li>现况：在感情上面对很大的变化，你觉得在当中两面不是人，也很难做出选择，这时候的决定对未来产生很大影响。</li>
+                <li>桃花：现在会出现新的感情，但是并不一定是你理想中的模样，你可以试着去接受对方，或是放弃，再等一等。</li>
+                <li>看法：这段感情走到现在是一种因缘际会，但是接下来要怎么办也没有很具体的想法，虽感觉到两人的关系正在变化。</li>
+                <li>复合：两个人的关系总是分分合合，但是即使再复合也很难就此稳定下来，应该思考清楚问题之后再做最后决定。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：竭尽全力却无功而返，效率低下，被同事或领导误解，希望落空，成绩低落，工作易出错，没有头绪，挫折，事业滞后，学业问题，职业困扰。</p>
+            <ul>
+                <li>现况：目前在工作上遇到了重大变化，这也不是你自己可以控制的事情，保持镇定，不必慌乱。</li>
+                <li>建议：面对必然发生重大变化的状况，千万不要只是在原地不动，如果能够跟上变革的脚步，也许就可以化危机为转机。</li>
+                <li>人际：这个工作中的人际关系相当重要，即使彼此不合作也会互相影响，如果得处不好的话，会被人在背后使绊子。</li>
+                <li>发展：这个工作接下来还有很大的变化，到时候也许会有很大的麻烦出现，你要先想好是接招还是遁走。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：超支，上当受骗，误解较多，人际关系不稳定，竭尽全力却往往白忙一场，与友人意见不和，情况恶化，生活困苦，人际关系紧张，社交活动减少，人缘不佳。</p>
+            <ul>
+                <li>现况：现在的人际关系情况复杂，有些朋友好像没有那么熟识，但是仍然会找你出来玩乐或是帮忙，让你有点难以应付。</li>
+                <li>建议：不要急着下判断，先找其他的朋友来商量看看，有时候需要的是集思广益，要有解决问题的耐性。</li>
+                <li>财运：你的财运正在发生结构性的变化，如果能好好把握将会为你带来巨大的收益，如果发生了错误也是不可挽回的。</li>
+                <li>建议：不要过度乐观地评估你的投资，必要时应该向专业人士求助，如果自己胡来一通，必定血本无归。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>暂时的好运，爽约，对事物感到乏味，生活单一无趣。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>在爱情方面，命运之轮逆位可能表示关系中的停滞或挫折。可能你们的关系未能如预期般发展，或出现了你们无法控制的问题。</td></tr>
+                    <tr><td>财富运势</td><td>财务上可能遇到挑战，如意外的费用或投资回报不佳。此时需要小心理财，避免过分冒险的投资。</td></tr>
+                    <tr><td>当前情况</td><td>当前可能面临一段困难时期，感觉生活的方方面面似乎都在对抗你。可能是时候停下来重新评估情况。</td></tr>
+                    <tr><td>过去</td><td>过去可能有一些决定或事件不如预期发展，导致当前的一些挑战或挫折。</td></tr>
+                    <tr><td>现在</td><td>现在你可能感觉无法控制生活中的变化，或者感到自己的努力并未带来期待的结果。</td></tr>
+                    <tr><td>未来</td><td>未来的道路可能仍然充满挑战，需要有意识地进行调整才能改善状况，保持耐心和韧性至关重要。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能来自于接受现状的不满意以及找到改变目前困境的方式。逆境可能检验你的决心和适应力。</td></tr>
+                    <tr><td>障碍</td><td>内在的恐惧或抵抗可能是主要障碍，难以接受变化或放弃控制可能会使状况更加困难。</td></tr>
+                    <tr><td>环境</td><td>你的环境可能缺乏支持或正处于混乱中，这可能使得适应和前进更加困难。</td></tr>
+                    <tr><td>支持</td><td>需要寻找可以依靠的人或资源，这可能需要主动寻求帮助或建立新的联系。</td></tr>
+                    <tr><td>建议</td><td>试图放手和接受生活的不完美。寻找在困难中成长和学习的机会，保持耐心和不放弃的态度。</td></tr>
+                    <tr><td>优势</td><td>你的优势可能在于能够在逆境中培养出的韧性和耐力，这将帮助你克服困难。</td></tr>
+                    <tr><td>弱点</td><td>抵抗改变可能是弱点，它可能让你难以看到前进的道路，或是错失转机。</td></tr>
+                    <tr><td>正面影响</td><td>正面的一面可能包括从困难中学习和成长的机会，以及建立更加坚固的内在力量。</td></tr>
+                    <tr><td>负面影响</td><td>负面影响可能包括持续的挫折感，感觉被命运控制，以及可能的损失或失望。</td></tr>
+                    <tr><td>希望发生的事情</td><td>你可能希望能找到重回正轨的途径，渴望生活中的秩序和稳定性。</td></tr>
+                    <tr><td>害怕发生的事情</td><td>你可能害怕事情会进一步恶化，或者无法摆脱当前的不利局面。</td></tr>
+                    <tr><td>你如何看对方</td><td>当命运之轮逆位出现，你可能觉得对方正经历一段不顺利的时期，抑或是他们的行为和决策导致了一些不利的结果。你可能觉得他们无法掌控自己的命运，或者对他们目前的处境感到同情。</td></tr>
+                    <tr><td>对方如何看你</td><td>对方可能认为你正经历一些挫折或困难，或者你的生活目前处于混乱之中。他们可能觉得你无法适应变化，或是觉得你对自己的处境感到困惑或挫败。</td></tr>
+                    <tr><td>关系当前状态</td><td>目前，这段关系可能在经历一些困难。可能存在一些不可预见的挑战或变化，让你们感到不确定或不安。可能你们中的一人或两人都在试图找到平衡或稳定。</td></tr>
+                    <tr><td>关系未来发展</td><td>未来，这段关系可能会继续经历一些起伏和变化。可能会有更多的挑战和困难出现，但同时也可能带来新的机遇。重要的是要学会接受和适应这些变化，而不是抗拒或害怕它们。</td></tr>
+                    <tr><td>结果</td><td>结果可能是持续的艰难时期，但也可能是一个学习适应和重建的机会。关键在于如何应对挑战。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端150个，桌面端350个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 0.6 + 0.2 + 'rem';
+              
+              // 5. 随机动画：时长（3~8s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+                const delay = Math.random() * 10 + 's';
+
+                star.style.left = x + '%';
+                star.style.top = y + '%';
+                star.style.fontSize = size;
+                star.style.animation = `warpSpeed ${duration} linear infinite`;
+                star.style.animationDelay = `-${delay}`;
+
+                space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>
