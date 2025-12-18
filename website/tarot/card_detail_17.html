@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XVII. 星星 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>XVII. 星星</h1> 
+            <p>The Star</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841994/jimeng-2025-12-02-6913-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E6%98%9F%E6%98%9F%E7%89%8CThe_Star_XVII_%E7%94%BB%E9%9D%A2%E9%87%87%E7%94%A8%E7%9B%B8%E5%90%8C%E7%9A%84..._lfcsjg.png" alt="星星牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>在夜空中烁烁生辉的一大七小八颗星星中，最大的一颗据说是天狼星，它给寻求帮助的人带来希望和信心。在这闪烁的星空下，一个全裸的女人跪在池边，左腿单膝着地，右脚踏入水中，正在将两壶生命之水倾倒在池中和岸上。女人倒出的水源自节制中的圣杯，蕴含着地球上所有的生命，象征着生命力，而不仅仅是在两个杯子中传递。在池边不远的枝头，栖息着一只不死鸟，预示着生命的不朽。大地代表意识，水代表无意识，不死鸟则是精神的升华，而裸女则寓意真实的自我。可以说，星星牌是一张充满希望的牌，预示着寓言的实现和灵感与精神的互动，它告诫人们不应放弃希望，只有自信，自尊，自强才能有所成就。</p>
+            <p>星星牌的关键词是“希望”，但它的希望和乐观通常并非现实。虽然星星牌充满美好，但其出现时并不多指向现实情况。星星牌更多与当事人的心理状态有关，它意味着当事人处在充满希望，相信事情会有积极结果的状态。</p>
+            <p>然而，无论是哪一种希望和乐观，虚幻的东西总是无法持久。如果之前没有充足的实际准备，当事人很快就会体会到“现实是残酷的”。因此，通过牌阵中的其他牌来考量当事人在现实中的真实情况就显得尤为重要。如果星星牌出现的同时又出现宝剑，圣杯一类飘飘然的牌的话，现在的快乐很可能就是空中楼阁；相比之下，如果有钱币和权杖牌，虽然比较安全，但事情也未必会如当事人所想的那么美好。</p>
+            <p>当然，论断要根据实际情况考虑。如果求问之物本身不需要物质，现实支持就另当别论。天真无知的孩子不会老谋深算，陷害他人，长期经历痛苦的人对他人的痛苦也会有同理心。当星星牌出现时，当事人在当时都算是善良可人的人。正因为没有世俗的束缚，才能够天马行空地想象，星星牌对于与创意相关的职业颇有助益。另外只要不需要经济基础，最终目的不是物质的事情，星星牌大多都还是会有好的论断，比如背包旅行，灵修——只要当事人所追求的本身就是感觉，直觉之类的话，情况都还会不错。</p>
+            <p>重点：表示人事物发展的阶段处在初期。正逆位的区别在于是否能度过初期。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 XVII</td><td>象征希望、灵感、平静与恢复。</td></tr>
+                    <tr><td>星星</td><td>星星通常象征着希望、灵感和人类的精神追求。最大一颗为天狼星，带来信心。</td></tr>
+                    <tr><td>半裸女性</td><td>女性的裸露象征着脆弱性，可能还表示纯洁和真实的自我。</td></tr>
+                    <tr><td>倾倒的水（两壶）</td><td>水是情感和直觉的传统象征，倾倒表示生命力的流动和奉献。</td></tr>
+                    <tr><td>一脚在水/一脚在土地</td><td>象征着直面与情感世界的联系和接受，同时稳固与现实世界的连接。</td></tr>
+                    <tr><td>八星（一大七小）</td><td>七颗小星和一颗大星代表丰富和宇宙能量，数目7与8的组合表示物质世界与精神世界的完整和平衡。</td></tr>
+                    <tr><td>不死鸟（枝头）</td><td>预示着生命的不朽和精神的升华。</td></tr>
+                    <tr><td>水滋润的土地</td><td>象征着希望、恢复和治愈。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：希望、灵感与愿望实现</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：愿望得以实现，充满创造力，萌发灵感，理想主义者，前途光明，希望，期望，信任，信心，意图，目的，恢复，更新，重新开始，改进，复兴，振兴，灵性，明亮，宁静，愈合，鼓舞，灵性。</p>
+            <ul>
+                <li>提示语：希望的光芒，乐观的心态，高尚的情操，宇宙的引导，真实的自我，无私的奉献，心灵的慰藉，自我治愈，宏观的视野，内在的和谐。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：碰到理想的恋人，从友人转为恋人，迸发爱的火花，理想化的爱，热情的恋情，希望的恋情，坦白的心，理想的爱情，深深的相爱，信任与理解，心灵的连接。</p>
+            <ul>
+                <li>现况：感情进入恋爱初的阶段，也开始计划长远的未来，像情人也像朋友。</li>
+                <li>桃花：会出现新的恋情，但能不能把握就要看你自己有没有主动，如果无论怎么样自己都被动，那是没什么机会的。</li>
+                <li>看法：这段关系让你们充满对未来的期待，两个人对未来都有很多计划，也会希望和对方一起去实现。</li>
+                <li>复合：如果之前是和平分手的，复合到是很容易。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：有独特的创造性，前途光明，能达到极高的目标，事业蒸蒸日上，学业前景乐观，对课业布满好奇心，因独特的读书方式受益，水平提高，有望的事业，理想的学业，灵感的源泉，清晰的目标。</p>
+            <ul>
+                <li>现况：现在工作上有一个明确的目标，应该紧抓与目标有关的机会，不要让其他事情分散了心力。</li>
+                <li>建议：你应该尽量发挥你的创意，以发散的思维，天马行空的想法去解决工作上的问题。</li>
+                <li>关系：工作当中的同事都很好相处，即使没有业务往来还是可以互相帮忙，只要你愿意付出，能成为很好的朋友。</li>
+                <li>发展：这个工作未来有不错的发展，设定个目标，不要分散自己精力，少走冤枉路。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：新的财源，凭直觉或可获自得外的收入，与爱好相交的朋友愉快交往，相辅相成的情谊，碰到理想的朋友，友好，理想的友情，信任，互相鼓励。</p>
+            <ul>
+                <li>人际：你的朋友很多，彼此之间也能够互相帮助，不过有时候因为你的付出太过，没有保留，反而被朋友所拖累。</li>
+                <li>建议：量力而行，尽力而为。</li>
+                <li>财运：运势很好，自给有余还可以帮助他人。</li>
+                <li>建议：比较适合做长期投资，不要想在短期获利。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>适合前往生态环境良好的地区，对文化古迹略感爱好，偏爱艺术，获取专利。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>预示着希望和愿望的实现，可能指示新的爱情机遇，或者关系中的和解和新的开始。</td></tr>
+                    <tr><td>财富运势</td><td>代表好运和财富的增长。可能预示着新的财务机遇或者投资的成功。</td></tr>
+                    <tr><td>当前情况</td><td>当前情况可能充满积极的能量和乐观的气息。你可能正处于一个新的，有希望的开始。</td></tr>
+                    <tr><td>现在</td><td>当下是一个灵感涌动的时期，充满创造力和积极前行的能量。信任自己的直觉。</td></tr>
+                    <tr><td>未来</td><td>预示着一个前景光明的未来，其中包含实现梦想和目标的强烈可能性。</td></tr>
+                    <tr><td>挑战</td><td>挑战是保持乐观和希望，即使在面临困难时也不失信心，保持对美好未来的信念。</td></tr>
+                    <tr><td>建议</td><td>建议保持积极的态度，继续朝着你的目标前进。相信直觉，利用当前的有利条件实现你的梦想。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：幻想幻灭、缺乏信心与迷失方向</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：缺乏想象力，幻想幻灭，好高骛远，错失良机，固执己见，理想与现实没有办法兼顾，缺乏信心，信任不足，绝望，失去希望，切断，舍弃，绝望，困惑，不安，失落，挫败感，迷失方向。</p>
+            <ul>
+                <li>提示语：失去希望，内心的迷茫，挫败的感觉，自我怀疑，过度的自我牺牲，逃避现实，心灵的疲惫，偏离目标，缺乏方向，内心的冲突。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：与对方没有办法心灵相通，面对恋情期望过高，虽有进展却由于身心疲惫终决放弃，没有办法对对方产生爱意，期望落空，以貌取人，两人出现难以解决的隔阂，秘密的恋情，不切实际的恋情，过度理想化，失望的爱情，缺乏信任。</p>
+            <ul>
+                <li>现况：两个人对于感情还是过于理想化了，彼此之间的认识也并不深刻，应该更务实一点。</li>
+                <li>桃花：现在有新恋情的出现，但是常常是看的到去吃不到，不努力去追求就会落空。</li>
+                <li>看法：这段感情刚建立没有多久，有些让人失望。</li>
+                <li>复合：不会复合了，只要你务实的看未来，就会发现两人之间没有未来。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：固然创意无穷到头来却一无所获，消息来源有误，得不到同事和上司的信任，考试受挫，期望过高，理想不切现实，需要改进学习方法，仓皇失措，事与愿违，工作不顺心，不实际的理想，迷失目标，缺乏动力，工作或学业上的困扰。</p>
+            <ul>
+                <li>现况：工作上遇到不知所谓的状况，应该要谋定而后动，搞清楚上面想法是什么，不要任意解读随自己的理解乱搞。</li>
+                <li>建议：这时候要放开心胸，努力吸收大家的看法，相互比较选择最好的办法。</li>
+                <li>关系：在这个工作当中，同事之间的帮助很重要，即使你的能力再强，若是缺少了同事的支持，也不会完成任务。</li>
+                <li>发展：这个工作未来发展还不错，也有一些未知的变化存在，对未来要有一个基本的预判。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：破财，没有办法得到预期的收益，自我意识过高，苛求他人，对朋友感到失望，无意义的攀谈，疏远，互不理解，缺乏信任，关系紧张。</p>
+            <ul>
+                <li>现况：你与朋友之间的关系还不错，是一种互利互惠的关系，不过若你停止付出，他们也会停止对你的援助。</li>
+                <li>建议：开源节流，免得自己因财务问题让人际关系变的很尴尬。</li>
+                <li>财运：务实一点，不要搞那些虚无飘渺的玩意。否则亏一大笔钱财。</li>
+                <li>建议：不要对未来太过于乐观，长期投资还是落袋为安比较好。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>适合相对清静的户外场所。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>表示感情的停滞或失望，可能意味着关系中缺乏希望或者遭遇了感情上的挫折。</td></tr>
+                    <tr><td>财富运势</td><td>暗示财务困难或者投资失败。可能需要重新评估财务计划或寻找新的收入来源。</td></tr>
+                    <tr><td>当前情况</td><td>星星逆位表示一种失去方向的感觉，可能正经历失望或不确定。你可能觉得自己的努力没有得到宇宙的回应。</td></tr>
+                    <tr><td>现在</td><td>当前可能感到灵感受阻，创造力和积极性降低。可能正处于一段时间内部自我怀疑和缺乏信心的时期。</td></tr>
+                    <tr><td>未来</td><td>星星逆位在未来位置通常是一个提醒，指向潜在的失望或未实现的梦想，需要重新调整期望。</td></tr>
+                    <tr><td>挑战</td><td>挑战在于重新找回信念和希望，在困难和挫折中维持积极态度。</td></tr>
+                    <tr><td>建议</td><td>建议是要重新找到内在的光芒，不要放弃希望。可能需要从新的角度看待问题，调整目标和方法。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 模板标题：已修改为女皇 -->
+    <title>III. 女皇 | Deco 塔罗档案</title> 
+    <!-- 字体和图标库与主站保持一致 -->
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Deco 星际背景 (CSS/JS 动态生成) -->
+    <div id="decoSpace" class="deco-space"></div>
+
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <!-- 主内容 -->
+    <div class="wrapper">
+        
+        <!-- 卡牌标题：已修改 -->
+        <div class="card-header">
+            <h1>III. 女皇</h1> 
+            <p>The Empress</p>
+        </div>
+
+        <!-- 顶部卡牌图片：已修改 -->
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842003/%E8%AF%B7%E6%88%91%E5%B8%AE%E5%81%9A_PPT_mbcmc2.png" alt="女皇牌面" class="card-image-full">
+
+        <!-- 详细解读内容：已替换为女皇牌意 -->
+        <div class="card-content">
+
+            <!-- 整体象征与描述 -->
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>女皇是大阿卡纳的第四张牌，编号为“III”，代表**丰饶、母性、创造力、享受**和**物质富足**。如果说女祭司象征着内在的智慧，那么女皇则代表了**外在的热情、高贵和生命力**。</p>
+            <p>女皇端坐于舒适的红色靠椅上，她的衣饰雍容华贵，表明了她的富贵与权威。她头戴**十二颗星辰的皇冠**，象征宇宙的十二星座和精神的高度。她右手高举权杖，这柄权杖是天地间掌管生命的法器，象征着**生命力与能量**。</p>
+            <p>她的红色座椅下有一个**心形标记**，上面刻着**金星（维纳斯）**的符号 ，这是天秤座和金牛座的守护神标志，代表通过爱，使心灵与物质世界交流。长裙上缀满**石榴图案**，象征生育和丰饶。她身后的**森林、流水和金黄的谷物**，代表了大地的复苏、生机盎然和丰收的物质景象。</p>
+            <p>女皇是**母爱天性**的象征，她代表经由感官通往心灵的一条途径。她是务实的，充满激情而非空想，强调身体、情感和感觉上的分享。她鼓励人们拥抱生活中的喜悦、创造和滋养，享受大自然的美好和丰盛的物质回报。</p>
+            <p>重点：丰饶、母性、创造力、物质享受、优雅、热情、生命力、维纳斯。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 III</td><td>创造力、生长、丰饶、表达、成果。</td></tr>
+                    <tr><td>冠上的十二颗星</td><td>宇宙十二星座，象征智慧和精神高度。</td></tr>
+                    <tr><td>手持权杖</td><td>权力和统治的象征，代表生命力和能量。</td></tr>
+                    <tr><td>心形金星符号</td><td>金星/维纳斯的标志，象征爱、情感和物质世界的交流。</td></tr>
+                    <tr><td>丰收的麦子</td><td>土地的丰饶和丰收，生活中的丰盛和物质回报。</td></tr>
+                    <tr><td>石榴图案</td><td>白袍上的石榴，象征生育和女性的生命力。</td></tr>
+                    <tr><td>水流与森林</td><td>情感（水）和自然界（森林）的流动与生长，生命的循环。</td></tr>
+                </tbody>
+            </table>
+
+
+            <!-- 正位牌意 -->
+            <h2>✨ 正位牌意：丰饶、创造与母性光辉</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：优雅，富贵，女性特质，美人，自然界，养育，培养，滋长，量产，丰盛，母性，创造力，丰饶，和谐，享受生活，温暖舒适。</p>
+            <ul>
+                <li>提示语：代表母性、丰饶与创造力，鼓励你享受生活，照顾和呵护周围的人事物，拥抱女性力量。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：谈婚论嫁，异性缘旺盛，有魅力，充实的爱，有结果的恋情，怀孕，浪漫，慈爱，关怀，感性，幸福的婚姻，丰富的感情生活，透过欢乐来贴近人生。</p>
+            <ul>
+                <li>现况：这是一段重视享乐且和谐的关系，双方都十分享受生活，关系和谐且充满快乐。</li>
+                <li>桃花：很可能会发生新恋情，且对象可能不只一个。若主动出击一定会成功。</li>
+                <li>看法：这是一段有建设性的感情，现在已很美满，未来甜蜜无可限量，值得期待。</li>
+                <li>复合：这段感情情分还在，若你主动提出复合，成功可能性很高。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：成绩优秀，工作体面，生活优雅，公众人物，创造性的工作，成功的职业生涯，事业上的母性关怀，项目的成熟，学业上的成绩，丰收的阶段。</p>
+            <ul>
+                <li>现况：工作正要进入丰收的阶段，之前的努力开始看到回报，继续努力可达成目标。</li>
+                <li>建议：做事要有周详的计划，在适当时机主动积极处理问题，对计划外的事要小心。</li>
+                <li>人际：工作中的人际关系很好，对工作有极大帮助，继续维持即可。</li>
+                <li>发展：这个工作有很不错的发展空间，一步一个脚印完成事情，等待机会到来。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：性格开朗，有意外之财，感情丰富，财运佳，和谐的人际关系，亲切，照顾他人，母亲般的关怀，建立持久的友情，心胸开阔。</p>
+            <ul>
+                <li>现况：你处于人际关系的高峰，受到欢迎，能达到通过人际所实现的目的。财务状况比较宽裕。</li>
+                <li>建议：解决问题并不困难，关键在于你是否主动去了解问题的原因。事情仍在掌握之中。</li>
+                <li>财运：现在的财务比较宽裕，但花费也会多一些，平衡好可过得更好。</li>
+                <li>建议：现在正是可以获得的时间点，可以投入新的投资，相信自己的判断，未来会有更多收获。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>喜爱逛街购物，喜爱远足派对等集体活动。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>象征着丰富的情感、滋养以及关怀，关系正不断成长，充满爱意和支持。</td></tr>
+                    <tr><td>财富运势</td><td>代表财务方面的稳定增长，可能是通过创造性的努力获得的收益。</td></tr>
+                    <tr><td>当前情况</td><td>一段充满生命力和创造力的时期，可能涉及到艺术、自然或家庭的和谐。</td></tr>
+                    <tr><td>未来</td><td>未来可能会带来新的生命力，也许是新的关系、项目或想法的顺利发展。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能是保持现有的丰富状态并在生活的各个方面保持平衡。</td></tr>
+                    <tr><td>优势</td><td>优势是在创造和维持和谐关系方面的能力，以及在物质和情感上的富足。</td></tr>
+                    <tr><td>弱点</td><td>弱点可能是过于舒适或自满，忽视了成长的必要性和外部挑战。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <!-- 逆位牌意 -->
+            <h2>⚡ 逆位牌意：依赖、贫瘠与失去平衡</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：困惑，轻浮，损失，缺乏上进心，爱慕虚荣，无灵感，依靠，依赖，过度保护，自私，被宠坏，失去创造力，不育，贫瘠，性关系混乱。</p>
+            <ul>
+                <li>提示语：代表依赖性，过度的享乐，滥用权力，缺乏自控力，冲动行为，自我中心，失去平衡。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：优柔寡断，没有结果的恋情，任性，迷惑，内心动摇，傲慢，不良的男女关系，不孕，流产，冷淡，忽视伴侣的感受，婚姻中的不忠，感情生活的困扰。</p>
+            <ul>
+                <li>现况：目前处于热恋期，容易因为爱而盲目，忽略客观限制与他人意见。</li>
+                <li>桃花：现在一定有新恋情的机会，但不宜主动出击，耐心等待，接受别人的追求。</li>
+                <li>看法：这段感情让人沉迷，你愿意付出一切，即使所有人反对也会坚持到底。</li>
+                <li>复合：复合的可能性很高，但不要操之过急，如果是对方主动提出复合，你只需接受提议。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：懒惰，浪费时间，不思进取，平庸，计划搁置，工作中的困惑，事业上的困境，学业上的困难，缺乏创新，怠惰使工作停滞。</p>
+            <ul>
+                <li>现况：工作开始有成果，但本身缺乏冲劲，因怠惰使工作陷入停滞状态。</li>
+                <li>建议：工作的困境关键在人际关系中，找到能解决问题的关键人物。</li>
+                <li>人际：工作中的人际关系不错，但不要太依赖，小心陷入派系争斗。</li>
+                <li>发展：未来发展不明确，但对你来说是学习充实自己的跳板。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：爱慕虚荣，浪费成为习惯，疲倦，自负，傲慢，任性，人际关系紧张，冷淡，自私，无法建立深厚的友情，被别人利用，即将出现大笔花费。</p>
+            <ul>
+                <li>现况：人际关系不错，但因为太过讨好他人，有点失去自我。财务状况不错，但即将出现大笔花费。</li>
+                <li>建议：没有太大的问题，但误会要靠朋友帮忙，直接沟通效果不好。</li>
+                <li>财运：财务状况不错，但即将出现大笔花费，现在不多存钱会措手不及。</li>
+                <li>建议：现在是投资该结束的时候，有赚要获利了结，赔钱也要认赔，避免卡住大笔资金。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>处事犹豫未定，爱好颇多无疑从重，谈吐轻浮，金玉其外败絮其中。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>关系中缺乏滋养和关怀，感情不再成长，需要重新激发爱的火花。</td></tr>
+                    <tr><td>财富运势</td><td>物质上的不稳定或缺乏生产力，建议重新审视财务管理方式。</td></tr>
+                    <tr><td>当前情况</td><td>感到不育或缺乏创造力，可能在事业或个人生活中感到停滞。</td></tr>
+                    <tr><td>未来</td><td>如果持续当前的状况，未来可能会变得更加贫瘠，关系和事业可能会遇到挑战。</td></tr>
+                    <tr><td>挑战</td><td>挑战是找回那种滋养自己和他人的方式，以及如何发挥内在的创造力。</td></tr>
+                    <tr><td>建议</td><td>建议是重新连接自然和你内在的女性能量，找回滋养自己和他人的方法。</td></tr>
+                    <tr><td>优势</td><td>即使逆位，也仍然有机会从生活中的困境中找到教训并重新建立生产力。</td></tr>
+                    <tr><td>弱点</td><td>弱点可能是在情感或物质层面上感到不满足，可能忽略了自我的照顾。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <!-- 脚本：Deco 星际背景核心逻辑 (使用用户提供的代码) -->
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

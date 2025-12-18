@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIV. 节制 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>XIV. 节制</h1> 
+            <p>Temperance</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841995/jimeng-2025-12-02-6995-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E8%8A%82%E5%88%B6_Temperance_XIV_%E5%8D%A1%E7%89%8C_%E7%94%BB%E9%9D%A2%E4%B8%AD..._i1ziz5.png" alt="节制牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>一位天使正在将水从一个圣杯倒向另一个，这水代表了灵魂与生命。有人认为，右手圣杯中的水象征意识，左手中的则代表无意识，也有人认为它们分别象征物质与精神。然而无论如何，我们都可以在牌图中看到一种交互，无论水从何处来，到何处去，它都在流动，这个过程不正是调和与净化的体现吗？天使一只脚踏在水中，一只脚站在岸上。在西方文化中，水象征内心的精神世界，土地则代表外界的物质世界，因此，天使的这种站立姿态正预示了我们在精神和物质两个世界之间的徘徊，以及我们以实际行动节制欲望，净化心灵的过程。</p>
+            <p>天使展翅飞翔，象征了她获得了平衡的能力。头上金色的光环代表智慧，与远方山顶上闪耀的太阳相映成辉。身边的水和花草象征了诱惑。节制牌所体现的是舍得和自我克制。在这个充满诱惑和自由放任的世界里，找到自我平衡的重要性不言而喻。这种状态虽看似平淡，却是飓风中的宁静，是一种令人鼓舞的团结力量。这样的人散发出的是一种沉稳的力量，在平静和从容中，悄然获得了成功。</p>
+            <p>“节制”这张牌的名字本身就是关键词，按理说应该容易理解。但问题在于，“节制”这个词汇过于宏观，往往很难与具体情况对应，因此也带来了许多困扰。对于这张牌，捕捉感觉才是关键。想象一下，你手中拿着一个乳白色的，两个手掌大小的，有一定软硬度的橡胶块，它会有怎样的触感，如果它掉在地上会怎样，放在那儿看起来又会如何？节制给人的感觉就如同此。</p>
+            <p>塔罗牌中的“节制”概念与我们的“中庸”相似，都强调适度。做人要有度，不过量，也不过少；一碗水端平，不偏左，也不偏右。自己和他人都要考虑到，外在和内在都要平衡。但是，节制的平衡和正义的平衡有所不同。正义的平衡更注重逻辑和实物，而节制的平衡更注重心灵感觉。处世得体，懂得做人之道，不以强硬压迫，而是以德服人，这就是节制的境界。</p>
+            <p>节制强调内外统一，不仅是言行一致，更是心中所想和实际行动的统一，甚至包括灵性与世俗的一致。如果你渴望成为一名音乐家，却因为金钱而选择成为财务分析师，那就不符合节制的原则了。抽到节制牌，你应该首先问自己：我内心真正想要的是什么？然后，按照自己的本心行事。节制牌的出现也提醒你，不要被世俗框架束缚，只要灵活应对，即使是看似不切实际的愿望，也有可能以某种方式实现。例如，如果你热爱音乐，但已经过了学习乐器的年纪且身处商界，那么你可以选择转行做乐器销售或唱片公司的工作，或者成为音乐经纪人，这样你对音乐的热爱就可以得到释放和实现，你的身体和灵魂都将得到滋养。</p>
+            <p>另外，节制也代表结合，但这种结合不是世俗的结合，而是灵性的结合，是炼金术中的红国王和白皇后的结合，它象征着对立元素完美结合产生的哲人石的过程。在节制牌下结合的两个人，必然是因为灵魂相互吸引，与纯粹的恋爱关系有很大区别，这段在世俗看来很可能平淡无奇的关系，却能给两颗心带来灵魂的慰藉。</p>
+            <p>然而，我们也必须承认，节制牌与心灵有着紧密的联系，它主要倾向于灵性和灵修的领域。因此，如果在处理世俗事务时抽到节制牌，可能无法在短期内看到显著的改观。在这个阶段，最重要的是确定自己的方向，确保你所做的是你真正想做的事情。就这么简单。</p>
+            <p>重点：天之道，其犹张弓欤？高者抑之，下者举之；有馀者损之，不足者补之。天之道，损有馀而补不足。正位表示在人事物中程度把握的洽到好处，逆位表示在人事物中做的过头或着做的不够。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 XIV</td><td>象征平衡、调和、耐心与适度。</td></tr>
+                    <tr><td>天使</td><td>代表平衡的能力，灵魂的觉醒和净化。</td></tr>
+                    <tr><td>流水</td><td>从一个杯子倒向另一个杯子的水象征着稳定的情感和自我控制。</td></tr>
+                    <tr><td>两个杯子</td><td>指代平衡与转换，需要在不同的事物、想法之间调和与转换。</td></tr>
+                    <tr><td>一脚在水中，一脚在地上</td><td>象征着受控的情感（水）与实际行动（地）之间的平衡。</td></tr>
+                    <tr><td>远处的太阳</td><td>背景中的太阳可能代表活力、生命力和清晰的认识。</td></tr>
+                    <tr><td>红色翅膀</td><td>红色翅膀通常代表激情和行动力，可能指向积极启动改变。</td></tr>
+                    <tr><td>三角形围巾</td><td>脖子上的围巾上有一个三角形，是稳定和精神觉醒的象征。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：平衡、调和与耐心</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：平衡，调和，耐心，适度，内在平静，进展顺利，净化心灵，勤于节俭，相互协助，保持平衡，立稳，相抵，抵消，同等重视，适中，合理，耐心，忍耐，毅力，坚忍，恒心，意图，目的，用途，目标，情势的需要，重要意义，有价值的意义，有意，打算，企图，决意，和谐，节制，健康，治疗，调整，洞察，和解。</p>
+            <ul>
+                <li>提示语：中庸之道，身心灵的和谐，生活的调整，适应新环境，自我控制，为他人排解争端，整理思路与情绪，关注自我需求的同时兼顾他人意愿，反复调研找寻关键所在。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：爱情弥坚，心有灵犀一点通，纯挚的恋情，有节制的交往，意外的邂逅，有情谊展开的爱恋，可以商谈的对象，好感转化成爱意，和谐的恋情，互相理解，平衡的关系，互相照顾，中庸之道。</p>
+            <ul>
+                <li>现况：两人之间的关系已经很亲密了，到了继续下一步的时候了。</li>
+                <li>桃花：有新恋情的出现，刚开始看不上，后来发现各个方面都很不错，想试着交往看看。</li>
+                <li>看法：很般配。</li>
+                <li>复合：还是挺容易复合的，双方都妥协一些就可以了。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：直觉敏锐，进展顺利，反复温习使成绩明显进步，稳定的工作状态，重新修订商品价格，出众的记忆力，团队协作，工作生活平衡，事业稳步发展，学业进步顺利，适应环境。</p>
+            <ul>
+                <li>现况：目前稳定，消耗与收益达到了最佳的状态。</li>
+                <li>建议：要把握合适的度，不要走极端。</li>
+                <li>关系：在工作中不要跟某些人走的很近，也不要疏离某些人，一碗水端平，高了压下去，低了抬起来。</li>
+                <li>发展：这个工作发展还不错，不会有爆炸式的增长，与长期目标预期相符。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：在活动的资金中获得收益，能够与三教九流相处，在交际场上得获收益，与朋友结交绝不造作，对朋友关怀有加体贴入微，友好的沟通，互相理解，找到共同点，和谐的人际关系，互相帮助。</p>
+            <ul>
+                <li>现况：人际关系都很好啊，属于大家都喜欢的那种人，不过因为一般的朋友太多，使你没时间与知心好友相处。</li>
+                <li>建议：适度沟通，适度妥协，好处不能都占了。</li>
+                <li>财运：收支平衡，长远发展有良好的基础。</li>
+                <li>建议：应该要分散投资，各个方面都做一些，不能把鸡蛋都放在一个篮子里。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>游泳，前往有水的地方旅游，于体验中修身养性。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>在爱情方面，节制牌象征着平衡和和谐的关系。你们可能在寻找共同点，努力维持情感的稳定性和流动性。</td></tr>
+                    <tr><td>财富运势</td><td>财务上，节制代表着理智的金钱管理和消费。投资和支出都需要适度，避免极端波动。</td></tr>
+                    <tr><td>当前情况</td><td>当前的情况指向平衡和稳健的发展。生活中的各个方面都在求同存异，追求协调一致。</td></tr>
+                    <tr><td>现在</td><td>你可能正在体验稳定和谐的阶段，或者是在学习如何融合不同的元素以达到平衡。</td></tr>
+                    <tr><td>未来</td><td>未来将带来更多的自我控制和内在平衡。你可能会发现自己更加成熟，能够更好地处理复杂情况。</td></tr>
+                    <tr><td>挑战</td><td>当前是如何在对立的力量之间找到中间点，避免走向极端，保持内心的平和。</td></tr>
+                    <tr><td>建议</td><td>建议是继续保持耐心和冷静，不要急于求成，相信通过平和的态度和行动可以达到最佳结果。</td></tr>
+                    <tr><td>优势</td><td>你的优势在于能够掌握自我控制，以及在生活各方面追求和维持平衡的能力。</td></tr>
+                    <tr><td>弱点</td><td>弱点可能是过度寻求平衡而避免必要的决断，或者害怕破坏现状。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：失衡、过度与冲突</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：缺乏自我调节的能力，开销过大，忘记初衷，精力消耗殆尽，毫无节制，烦闷的说教，失衡，不平衡，心态失衡，不均衡，失调，超过，过度，过分，过多的量，超过的量，超额，额外，附加，自我修复，自愈，自疗，自我愈合，校验，调整，过度，失衡，冲动，不健康，矛盾，冲突。</p>
+            <ul>
+                <li>提示语：失衡，过度，无耐心，无节制，内在的混乱，极端行为，生活的失调，无法适应新环境，失去自我控制，缺乏平和。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：面对感情三心二意，双方都不善于控制情绪，没有办法调整恋情中彼此的位置，发生摩擦没有办法主动谈和，彼此没有默契，让彼此身心疲惫的恋情，情感不平衡，冷战，互相误解，关系紧张，缺乏理解。</p>
+            <ul>
+                <li>现况：感情上暂时无法进行有效的沟通，很多事儿上无法了深入了解对方的想法。</li>
+                <li>桃花：好好反省反省自己吧，想要的感情在现实中是否真的存在。</li>
+                <li>看法：在感情中双方都无法掌握自己的情感，随意发泄心中的不满，没有办法回归理性。</li>
+                <li>复合：没有什么办法复合了，离开吧，让自己休息休息。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：面对繁琐的工作过于情绪化，事业走入低谷，要约被单方取消，精神松懈，项目进展不顺利，成绩下滑，工作压力，事业停滞，学业困难，无法适应环境，团队冲突。</p>
+            <ul>
+                <li>现况：有点像风箱里的老鼠两头受气，无论自己怎么做都会带来新的问题。</li>
+                <li>建议：把自己的部分完成好，不要去管那么多，自己不乱，就没什么大问题。</li>
+                <li>关系：在工作中的人际关系还是比较复杂的，端正自己，做事滴水不漏，无有什么人能挑出你的毛病。</li>
+                <li>发展：这个工作未来发展一般，没什么大的变化了，已经进入内斗阶段。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：奢侈浪费，与他人发生财务纠纷，因没有办法控制自己的情绪而得罪别人，应酬颇多以致身心疲惫，与朋友关系不和睦，人际关系紧张，冲突，误解，难以沟通，疏远。</p>
+            <ul>
+                <li>现况：觉得无法与他人合作，你与别人都保持着一定的距离。</li>
+                <li>建议：放下自己心中的成见与标签，反思一下是不是自己对他人的看法有些极端。</li>
+                <li>财运：不要与别人合伙或者借钱给他人。</li>
+                <li>建议：现在并不适合什么投资活动，就算要投资也应该先把账算的清清楚楚，免得以后麻烦。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>冗长的说教，意见不和，协作失败。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>在爱情中，节制牌逆位意味着可能存在情感的不平衡，两人之间的关系可能出现过度依赖或疏离。需要重新评估彼此的需求和期望，寻找更健康的互动方式。</td></tr>
+                    <tr><td>财富运势</td><td>财务上，可能出现过度消费或对财务的不负责任管理。建议重新审视自己的预算和投资策略，避免冲动消费。</td></tr>
+                    <tr><td>当前情况</td><td>当前的状态可能表明生活中缺乏平衡，可能在工作、生活或情感上过度投入，导致其他方面受到忽视。</td></tr>
+                    <tr><td>现在</td><td>目前，你可能面临着生活中的混乱或冲突，需要重新评估自己的优先顺序和行为模式，以寻求解决方案。</td></tr>
+                    <tr><td>未来</td><td>如果继续抗拒改变，未来可能会面临更多的挣扎和错失的机会。</td></tr>
+                    <tr><td>挑战</td><td>挑战在于克服对改变的恐惧，并勇敢地面对现实。</td></tr>
+                    <tr><td>建议</td><td>建议是寻找内在的和平，将注意力集中于如何恢复生活各方面的和谐。可能需要某种形式的调整或改变。</td></tr>
+                    <tr><td>优势</td><td>你的优势可能在于对当前不平衡状态的认知，这意味着你有机会在某些方面进行必要的调整。</td></tr>
+                    <tr><td>弱点</td><td>弱点在于可能对改变有抵触情绪，或者缺乏找到和解冲突的工具和方法。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

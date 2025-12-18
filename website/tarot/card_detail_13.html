@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIII. 死神 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>XIII. 死神</h1> 
+            <p>Death</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841995/jimeng-2025-12-02-4279-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%BD%8D%E8%BA%AB%E7%A9%BF%E9%BB%91%E8%89%B2%E7%9B%94%E7%94%B2%E7%9A%84%E6%AD%BB%E7%A5%9E_%E5%A4%B4%E6%88%B4%E7%BA%A2%E8%89%B2%E7%BE%BD%E6%AF%9B%E8%A3%85%E9%A5%B0%E7%9A%84..._dtjouq.png" alt="死神牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>牌面中央，死神身着一身黑色的盔甲，骑着一匹白马从远方缓缓走来，手执黑旗。旗帜上绘有白色的玫瑰图案，它象征着美丽、净化和不朽。死神的形象虽然骇人，但他并非代表生理上的死亡，而是象征旧事物的终结和新事物的诞生，预示着一个不可避免的转变。</p>
+            <p>在死神面前，国王已经倒下，一位圣职者正在祈祷。妇女和儿童跪地求饶，但死神不为所动。背景中，初升的太阳预示着新的开始。死神手中的黑旗也提醒着我们，虽然死亡是终结，但它也孕育着重生，带来新的机会和希望。这张牌的含义可以追溯到埃及神话中的冥王欧西里斯，象征着死亡、重生、季节更替和永生。</p>
+            <p>死神牌是所有塔罗牌中最具误解性的牌之一。它象征着转变、结束、更新和新周期的开始。正如大自然中植物的枯荣，生命总是在死亡中寻找新的开始。死神牌提醒我们，有些事物需要结束，以便为新的成长腾出空间。它不是一张代表厄运的牌，而是一张预示着蜕变和新生的牌。</p>
+            <p>死神牌的数字是13，在西方文化中被视为不祥的数字。然而，在塔罗牌中，13代表着变革和转型。它意味着我们将摆脱旧的束缚，迎来新的自由。在某些塔罗牌中，死神牌被称为“无名牌”，这意味着它的意义超越了语言，只有通过亲身体验才能真正理解。</p>
+            <p>死神牌和高塔牌有许多相似之处，它们都代表着突然而剧烈的变化。然而，死神牌的变化是缓慢而渐进的，就像季节更替一样，不可避免但有迹可循；而高塔牌的变化是突如其来的，就像雷击一样，令人措手不及。死神牌象征着凤凰涅槃，浴火重生。它鼓励我们接受改变，放下过去，迎接新的未来。</p>
+            <p>重点：死神并非表示生理上的死亡，而是指某个阶段的结束。例如，学生生涯的结束，单身生活的结束，或者对某人某事的态度的结束。结束的目的是为了开始新的阶段。正位死神意味着结束旧的阶段，开始新的阶段，而逆位死神则意味着不愿意结束旧的阶段，导致裹足不前。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 XIII</td><td>象征转变、结束、更新和新周期的开始。</td></tr>
+                    <tr><td>死神</td><td>代表着不可避免的改变、结束与重生，并非指生理死亡。</td></tr>
+                    <tr><td>黑色的旗帜</td><td>旗帜上的白色玫瑰象征着美丽、净化和不朽。</td></tr>
+                    <tr><td>白马</td><td>白马象征纯洁、精神力量和转变的驱动力。</td></tr>
+                    <tr><td>倒下的国王</td><td>代表旧的权威、权力或生活方式的终结。</td></tr>
+                    <tr><td>祈祷的圣职者</td><td>象征着在面对巨大转变时的信仰和希望。</td></tr>
+                    <tr><td>跪地的妇女和儿童</td><td>代表面对无法抗拒的改变时的恐惧、无助和顺从。</td></tr>
+                    <tr><td>远处的日出</td><td>象征着新的开始、希望和重生。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：结束、转化与重生</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：终结，新的开始，突破，新的局面，阶段性任务的结束，死而复生，改变，改变命运，革新，转型，转变，革除，改革，破旧立新，脱胎换骨，改变，转变，解除。</p>
+            <ul>
+                <li>提示语：生命的转变，接受结束，迎接新的开始，放下过去，清除旧的观念，重塑自我，脱胎换骨，破茧成蝶，涅槃重生，迎接新的机遇。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：因结束而得到新的恋情，分手的恋人死灰复燃，为寻求新鲜感而结束恋情，开始新关系，重新开始，转型，告别旧爱，分手，分离，单身。</p>
+            <ul>
+                <li>现况：旧的感情状况终将结束，不管现在的状况如何，它都将成为过去，不要害怕新的改变。</li>
+                <li>桃花：新的恋情正在发生中，但它和过去的对象会有很大的差异，你应该尝试和不同类型的人交往。</li>
+                <li>看法：这是一个全新的开始，两个人之间有很多要重新适应的，若是能放下旧观念才能迎接新的挑战。</li>
+                <li>复合：两个人复合的可能性很低，应该要开始新的生活，不要执着于已经逝去的感情。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：换工作，毕业，转换跑道，改变学习方法，转换专业，寻找新工作，工作调动，事业转型，革新，放弃旧的工作，寻找新的挑战。</p>
+            <ul>
+                <li>现况：目前工作进入一个转换期，你需要放下旧的思考模式，用新的方法去面对新的工作，不然会面临很大的挑战。</li>
+                <li>建议：当你决定要做一件事情时，最好要放下所有包袱，只有这样才能全身心地投入到新的工作当中，才会有所突破。</li>
+                <li>关系：目前人际关系面临全新的局面，你应该用新的眼光看待周围的人，和他们建立全新的关系。</li>
+                <li>发展：这个工作未来的发展还不错，但需要你放下旧有的东西，才能更好地在新的领域有所发展。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：与旧友关系终结，结交新朋友，找到新的赚钱方法，重新寻找适合自己的投资方法，告别过去，迎接未来，清除障碍，改善人际关系。</p>
+            <ul>
+                <li>现况：你的人际关系正在经历一场大转变，如果你想和别人建立新的关系，就要放下过去对别人的成见。</li>
+                <li>建议：你需要改变自己对待金钱的态度，只有从根本上改变自己的理财观念，才能够迎接新的财富机会。</li>
+                <li>财运：财运正在转变，旧的财富模式已经结束，新的财富机会正在来临，你应该敞开心扉迎接它。</li>
+                <li>建议：投资方面，你应该寻求新的投资机会，不要固守旧有的投资模式，否则会错过新的财富增长点。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>整容，搬家，戒除恶习，换血。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>预示着一段关系的结束或重大转变。这可能是痛苦的，但也为新的开始腾出了空间。</td></tr>
+                    <tr><td>财富运势</td><td>财务状况将发生重大改变，可能是结束旧的投资策略或迎来新的收入来源。</td></tr>
+                    <tr><td>当前情况</td><td>当前正处于一个生命周期的结束，新的开始即将到来。</td></tr>
+                    <tr><td>现在</td><td>你可能正在经历一个强制性的结束，需要放手和接受转变。</td></tr>
+                    <tr><td>未来</td><td>预示着未来会有重大的变化，无论是个人还是职业生涯，都将迎来新的篇章。</td></tr>
+                    <tr><td>挑战</td><td>接受不可避免的结束，并拥抱随之而来的新的可能性。</td></tr>
+                    <tr><td>建议</td><td>建议你放下过去的包袱，勇敢面对改变，迎接新的开始。</td></tr>
+                    <tr><td>优势</td><td>优势在于拥有浴火重生的机会，能够从旧的束缚中解脱出来。</td></tr>
+                    <tr><td>弱点</td><td>弱点可能在于对改变的恐惧和抗拒，导致难以接受新的现实。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：抗拒改变、停滞不前</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：不情愿改变，抗拒改变，停滞不前，固步自封，无法突破瓶颈，因循守旧，故步自封，停滞，静止，终止，不变，停止，拒绝，抵抗，反对，抵制，顽固不化，僵局。</p>
+            <ul>
+                <li>提示语：抗拒改变，固执己见，不愿放弃旧事物，停滞不前，逃避现实，重复错误，难以走出困境，害怕新事物，墨守成规，缺乏勇气。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：无法放手，不愿结束旧关系，藕断丝连，纠缠不清，为维持关系付出无谓的努力，害怕改变，犹豫不决，拖延，痛苦，停滞。</p>
+            <ul>
+                <li>现况：你对现在的感情状况感到痛苦，虽然知道是时候结束了，但却无法下定决心，导致关系停滞不前。</li>
+                <li>桃花：目前你可能过于执着于过去的感情，导致无法看到新的桃花机会，你应该放下过去，敞开心扉。</li>
+                <li>看法：这段感情让你感到疲惫，你一直在努力维持，但却看不到未来的希望，也许是时候重新审视这段关系了。</li>
+                <li>复合：两个人之间虽然还有感情，但已经无法回到过去了，与其互相折磨，不如各自寻找新的幸福。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：无法升迁，固守旧职，难以适应新环境，学习停滞，拒绝转型，工作不顺，事业瓶颈，停滞不前，无法突破，缺乏创新。</p>
+            <ul>
+                <li>现况：工作上你可能感到停滞不前，旧有的工作模式已经无法满足现在的需求，你需要做出改变，否则会被淘汰。</li>
+                <li>建议：不要害怕改变，新的机会和挑战正在等待着你，只有勇敢地迈出这一步，才能迎来事业的突破。</li>
+                <li>关系：在工作上你可能和同事存在一些旧有的矛盾，如果你不主动解决，这些矛盾会阻碍你和同事之间的合作。</li>
+                <li>发展：这个工作未来的发展空间有限，如果你想寻求更大的发展，就需要考虑转型或者寻找新的工作机会。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：不愿与旧友分开，排斥新朋友，固执己见，无法接受新的理财观念，财务停滞，损失，债务，固守旧有模式，人际关系僵化。</p>
+            <ul>
+                <li>现况：你的人际关系可能停滞不前，你过于执着于旧有的社交圈，导致无法结交新朋友，应该尝试扩大社交范围。</li>
+                <li>建议：你应该放下过去对金钱的执念，不要固守旧有的理财观念，学会接受新的投资理念，才能实现财富增长。</li>
+                <li>财运：财运可能停滞不前，你可能会因为固执己见而错失新的财富机会，应该积极寻找新的投资渠道。</li>
+                <li>建议：投资方面，你需要谨慎对待，不要盲目跟风，应该根据自己的实际情况，制定合理的投资计划。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>疾病复发，习惯性迟到，过度怀旧，拒绝面对现实。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>可能意味着不愿面对关系中的现实，导致拖延和不必要的痛苦。</td></tr>
+                    <tr><td>财富运势</td><td>可能预示着对财务改变的抵触，导致错失机会或长期停滞。</td></tr>
+                    <tr><td>当前情况</td><td>你可能正在抗拒不可避免的改变，导致停滞不前或延长痛苦。</td></tr>
+                    <tr><td>现在</td><td>你可能正在经历一个痛苦的时期，因为你拒绝接受或拥抱必要的转变。</td></tr>
+                    <tr><td>未来</td><td>如果继续抗拒改变，未来可能会面临更多的挣扎和错失的机会。</td></tr>
+                    <tr><td>挑战</td><td>挑战在于克服对改变的恐惧，并勇敢地面对现实。</td></tr>
+                    <tr><td>建议</td><td>建议你正视现状，勇敢地放手，接受改变，为新的开始腾出空间。</td></tr>
+                    <tr><td>优势</td><td>优势可能是你对现有情况的深刻理解，一旦决定改变，就能迅速行动。</td></tr>
+                    <tr><td>弱点</td><td>弱点在于害怕未知和对失去的执着，这会阻碍你前进的步伐。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

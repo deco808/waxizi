@@ -1,0 +1,766 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鹫巢 阎魔的斗牌 - 漫画汉化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+        
+        header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #e0e6ed;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 240px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .section {
+            margin: 25px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            color: #4a6fa5;
+            border-bottom: 2px solid #e0e6ed;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sort-toggle {
+            background: #f0f5ff;
+            border: 1px solid #4a6fa5;
+            color: #4a6fa5;
+            padding: 5px 10px;
+            
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .sort-toggle:hover {
+            background: #4a6fa5;
+            color: white;
+        }
+        
+        .chapters-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        
+        .chapter-card {
+            background: #f8fbff;
+            border: 1px solid #d1e3f6;
+            border-radius: 6px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+            border-color: #4a6fa5;
+            background: #e6f0ff;
+        }
+        
+        .chapter-card a {
+            text-decoration: none;
+            color: #2c3e50;
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .chapter-number {
+            font-size: 0.9rem;
+            color: #4a6fa5;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .chapter-title {
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.4;
+        }
+        
+        .about-content p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .external-link .chapter-number {
+            color: #e74c3c;
+        }
+        
+        .expandable-section {
+            margin-bottom: 15px;
+        }
+        
+        .expand-toggle {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            transition: background 0.2s ease;
+        }
+        
+        .expand-toggle:hover {
+            background: #3a5a80;
+        }
+        
+        .expand-toggle::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .expand-toggle.expanded::after {
+            transform: rotate(180deg);
+        }
+        
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .expandable-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .section-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .chapters-container {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .logo {
+                max-width: 200px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chapters-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .chapter-card {
+                padding: 10px 6px;
+            }
+            
+            .chapter-number {
+                font-size: 0.85rem;
+            }
+            
+            .chapter-title {
+                font-size: 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            body {
+                padding: 0 15px 30px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .section-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+               
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/assets/cover.jpg" alt="鹫巢外传封面" class="logo">
+        <h1>鹫巢 阎魔的斗牌</h1>
+        <p class="subtitle">汉化版 - 由于在微博发布经常被限流，特此建立本站点方便漫画爱好者阅读交流</p>
+    </header>
+    
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">漫画目录</h2>
+            <div class="section-controls">
+                <button class="sort-toggle" onclick="toggleAllSections()">展开所有</button>
+                <button class="sort-toggle" onclick="collapseAllSections()">收起所有</button>
+            </div>
+        </div>
+        
+        <div class="expandable-section">
+            <button class="expand-toggle" onclick="toggleSection('part1')">
+                第一部 阎魔的斗牌
+                <span>▼</span>
+            </button>
+            <div id="part1" class="expandable-content">
+                                <div style="text-align: center; margin-top: 15px;">
+                    <button class="sort-toggle" onclick="sortChapters('part1-chapters', true)">正序排列</button>
+                    <button class="sort-toggle" onclick="sortChapters('part1-chapters', false)">倒序排列</button>
+                </div>
+                <div class="chapters-container" id="part1-chapters">
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter1.html'">
+                <div class="chapter-number">第1话</div>
+                <div class="chapter-title">暗之始动</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter2.html'">
+                <div class="chapter-number">第2话</div>
+                <div class="chapter-title">桌上的支配者</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter3.html'">
+                <div class="chapter-number">第3话</div>
+                <div class="chapter-title">背叛者</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter4.html'">
+                <div class="chapter-number">第4话</div>
+                <div class="chapter-title">鹫VS隼1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter5.html'">
+                <div class="chapter-number">第5话</div>
+                <div class="chapter-title">鹫VS隼2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter6.html'">
+                <div class="chapter-number">第6话</div>
+                <div class="chapter-title">鹫VS隼3</div>
+            </div> 
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter7.html'">
+                <div class="chapter-number">第7话</div>
+                <div class="chapter-title">鹫VS鼬</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter8.html'">
+                <div class="chapter-number">第8话</div>
+                <div class="chapter-title">鹫VS龙1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter9.html'">
+                <div class="chapter-number">第9话</div>
+                <div class="chapter-title">鹫VS龙2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter10.html'">
+                <div class="chapter-number">第10话</div>
+                <div class="chapter-title">鹫VS龙3</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter11.html'">
+                <div class="chapter-number">第11话</div>
+                <div class="chapter-title">目羅博士的不可思議的研究</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter12.html'">
+                <div class="chapter-number">第12话</div>
+                <div class="chapter-title">解冻</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter13.html'">
+                <div class="chapter-number">第13话</div>
+                <div class="chapter-title">欲望報酬</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter14.html'">
+                <div class="chapter-number">第14话</div>
+                <div class="chapter-title">统治未来之人</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter15.html'">
+                <div class="chapter-number">第15话</div>
+                <div class="chapter-title">海贼潮流1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter16.html'">
+                <div class="chapter-number">第16话</div>
+                <div class="chapter-title">海贼潮流2</div>
+            </div>
+            
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter17.html'">
+                <div class="chapter-number">第17话</div>
+                <div class="chapter-title">海贼潮流3</div>
+            </div>
+            
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter18.html'">
+                <div class="chapter-number">第18话</div>
+                <div class="chapter-title">海贼潮流4</div>
+            </div>
+            
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter19.html'">
+                <div class="chapter-number">第19话</div>
+                <div class="chapter-title">海贼潮流5</div>
+            </div>
+            
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter20.html'">
+                <div class="chapter-number">第20话</div>
+                <div class="chapter-title">海贼潮流6</div>
+            </div>
+
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter21.html'">
+                <div class="chapter-number">第21话</div>
+                <div class="chapter-title">海贼潮流7</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter22.html'">
+                <div class="chapter-number">第22话</div>
+                <div class="chapter-title">海贼潮流8</div>
+            </div>
+             <div class="chapter-card" onclick="window.location.href='chapters/chapter23.html'">
+                <div class="chapter-number">第23话</div>
+                <div class="chapter-title">海贼潮流9</div>
+            </div>
+         
+             <div class="chapter-card" onclick="window.location.href='chapters/chapter24.html'">
+                <div class="chapter-number">第24话</div>
+                <div class="chapter-title">创造主</div>
+            </div>
+
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter25.html'">
+                <div class="chapter-number">第25话</div>
+                <div class="chapter-title">这个男人，有着铁臂</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter26.html'">
+                <div class="chapter-number">第26话</div>
+                <div class="chapter-title">牌已经被打出</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter27.html'">
+                <div class="chapter-number">第27话</div>
+                <div class="chapter-title">闪耀的蛙1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter28.html'">
+                <div class="chapter-number">第28话</div>
+                <div class="chapter-title">闪耀的蛙2</div>
+            </div>
+
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter29.html'">
+                <div class="chapter-number">第29话</div>
+                <div class="chapter-title">闪耀的蛙3</div>
+            </div>
+           <div class="chapter-card" onclick="window.location.href='chapters/chapter30.html'">
+                <div class="chapter-number">第30话</div>
+                <div class="chapter-title">闪耀的蛙4</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter31.html'">
+                <div class="chapter-number">第31话</div>
+                <div class="chapter-title">闪耀的蛙5</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter32.html'">
+                <div class="chapter-number">第32话</div>
+                <div class="chapter-title">封印</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter33.html'">
+                <div class="chapter-number">第33话</div>
+                <div class="chapter-title">木乃伊男爵1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter34.html'">
+                <div class="chapter-number">第34话</div>
+                <div class="chapter-title">木乃伊男爵2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter35.html'">
+                <div class="chapter-number">第35话</div>
+                <div class="chapter-title">黎明体验1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter36.html'">
+                <div class="chapter-number">第36话</div>
+                <div class="chapter-title">黎明体验2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter37.html'">
+                <div class="chapter-number">第37话</div>
+                <div class="chapter-title">黎明体验3</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter38.html'">
+                <div class="chapter-number">第38话</div>
+                <div class="chapter-title">黎明体验4</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter39.html'">
+                <div class="chapter-number">第39话</div>
+                <div class="chapter-title">黎明体验5</div>
+            </div>
+             <div class="chapter-card" onclick="window.location.href='chapters/chapter40.html'">
+                <div class="chapter-number">第40话</div>
+                <div class="chapter-title">黎明体验6</div>
+            </div>
+             <div class="chapter-card" onclick="window.location.href='chapters/chapter41.html'">
+                <div class="chapter-number">第41话</div>
+                <div class="chapter-title">黎明体验7</div>
+            </div>
+             <div class="chapter-card" onclick="window.location.href='chapters/chapter42.html'">
+                <div class="chapter-number">第42话</div>
+                <div class="chapter-title">黎明体验8</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter43.html'">
+                <div class="chapter-number">第43话</div>
+                <div class="chapter-title">麻雀列车杀人事件1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter44.html'">
+                <div class="chapter-number">第44话</div>
+                <div class="chapter-title">麻雀列车杀人事件2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter45.html'">
+                <div class="chapter-number">第45话</div>
+                <div class="chapter-title">监狱六区1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter46.html'">
+                <div class="chapter-number">第46话</div>
+                <div class="chapter-title">监狱六区2</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter47.html'">
+                <div class="chapter-number">第47话</div>
+                <div class="chapter-title">监狱六区3</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter48.html'">
+                <div class="chapter-number">第48话</div>
+                <div class="chapter-title">监狱六区4</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter49.html'">
+                <div class="chapter-number">第49话</div>
+                <div class="chapter-title">监狱六区5</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter50.html'">
+                <div class="chapter-number">第50话</div>
+                <div class="chapter-title">监狱六区6</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter51.html'">
+                <div class="chapter-number">第51话</div>
+                <div class="chapter-title">监狱六区7</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter52.html'">
+                <div class="chapter-number">第52话</div>
+                <div class="chapter-title">监狱六区8</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='chapters/chapter53.html'">
+                <div class="chapter-number">第53话</div>
+                <div class="chapter-title">监狱六区9</div>
+            </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/qita.html'">
+                        <div class="chapter-number">其他图片</div>
+                        <div class="chapter-title">目录、人物介绍等</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="expandable-section">
+            <button class="expand-toggle" onclick="toggleSection('part2')">
+                第二部 ワシズ -天下創世闘牌録
+                <span>▼</span>
+            </button>
+            <div id="part2" class="expandable-content">
+                                <div style="text-align: center; margin-top: 15px;">
+                    <button class="sort-toggle" onclick="sortChapters('part2-chapters', true)">正序排列</button>
+                    <button class="sort-toggle" onclick="sortChapters('part2-chapters', false)">倒序排列</button>
+                </div>
+                <div class="chapters-container" id="part2-chapters">
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-1.html'">
+                        <div class="chapter-number">第1话</div>
+                        <div class="chapter-title">於是，那傢伙復甦了</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-2.html'">
+                        <div class="chapter-number">第2话</div>
+                        <div class="chapter-title">宣战布告</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-3.html'">
+                        <div class="chapter-number">第3话</div>
+                        <div class="chapter-title">賢人的手形</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-4.html'">
+                        <div class="chapter-number">第4话</div>
+                        <div class="chapter-title">投标吧</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-5.html'">
+                        <div class="chapter-number">第5话</div>
+                        <div class="chapter-title">两位武士</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-6.html'">
+                        <div class="chapter-number">第6话</div>
+                        <div class="chapter-title">鷲巢的勝利不會動搖</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-7.html'">
+                        <div class="chapter-number">第7话</div>
+                        <div class="chapter-title">What a wonderful number</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-8.html'">
+                        <div class="chapter-number">第8话</div>
+                        <div class="chapter-title">共生激震</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-9.html'">
+                        <div class="chapter-number">第9话</div>
+                        <div class="chapter-title">從零重新出發</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-10.html'">
+                        <div class="chapter-number">第10话</div>
+                        <div class="chapter-title">长屋狂骚局·前编</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-11.html'">
+                        <div class="chapter-number">第11话</div>
+                        <div class="chapter-title">长屋狂骚局·后编</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-12.html'">
+                        <div class="chapter-number">第12话</div>
+                        <div class="chapter-title">麻雀萬解決屋</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-13.html'">
+                        <div class="chapter-number">第13话</div>
+                        <div class="chapter-title">地下室的诅咒1</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-14.html'">
+                        <div class="chapter-number">第14话</div>
+                        <div class="chapter-title">地下室的诅咒2</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-15.html'">
+                        <div class="chapter-number">第15话</div>
+                        <div class="chapter-title">地下室的诅咒3</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-16.html'">
+                        <div class="chapter-number">第16话</div>
+                        <div class="chapter-title">地下室的诅咒4</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-17.html'">
+                        <div class="chapter-number">第17话</div>
+                        <div class="chapter-title">地下室的诅咒5</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-18.html'">
+                        <div class="chapter-number">第18话</div>
+                        <div class="chapter-title">两份委托~麻将排序</div>
+                    </div>
+                     <div class="chapter-card" onclick="window.location.href='chapters/chapter2-19.html'">
+                        <div class="chapter-number">第19话</div>
+                        <div class="chapter-title">最终决战1</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-20.html'">
+                        <div class="chapter-number">第20话</div>
+                        <div class="chapter-title">最终决战2</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-21.html'">
+                        <div class="chapter-number">第21话</div>
+                        <div class="chapter-title">最终决战3</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-22.html'">
+                        <div class="chapter-number">第22话</div>
+                        <div class="chapter-title">最终决战4</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-23.html'">
+                        <div class="chapter-number">第23话</div>
+                        <div class="chapter-title">最终决战5</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-24.html'">
+                        <div class="chapter-number">第24话</div>
+                        <div class="chapter-title">最终决战6</div>
+                    </div>
+                    <div class="chapter-card" onclick="window.location.href='chapters/chapter2-qita.html'">
+                        <div class="chapter-number">其他图片</div>
+                        <div class="chapter-title">封面、目录等</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">蟹工船</h2>
+        </div>
+        
+        <div class="expandable-section">
+                <div class="chapters-container" id="part1-chapters">
+            <div class="chapter-card" onclick="window.location.href='蟹工船/chapter-1.html'">
+                        <div class="chapter-number">第1话</div>
+                        <div class="chapter-title">蟹工船1</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='蟹工船/chapter-2.html'">
+                        <div class="chapter-number">第2话</div>
+                        <div class="chapter-title">蟹工船2</div>
+            </div>
+                <div class="chapter-card" onclick="window.location.href='蟹工船/chapter-3.html'">
+                        <div class="chapter-number">第3话</div>
+                        <div class="chapter-title">蟹工船3</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='蟹工船/chapter-4.html'">
+                        <div class="chapter-number">第4话</div>
+                        <div class="chapter-title">蟹工船4</div>
+            </div>
+            <div class="chapter-card" onclick="window.location.href='蟹工船/chapter-5.html'">
+                        <div class="chapter-number">第5话</div>
+                        <div class="chapter-title">蟹工船5</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+    <div class="section">
+        <h2 class="section-title">关于本站</h2>
+        <div class="about-content">
+            <p>本站由汉化爱好者创建，致力于提供《鹫巢 阎魔的斗牌》的优质汉化版本。</p>
+            <p>如有疑问可在社媒联系制作者。</p>
+            <p>本站所有汉化内容均为兴趣制作，仅供学习交流使用，请支持正版漫画。</p>
+            <p>第一部百度云资源： https://pan.baidu.com/s/18JJtTq972ijAZLF5lu3vNA?pwd=ejd9</p>
+<p>第二部百度云资源：  https://pan.baidu.com/s/1JVDbIKU2UKSfCGqqU3uufA?pwd=mj4w</p>
+           
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 鹫巢外传汉化站 | 独立汉化爱好者制作</p>
+        <p>最后更新: 2025年7月23日</p>
+    </footer>
+
+    <script>
+        // 展开/收起功能
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const toggle = content.previousElementSibling;
+            
+            content.classList.toggle('expanded');
+            toggle.classList.toggle('expanded');
+            
+            // 更新箭头方向
+            const arrow = toggle.querySelector('span');
+            arrow.textContent = content.classList.contains('expanded') ? '▼' : '▲';
+        }
+        
+        // 展开所有章节
+        function toggleAllSections() {
+            document.querySelectorAll('.expandable-content').forEach(content => {
+                content.classList.add('expanded');
+                const toggle = content.previousElementSibling;
+                toggle.classList.add('expanded');
+                const arrow = toggle.querySelector('span');
+                arrow.textContent = '▼';
+            });
+        }
+        
+        // 收起所有章节
+        function collapseAllSections() {
+            document.querySelectorAll('.expandable-content').forEach(content => {
+                content.classList.remove('expanded');
+                const toggle = content.previousElementSibling;
+                toggle.classList.remove('expanded');
+                const arrow = toggle.querySelector('span');
+                arrow.textContent = '▲';
+            });
+        }
+        
+        // 倒序排列功能
+        function sortChapters(containerId, ascending = true) {
+            const container = document.getElementById(containerId);
+            const chapters = Array.from(container.getElementsByClassName('chapter-card'));
+            
+            // 清空容器
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            
+            // 排序并重新添加
+            chapters.sort((a, b) => {
+                const aNum = extractChapterNumber(a.querySelector('.chapter-number').textContent);
+                const bNum = extractChapterNumber(b.querySelector('.chapter-number').textContent);
+                return ascending ? aNum - bNum : bNum - aNum;
+            });
+            
+            chapters.forEach(chapter => container.appendChild(chapter));
+        }
+        
+        // 从章节文本中提取数字
+        function extractChapterNumber(text) {
+            const match = text.match(/\d+/);
+            return match ? parseInt(match[0]) : 0;
+        }
+        
+        // 页面加载时默认关闭所有章节
+        document.addEventListener('DOMContentLoaded', function() {
+            // 默认关闭所有章节
+            collapseAllSections();
+        });
+    </script>
+</body>
+</html>

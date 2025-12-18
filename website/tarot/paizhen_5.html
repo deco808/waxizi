@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋人金字塔展开法 | Deco 塔罗</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 全局基础样式和背景 (保留不变) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0c0c10;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 背景动画容器 */
+        .deco-space { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .deco-star { position: absolute; opacity: 0; will-change: transform, opacity; }
+        @keyframes warpSpeed {
+            0% { opacity: 0; transform: translateZ(-800px) scale(0.1); }
+            20% { opacity: 0.8; } 80% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateZ(500px) scale(3); }
+        }
+
+        /* 导航栏 */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+            background: rgba(12, 12, 16, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 100;
+        }
+        .logo { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF; text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3); }
+
+        /* --- 2. 布局容器 --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 20px;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        /* 介绍页 */
+        #introSection { text-align: center; max-width: 700px; padding-top: 50px; animation: fadeIn 0.8s ease; }
+        .spread-title {
+            font-family: 'Ma Shan Zheng', cursive; font-size: 3.5rem; color: #FF9EBC; 
+            margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 158, 188, 0.3);
+        }
+        .btn-start {
+            margin-top: 40px; padding: 15px 60px; font-size: 1.2rem;
+            background: transparent; border: 2px solid #FF9EBC; color: #FF9EBC;
+            cursor: pointer; font-family: 'ZCOOL KuaiLe'; transition: 0.3s;
+            border-radius: 50px;
+        }
+        .btn-start:hover { background: #FF9EBC; color: #000; box-shadow: 0 0 30px rgba(255, 158, 188, 0.4); }
+
+        /* --- 3. 游戏桌面 (核心布局：金字塔形) --- */
+        #gameBoard { display: none; width: 100%; margin-top: 20px; } 
+        .board-layout { 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start;
+            gap: 50px; 
+            padding-top: 30px;
+        }
+        
+        /* 左侧：牌堆区域 */
+        .left-panel { flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 20px; }
+        
+        /* 右侧：牌阵容器 (Grid 布局实现上1下3金字塔形) */
+        .right-panel { 
+            flex: 1; 
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3列：左、中、右 */
+            grid-template-rows: auto auto; /* 2行：上1张，下3张 */
+            gap: 30px 20px; /* 垂直间距大，水平间距小 */
+            max-width: 800px;
+            justify-items: center; 
+            align-items: center; 
+        }
+
+        /* 关键修改：定义牌位容器在 Grid 中的位置 (上1下3) */
+        /* 抽牌顺序：0 -> I, 1 -> II, 2 -> III, 3 -> IV */
+        
+        /* 牌位 III. 目前关系 (顶部) -> 抽牌序号 2 */
+        .pos-III { 
+            grid-column: 2 / 3; /* 中间列 */
+            grid-row: 1 / 2; /* 第一行 */
+        } 
+        
+        /* 牌位 I. 你的期望 (下排左) -> 抽牌序号 0 */
+        .pos-I { 
+            grid-column: 1 / 2; /* 左列 */
+            grid-row: 2 / 3; /* 第二行 */
+        } 
+        
+        /* 牌位 IV. 未来关系 (下排中) -> 抽牌序号 3 */
+        .pos-IV { 
+            grid-column: 2 / 3; /* 中间列 */
+            grid-row: 2 / 3; /* 第二行 */
+        }
+        
+        /* 牌位 II. 恋人的期望 (下排右) -> 抽牌序号 1 */
+        .pos-II { 
+            grid-column: 3 / 4; /* 右列 */
+            grid-row: 2 / 3; /* 第二行 */
+        } 
+
+        /* 牌堆样式 (保留不变) */
+        .deck {
+            width: 140px; height: 240px; border-radius: 10px; cursor: pointer;
+            background-image: url('https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841999/jimeng-2025-12-02-6063-%E5%A1%94%E7%BD%97%E7%89%8C%E8%83%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1_%E5%AF%B9%E7%A7%B0%E7%9A%84%E5%87%A0%E4%BD%95%E5%9B%BE%E6%A1%88_%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%B8%AA%E5%A4%8D%E6%9D%82%E7%9A%84%E4%BA%94%E8%A7%92%E6%98%9F%E8%8A%92%E9%98%B5_%E5%91%A8%E5%9B%B4%E7%8E%AF%E7%BB%95%E7%9D%80%E7%B2%BE%E7%BE%8E%E7%9A%84%E8%8A%B1%E7%BA%B9..._uk8i7q.png');
+            background-size: cover; background-position: center; transition: all 0.2s;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.5);
+            border: 2px solid #444;
+        }
+        .deck:hover { transform: translateY(-5px); border-color: #FF9EBC; } 
+        .deck-label { margin-top: 15px; color: #888; font-size: 0.9rem; letter-spacing: 1px; }
+
+        /* 卡槽结构和卡牌样式 (保留不变) */
+        .slot-container { display: flex; flex-direction: column; align-items: center; }
+        .card-placeholder {
+            width: 140px; height: 240px; border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px; position: relative; background: rgba(255,255,255,0.02);
+        }
+        .slot-labels { margin-top: 10px; text-align: center; }
+        .slot-title { font-family: 'ZCOOL KuaiLe'; color: #FF9EBC; font-size: 1.1rem; margin-bottom: 5px; } 
+        .slot-desc { color: #666; font-size: 0.8rem; }
+        .tarot-card { /* ... 卡牌样式 ... */ }
+
+        /* --- 5. 底部解读区域 (布局修正) --- */
+        #readingSection {
+            display: none;
+            /* 居中修正：使用 auto 边距确保水平居中 */
+            margin: 80px auto 0 auto; 
+            width: 100%;
+            max-width: 800px;
+            background: rgba(12, 12, 16, 0.98);
+            border: 1px solid rgba(255,255,255,0.02);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: left;
+            animation: fadeIn 1s ease;
+            /* 新增以下属性确保内容在背景之上 */
+            position: relative;
+            z-index: 10;
+}
+        .reading-title { color: #FF9EBC; font-size: 1.3rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .reading-content p { margin-bottom: 10px; line-height: 1.8; color: #ccc; }
+        .highlight { color: #B8A6FF; font-weight: bold; }
+        .special-note { background: rgba(255, 158, 188, 0.1); padding: 15px; border-left: 5px solid #FF9EBC; margin: 15px 0; font-style: italic; } 
+
+        /* 移动端适配 */
+        @media (max-width: 850px) {
+            .board-layout { flex-direction: column; align-items: center; gap: 40px; }
+            .right-panel { 
+                /* 移动端改为竖直堆叠，但保留牌位标签的正确顺序 */
+                display: flex; flex-direction: column; align-items: center; 
+                gap: 30px; max-width: 100%; 
+            }
+            .pos-I, .pos-II, .pos-III, .pos-IV { 
+                grid-column: auto; 
+                grid-row: auto; 
+                /* 关键：在移动端，我们需要确保牌位的顺序是 3, 1, 4, 2 (按抽牌顺序是 2, 0, 3, 1)，为了适配，我们依赖 HTML 结构顺序 */
+            }
+            .card-placeholder, .deck { width: 100px; height: 170px; }
+            .left-panel { flex: none; width: 100%; padding-bottom: 20px; border-bottom: 1px solid #222; }
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <a href="index.html" class="logo">Deco.</a>
+        <nav style="color: #fff; font-size: 0.9rem;">
+            <a href="tarot.html" style="color: #fff; text-decoration: none;"><i class="fas fa-undo" style="margin-right:5px;"></i> 返回大厅</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        
+        <div id="introSection">
+            <h1 class="spread-title">恋人金字塔展开法</h1>
+            <p style="color:#aaa; font-size: 1.1rem; margin-bottom: 10px;">Lover's Pyramid Spread (Four Cards)</p>
+            <p style="color:#888; max-width: 500px; margin: 0 auto;">
+                四张牌组成金字塔 (上 1 张，下 3 张)，专门解读双方在感情中的期望、当前的互动模式以及未来的发展趋势。
+            </p>
+            <button class="btn-start" onclick="startGame()">开始占卜</button>
+        </div>
+
+        <div id="gameBoard">
+            <div class="board-layout">
+                
+                <div class="left-panel">
+                    <div class="deck" id="mainDeck" onclick="drawCard()"></div>
+                    <div class="deck-label" id="deckLabel">点击抽牌</div>
+                </div>
+
+                <div class="right-panel">
+                    
+                    <div class="slot-container pos-III">
+                        <div class="card-placeholder" id="slot-2"></div>
+                        <div class="slot-labels">
+                            <div class="slot-title">III. 目前彼此的关系</div>
+                            <div class="slot-desc">The Current Relationship</div>
+                        </div>
+                    </div>
+
+                    <div class="slot-container pos-I">
+                        <div class="card-placeholder" id="slot-0"></div>
+                        <div class="slot-labels">
+                            <div class="slot-title">I. 你的期望</div>
+                            <div class="slot-desc">Your Hopes</div>
+                        </div>
+                    </div>
+
+                    <div class="slot-container pos-IV">
+                        <div class="card-placeholder" id="slot-3"></div>
+                        <div class="slot-labels">
+                            <div class="slot-title">IV. 未来彼此的关系</div>
+                            <div class="slot-desc">The Future Outcome</div>
+                        </div>
+                    </div>
+                    
+                    <div class="slot-container pos-II">
+                        <div class="card-placeholder" id="slot-1"></div>
+                        <div class="slot-labels">
+                            <div class="slot-title">II. 恋人的期望</div>
+                            <div class="slot-desc">Lover's Hopes</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div id="readingSection">
+                <div class="reading-title"><i class="fas fa-heart"></i> 恋人金字塔解读思路</div>
+                <div class="reading-content">
+                    <p><span class="highlight">I. 你的期望：</span> 这张牌揭示了你在感情中内心最希望看到的结果、你的态度或你对这段关系付出时的期待。</p>
+                    <p><span class="highlight">II. 恋人的期望：</span> 这张牌代表了对方对这段关系的看法、他的期待或他对你的态度，可能是你未曾意识到的方面。</p>
+                    <p><span class="highlight">III. 目前彼此的关系 (顶部)：</span> 这张牌概括了你们**当前的互动模式、基础状态**和能量流向。</p>
+                    <p><span class="highlight">IV. 未来彼此的关系 (底部中心)：</span> 这张牌预示了关系在**未来最有可能达到的状态或结果**。</p>
+
+                    <div class="special-note">
+                        <p style="font-weight: bold; margin-bottom: 5px;">【核心解读指引】</p>
+                        <p>
+                            关系的未来走向 (<span class="highlight">牌 IV</span>) 是基于当前的互动 (<span class="highlight">牌 III</span>) 以及双方的期望 (<span class="highlight">牌 I, II</span>) 共同作用的结果。
+                        </p>
+                        <p>
+                            **分析重点：** 观察牌 III 和牌 IV 的能量转变。如果牌 I 和牌 II 的能量高度一致且积极，通常会助力牌 III 正向发展到牌 IV；反之，若期望相悖或消极，则会阻碍关系发展。
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn-start" onclick="resetGame()" style="border-radius: 8px;">
+                            <i class="fas fa-sync-alt"></i> 重新抽取
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. 数据配置 (保持不变) ---
+        const tarotDeck = [
+            { id: 0, name: "愚人", url: "card_detail_0.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842003/%E7%94%9F%E6%88%90%E5%A1%94%E7%BD%97%E7%89%8C%E6%84%9A%E8%80%85%E5%8D%A1%E7%89%8C_1_iul2l4.png" },
+            { id: 1, name: "魔术师", url: "card_detail_1.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/%E9%AD%94%E6%9C%AF%E5%B8%88%E5%8D%A1%E7%89%8C_tw8luw.png" },
+            { id: 2, name: "女祭司", url: "card_detail_2.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/%E8%AF%B7%E6%88%91%E5%B8%AE%E5%81%9A_PPT_1_nvckuj.png" },
+            { id: 3, name: "女皇", url: "card_detail_3.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842003/%E8%AF%B7%E6%88%91%E5%B8%AE%E5%81%9A_PPT_mbcmc2.png" },
+            { id: 4, name: "皇帝", url: "card_detail_4.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842003/%E8%AF%B7%E6%88%91%E5%B8%AE%E5%81%9A_PPT_2_lizqex.png" },
+            { id: 5, name: "教皇", url: "card_detail_5.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842006/jimeng-2025-12-01-1823-%E5%8F%82%E8%80%83%E5%9B%BE1%E5%92%8C%E5%9B%BE2%E7%9A%84%E6%B2%B9%E7%94%BB%E9%A3%8E%E6%A0%BC_%E6%95%B4%E4%B8%AA%E7%94%BB%E9%9D%A2%E9%83%BD%E6%98%AF%E5%8F%A4%E5%85%B8%E6%B2%B9%E7%94%BB%E8%B4%A8%E6%84%9F_%E6%B2%A1%E6%9C%89%E7%8E%B0%E5%AE%9E%E5%85%89%E5%BD%B1%E6%95%88%E6%9E%9C_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF..._wrkowz.png" },
+            { id: 6, name: "恋人", url: "card_detail_6.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842004/jimeng-2025-12-01-2868-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E6%B2%B9%E7%94%BB%E9%A3%8E%E6%A0%BC_%E6%95%B4%E4%B8%AA%E7%94%BB%E9%9D%A2%E9%83%BD%E6%98%AF%E5%8F%A4%E5%85%B8%E6%B2%B9%E7%94%BB%E8%B4%A8%E6%84%9F_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E5%BC%A0%E5%A1%94%E7%BD%97%E7%89%8CThe_..._ejw6wq.png" },
+            { id: 7, name: "战车", url: "card_detail_7.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842008/jimeng-2025-12-01-7127-%E5%8F%82%E8%80%83%E4%B9%8B%E5%89%8D%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E6%B2%B9%E7%94%BB%E9%A3%8E%E6%A0%BC_%E6%95%B4%E4%B8%AA%E7%94%BB%E9%9D%A2%E9%83%BD%E6%98%AF%E5%8F%A4%E5%85%B8%E6%B2%B9%E7%94%BB%E8%B4%A8%E6%84%9F_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E5%BC%A0%E5%A1%94%E7%BD%97%E7%89%8CThe_..._u0lv2m.png" },
+            { id: 8, name: "力量", url: "card_detail_8.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842006/jimeng-2025-12-02-6395-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E4%B8%80%E4%BD%8D%E4%BC%98%E9%9B%85%E7%9A%84%E5%8A%9B%E9%87%8F%E5%A5%B3%E7%A5%9E_%E5%A5%B9%E6%9C%89..._dguxvs.png" },
+            { id: 9, name: "隐士", url: "card_detail_9.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841998/jimeng-2025-12-02-8446-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E9%9A%90%E5%A3%AB_The_Hermit_%E5%8D%A1..._vc8yp4.png" },
+            { id: 10, name: "命运之轮", url: "card_detail_10.html", img: "https://via.placeholder.com/140x240?text=Card+10+URL" },
+            { id: 11, name: "正义", url: "card_detail_11.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/jimeng-2025-12-02-4963-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E6%AD%A3%E4%B9%89_Justice_XI_%E5%8D%A1%E7%89%8C_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%BD%8D..._wyaqtm.png" },
+            { id: 12, name: "倒吊人", url: "card_detail_12.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841998/jimeng-2025-12-02-5942-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E5%80%92%E5%90%8A%E4%BA%BA_The_Hanged_Man_XII_%E5%8D%A1..._fscaoe.png" },
+            { id: 13, name: "死神", url: "card_detail_13.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841995/jimeng-2025-12-02-4279-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%BD%8D%E8%BA%AB%E7%A9%BF%E9%BB%91%E8%89%B2%E7%9B%94%E7%94%B2%E7%9A%84%E6%AD%BB%E7%A5%9E_%E5%A4%B4%E6%88%B4%E7%BA%A2%E8%89%B2%E7%BE%BD%E6%AF%9B%E8%A3%85%E9%A5%B0%E7%9A%84..._dtjouq.png" },
+            { id: 14, name: "节制", url: "card_detail_14.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841995/jimeng-2025-12-02-6995-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E8%8A%82%E5%88%B6_Temperance_XIV_%E5%8D%A1%E7%89%8C_%E7%94%BB%E9%9D%A2%E4%B8%AD..._i1ziz5.png" },
+            { id: 15, name: "恶魔", url: "card_detail_15.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841997/jimeng-2025-12-02-8386-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8B%B0%E7%8B%9E%E7%9A%84%E6%81%B6%E9%AD%94%E5%BD%A2%E8%B1%A1_%E6%9C%89%E7%9D%80%E8%9D%99%E8%9D%A0%E8%88%AC%E7%9A%84%E9%BB%91%E8%89%B2%E7%BF%85%E8%86%80_..._myh1pv.png" },
+            { id: 16, name: "高塔", url: "card_detail_16.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841995/jimeng-2025-12-02-8116-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E9%AB%98%E5%A1%94_The_Tower_XVI_%E5%8D%A1%E7%89%8C_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE..._h4bh4g.png" },
+            { id: 17, name: "星星", url: "card_detail_17.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841994/jimeng-2025-12-02-6913-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E6%98%9F%E6%98%9F%E7%89%8CThe_Star_XVII_%E7%94%BB%E9%9D%A2%E9%87%87%E7%94%A8%E7%9B%B8%E5%90%8C%E7%9A%84..._lfcsjg.png" },
+            { id: 18, name: "月亮", url: "card_detail_18.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842024/jimeng-2025-12-02-6328-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E6%9C%88%E4%BA%AE%E7%89%8CThe_Moon_XVIII_%E7%94%BB%E9%9D%A2%E9%87%87%E7%94%A8%E7%9B%B8%E5%90%8C..._g7mhns.png" },
+            { id: 19, name: "太阳", url: "card_detail_19.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842007/jimeng-2025-12-02-6513-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E5%A4%AA%E9%98%B3%E7%89%8CThe_Sun_XIX_..._ieumwg.png" },
+            { id: 20, name: "审判", url: "card_detail_20.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/jimeng-2025-12-02-5897-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E5%AE%A1%E5%88%A4%E7%89%8CJudgement_XX_%E7%94%BB%E9%9D%A2%E9%87%87%E7%94%A8%E7%9B%B8%E5%90%8C%E7%9A%84%E7%99%BD..._czewjq.png" },
+            { id: 21, name: "世界", url: "card_detail_21.html", img: "https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841994/jimeng-2025-12-02-6838-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E7%89%8CThe_World_XX..._ynbbua.png" }
+        ];
+        
+        // 确保牌组完整性
+        for(let i = 0; i <= 21; i++){
+            if(!tarotDeck.find(c => c.id === i)){
+                tarotDeck.push({ id: i, name: `牌 ${i}`, url: `card_detail_${i}.html`, img: "https://via.placeholder.com/140x240?text=Card+Placeholder" });
+            }
+        }
+        tarotDeck.sort((a, b) => a.id - b.id);
+
+        let drawCount = 0; 
+        const maxCards = 4; 
+        let shuffledDeck = []; 
+        
+        // 抽牌顺序：0 -> I, 1 -> II, 2 -> III, 3 -> IV
+        // 放置的 slot ID 保持与抽牌序号一致: slot-0, slot-1, slot-2, slot-3
+        // 布局位置通过 CSS 类名 pos-I, pos-II, pos-III, pos-IV 控制
+        const drawOrder = [0, 1, 2, 3]; 
+
+        // 启动游戏/重置状态
+        function startGame() {
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('gameBoard').style.display = 'flex'; 
+            
+            let tempDeck = [...tarotDeck]; 
+            shuffledDeck = tempDeck.sort(() => Math.random() - 0.5);
+            drawCount = 0;
+            document.getElementById('deckLabel').innerText = "点击抽牌";
+        }
+        
+        // 重新抽取逻辑
+        function resetGame() {
+            for (let i = 0; i < maxCards; i++) {
+                document.getElementById(`slot-${i}`).innerHTML = ''; 
+            }
+
+            document.getElementById('readingSection').style.display = 'none';
+
+            const deck = document.getElementById('mainDeck');
+            deck.style.opacity = 1;
+            deck.style.cursor = "pointer";
+            deck.onclick = drawCard;
+
+            startGame();
+        }
+
+        // 核心抽牌动作
+        function drawCard() {
+            if (drawCount >= maxCards) return; 
+
+            // 获取当前抽取的牌要放的 slot ID 
+            const targetSlotIndex = drawOrder[drawCount]; 
+            const currentSlotPlaceholder = document.getElementById(`slot-${targetSlotIndex}`);
+            
+            const cardData = shuffledDeck[drawCount];
+            const isReversed = Math.random() < 0.5; // 50% 概率逆位
+
+            // 1. 创建卡牌DOM
+            const cardEl = document.createElement('div');
+            cardEl.className = 'tarot-card';
+            
+            if (isReversed) {
+                cardEl.classList.add('reversed');
+            }
+
+            const innerEl = document.createElement('div');
+            innerEl.className = 'card-inner';
+
+            const backEl = document.createElement('div');
+            backEl.className = 'card-back';
+            
+            const frontEl = document.createElement('div');
+            frontEl.className = 'card-front';
+            frontEl.style.backgroundImage = `url('${cardData.img}')`;
+            
+            // 牌名标签
+            const nameLabel = document.createElement('div');
+            nameLabel.className = 'card-name';
+            nameLabel.innerText = `${cardData.name} ${isReversed ? '(逆)' : ''}`; 
+            frontEl.appendChild(nameLabel);
+
+            innerEl.appendChild(backEl);
+            innerEl.appendChild(frontEl);
+            cardEl.appendChild(innerEl);
+            
+            // 将卡牌放入占位符中
+            currentSlotPlaceholder.appendChild(cardEl);
+
+            // 2. 触发卡牌淡入
+            requestAnimationFrame(() => {
+                cardEl.style.opacity = 1;
+            });
+
+            // 3. 自动翻牌 & 绑定跳转
+            setTimeout(() => {
+                cardEl.classList.add('flipped');
+                
+                cardEl.onclick = function() {
+                    window.location.href = cardData.url; 
+                };
+            }, 600); 
+
+            // 4. 状态更新
+            drawCount++;
+            const label = document.getElementById('deckLabel');
+            
+            // 提示下一个要抽的牌位含义
+            const nextCardInfo = [
+                "II. 恋人的期望", 
+                "III. 目前彼此的关系", 
+                "IV. 未来彼此的关系"
+            ];
+
+            if (drawCount >= maxCards) {
+                label.innerText = "抽取完毕";
+                const deck = document.getElementById('mainDeck');
+                deck.style.opacity = 0.5;
+                deck.style.cursor = "default";
+                deck.onclick = null;
+                
+                setTimeout(() => {
+                    document.getElementById('readingSection').style.display = 'block';
+                }, 1000);
+            } else {
+                label.innerText = `抽取: ${nextCardInfo[drawCount - 1]}`;
+            }
+        }
+        
+        // 页面加载后的背景动画初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            const fonts = ["'ZCOOL+KuaiLe'", "'Ma+Shan+Zheng'", "'Montserrat'"];
+            const colors = ['rgba(255, 255, 255, 0.8)', 'rgba(255, 158, 188, 0.7)', 'rgba(127, 255, 212, 0.7)'];
+
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.classList.add('deco-star');
+                star.innerText = 'Deco'; 
+                star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.fontSize = Math.random() * 0.6 + 0.2 + 'rem';
+                const duration = Math.random() * 4 + 3 + 's'; 
+                star.style.animation = `warpSpeed ${duration} linear infinite`;
+                star.style.animationDelay = `-${Math.random() * 10}s`;
+                space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

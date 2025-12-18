@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIX. 太阳 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #FFD700; /* 太阳牌使用金色 */
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #FFD700; /* 标题使用金色 */
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #FFD700; /* 列表符号使用金色 */
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #FFD700; /* 表格头使用金色 */
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>XIX. 太阳</h1> 
+            <p>The Sun</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842007/jimeng-2025-12-02-6513-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E5%A4%AA%E9%98%B3%E7%89%8CThe_Sun_XIX_..._ieumwg.png" alt="太阳牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>☀️ 牌面解读与数字奥秘</h2>
+            <p>太阳牌象征着生命的喜悦。金色的太阳是生命的源泉，万物因其而生。太阳散发出21道光芒，象征着除了愚人牌之外的21张大阿卡那牌。一名满面童真，面带笑容的孩子骑在马背上，从灰色的围墙中跃然而出，预示着**解脱束缚，向着自由前进**。孩子头上的雏菊花环和那根熟悉的羽毛，与愚人和死神头上的羽毛一模一样，据说象征着**超越死亡和新生**。在灰色的围墙后面，金色的向日葵簇拥而生，如同一个人造的花园。然而，孩子似乎并不偏爱这些人造的美景，而是选择追逐那毫无修饰的自然世界，就如同他裸露的身体一样，真实，自然，纯真。太阳下方的四朵向日葵，代表四元素，同时也代表四个牌主。这四朵向日葵都面向孩子而非太阳，好像在告诉我们：纯净，自然，真实的个体凌驾于太阳之上，是一种远超权力和财富的境界，也是快乐的源泉，正如孩子脸上洋溢的喜悦。</p>
+            <p>太阳牌的解读相对简单，基本可以用一个字来概括，那就是“**吉**”。无论询问何事，答案基本都是吉利。至于吉利的原因，则在于当事人自身。在现实中表现为，当事人的个性开朗，心态积极，待人友善，言谈活泼。和这样的人在一起，你会感觉阳光普照，温暖无比，仿佛他所到之处都能驱除污秽，阳气旺盛，无鬼神可侵。周围的人都希望能和他接近，他的身价自然就上升，好事自然也就接踵而至。</p>
+            <p>然而，太阳牌的解读也有其微妙之处，它的情况与星星和月亮类似，即**“可能只反映当事人的主观感受，而非事实情况”**。但太阳牌还有一个较鲜为人知的基本解释，那就是“**同性爱**”。在早期塔罗牌中，太阳牌并非展示小男孩骑马的场景，而是两个小男孩站在一起，因此引申出了“兄弟之爱”的含义。这种兄弟之爱既可以是亲情和友情，也可以是爱情。</p>
+            <p>重点：表示人事物发展的阶段处在**后期**。正逆位的区别在于是否能度过后期，度过则收获相应的奖励并中止，没有度过则中止。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 XIX</td><td>象征生命力、活力、成功、清晰和驱动力，预示着后期阶段的成功与完成。</td></tr>
+                    <tr><td>太阳（21道光芒）</td><td>象征生命力、活力、成功和驱动力。它提供的光芒照亮道路，带来清晰和认识。</td></tr>
+                    <tr><td>裸体儿童（骑士）</td><td>满面童真，面带笑容，象征着**纯真、喜悦**和**真实的自我**。</td></tr>
+                    <tr><td>白色骏马</td><td>白色代表**纯洁和精神上的显著提升**，以及正直和高尚的品质。</td></tr>
+                    <tr><td>红色旗帜</td><td>行动、能量和激情的象征，揭示了积极主动和自信的态度。</td></tr>
+                    <tr><td>向日葵（四朵）</td><td>象征敬仰和忠诚。四朵代表**四元素**和**四个牌主**，它们朝向孩子而非太阳，寓意纯真凌驾于权力之上。</td></tr>
+                    <tr><td>灰色围墙</td><td>过去的**限制或约束**，孩子跃出围墙，象征解脱和突破。</td></tr>
+                    <tr><td>马的四蹄离地</td><td>被看作是一种特别的**吉祥象征**，表示正在发生的事情有着特别好的吉兆。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：喜悦、成功与光明的前景</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：远景明朗，活力充沛，欲望强烈，得贵人相助，阳光普照，**积极，享乐，快乐，成功，胜利，发财，成名**，活力，激情，幸福，清晰，生命力。</p>
+            <ul>
+                <li>提示语：喜悦的心情，决定的明确，**成功的达成**，生活的丰富，活力的展现，潜能的发挥，**光明的前景**，幸运的降临，积极的态度，希望的照耀。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：彼此恩爱有加，得到亲朋的祝福，**步入婚礼殿堂**，梦中情人出现，恋情公开，彼此感情日渐亲密，积极的爱情，幸福的婚姻，关系和谐，彼此欣赏。</p>
+            <ul>
+                <li>现况：两个人的感情处于十分令人满意的状况，恨不得时时刻刻在一起，只要看到彼此就是最大的幸福。</li>
+                <li>桃花：**即将出现令你满意的对象**，这时候要把自己内在与外貌调整到最好的状态，不要错过这个机会。</li>
+                <li>看法：两个人在一起的感觉十分温馨，也是非常稳定的关系，开始做长久的大打算。</li>
+                <li>复合：这段感情分不开的，只要一方提出复合，就会很快**坠入爱河，更胜往昔**。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：目标达成，积极主动，得遇名师，贵人相助，**工作顺利，前途明朗**，实力得以充分发挥，竭尽全力终获成功，成绩快速进步，**考试顺利**，成果丰硕，学业上有所收获。</p>
+            <ul>
+                <li>现况：你在工作上的表现**如日中天**，给你带来很大的满足感与成就感。</li>
+                <li>建议：你要对所有的人事物一视同仁，不可以随着个人的好恶而有所偏心，也不要破坏规则。</li>
+                <li>关系：同事彼此之间具有激励性的关系，可以在彼此的竞争中学习与成长，大家都会为了共同的目标而努力。</li>
+                <li>发展：这个工作**前途非常光明**，你可以充分的发挥自己的才能，能够实现心中理想目标。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：储蓄增加，有**意外之财，财运壮盛**，情谊地久天长，与朋友关系日渐亲密，好友增加，积极的交往，友情深厚，互相尊重，乐于助人，人际关系和谐。</p>
+            <ul>
+                <li>现况：你在朋友之间很受欢迎，你也喜欢与朋友相处的时光，你待人真诚，知心好友也有很多。</li>
+                <li>建议：继续保持现在的精神面貌。</li>
+                <li>财运：**财务状况很好，获利颇丰。**</li>
+                <li>建议：现在挺适合投资，看准目标后不要迟疑。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>适合户外活动，呼吸新鲜空气可以愉悦心情，**怀孕**，生活充实。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>象征着明亮和积极的能量，恋情快乐、满足和成功。关系和谐，共享快乐。</td></tr>
+                    <tr><td>财富运势</td><td>意味着**经济繁荣和财务成功**。会有意外的收益，或因努力获得的财务增长。</td></tr>
+                    <tr><td>当前情况</td><td>当前的情况充斥着活力与积极性，是一个**成长和繁荣的时期**。正面的态度能帮助解决问题。</td></tr>
+                    <tr><td>现在</td><td>现在是一个充满活力和机会的时刻。你正享受生活中的乐趣，看到了成功的可能性。</td></tr>
+                    <tr><td>未来</td><td>未来可能会带来**更多的成功和成就**。预示着美好的前景和光明的未来。</td></tr>
+                    <tr><td>挑战</td><td>挑战在于保持当前的正面态度和活力，以及如何将这股能量转化为具体的成果。</td></tr>
+                    <tr><td>建议</td><td>充分享受当前的快乐时刻，同时继续向着你的目标前进。保持乐观，但也要务实和专注。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：消沉、失败与过度乐观</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：意志消沉，约会取消，情绪低落，事事没有办法持久，性格不开朗，感到无助，生活不稳定，**孩子气，消极，慵懒，冷漠**，失落，困惑，**过度乐观**，失真，失败。</p>
+            <ul>
+                <li>提示语：低落的情绪，困扰的问题，幸运的缺失，疲惫的身心，困境的陷入，活力的缺乏，失望的情绪，悲观的想法，挫败的感觉，压力的累积。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：因冲动致使感情破裂，迟迟不能步入婚礼殿堂，有**分手的危险**，没有办法破镜重圆，不被祝福的恋情，婚约取消，感情挫折，婚姻困扰，关系紧张，忽视对方感受。</p>
+            <ul>
+                <li>现况：现在感情的发展遇到了一些困难与障碍，当中并夹着一些误会，通常很快就会解决。</li>
+                <li>桃花：现在也会出现不错的对象，但就是不明显，对方很低调，要擦亮双眼啊。</li>
+                <li>看法：两个人比较冲动，生活的道路上磕磕绊绊很多。</li>
+                <li>复合：**这段感情没有复合的可能性了**。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：听不进他人劝诫，对工作和学业没有耐心，原定计划没有办法实施，**后劲不足**，无固定职业或短期内很难找到工作，**厌学，成绩低落**，事业挫败，学业滞后，目标不明确，无法达成目标。</p>
+            <ul>
+                <li>现况：现在工作上的表现也很好，但自己遇到了瓶颈，很难再向前进步了。</li>
+                <li>建议：如果遇到困难一定要全力以赴，再困难的事也是可以完成的。</li>
+                <li>关系：你是同事们关注的焦点，一举一动都要小心，再小的错误也会让大家所关注。</li>
+                <li>发展：这个工作未来的发展很不错，但仍然有很多的问题和挑战，如果能继续努力，会更有收获。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：**收入下降，奢侈浪费**，因爱慕虚荣而增加开支，被同伴排挤，与旧友绝交，给人消极猥琐之感，让人没有办法亲近，意志薄弱，人际关系紧张，沟通困难，缺乏理解，无法理解他人。</p>
+            <ul>
+                <li>现况：现在人际关系开始走向下坡了，傲慢并不好相处。</li>
+                <li>建议：还是要注意待人接物的，不要太虚荣，脱离了群众。</li>
+                <li>财运：财运一般，在逐渐的下渐当中。</li>
+                <li>建议：如果想投资，应该对目标有一个深刻的认识，并充分的学习相关知识，才能去投，**不要投自己不熟悉的领域**。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>对人和事物都没有办法持久，被迫外出，性格孤僻，生活窘迫。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>感情上的不确定性或者乐观的减退。可能会遇到一些小的挑战或者误会，需要沟通和努力来重拾光明。</td></tr>
+                    <tr><td>财富运势</td><td>可能表示**经济上的挑战**或者难以看到收益的增长。可能需要重新评估投资策略。</td></tr>
+                    <tr><td>当前情况</td><td>当前状况可能不如预期，可能是因为**过于自信或缺乏明确的目标**导致的挑战。</td></tr>
+                    <tr><td>现在</td><td>目前可能正面临着一些挫折或难以维持之前的积极态度。需要时间和努力去克服当前的障碍。</td></tr>
+                    <tr><td>未来</td><td>未来可能需要克服一些挑战，但不要失去希望。逆境中往往蕴藏着成长的机会。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能在于如何面对挫折而不失去信念，以及如何从困境中找到出路并重新点燃内在的光芒。</td></tr>
+                    <tr><td>建议</td><td>不要让消极情绪占据主导，相信自己的能力，并寻找点燃内在激情和活力的方式。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

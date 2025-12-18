@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IX. 隐士 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>IX. 隐士</h1> 
+            <p>The Hermit</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764841998/jimeng-2025-12-02-8446-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E9%9A%90%E5%A3%AB_The_Hermit_%E5%8D%A1..._vc8yp4.png" alt="隐士牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>隐士是一位年迈的智者，他的年龄象征着他丰富的人生经验和智慧。他穿着一件斗篷，站在雪地覆盖的山巅上，低头沉思。他右手高举着一盏灯，象征真理，灯中闪烁着一颗明亮的六角星，代表所罗门的封印，微弱的光芒象征着潜意识。在这个荒凉的黑夜中，这微弱的灯光似乎有些无助，但对于智者来说，它代表着真理和希望。灯光没有照亮眼前的事物，这象征着不仅要追求遥远的梦想，也要关注身边的真相。</p>
+            <p>智者手中的拐杖，正是愚人手中用来戏弄的木棒，魔法师用来联系天地的法杖和战车手中追求胜利的长矛。然而，经历了无知、热情和繁华之后，这根拐杖变得非常普通，正如中国谚语所说的“返璞归真”。智者守着独处的孤寂，反思过去，跟随真理之灯的指引。这暗示了在寻求真理的道路上将会面临的艰辛和朴素，预示着只有以开阔的心态去认知世事，以持续反思的态度去探索真实的自我，才能达到目标。</p>
+            <p>隐士牌代表你自己走出去，冒一些风险，放下一些平庸的事物，去追寻你真正想做的事情。由于灯笼的光线只能照亮短暂的距离，所以没有人能保证这是一条正确的道路。隐士形容了对眼前事物的匆匆一瞥。它也是一张代表内在成功的牌，而这需要独自经历一些事情。</p>
+            <p>重点：成为隐士之前，一定是入世的，而且经历了世俗世界的种种，隐士描述的主体主动的远离世俗，出世在清静的地方对自己所经历人事物的反思，处在去其糟粕，取其精华的反思状态。正位表示对过往经历的思考使自身的优秀品质得到了提高，逆位表示受过往经历的影响，自己逐渐变成了伤害过自己的人。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 IX</td><td>通常代表收获、完成、寻找更高的真理，象征内省与智慧。</td></tr>
+                    <tr><td>老人</td><td>通常代表智慧、慎思和内省。</td></tr>
+                    <tr><td>灰白色的长袍</td><td>代表中立、智慧和知识。</td></tr>
+                    <tr><td>灯笼</td><td>老人手中的灯笼代表内在的光，或是对真理的探求。</td></tr>
+                    <tr><td>六角星</td><td>灯笼里的星形通常为所罗门之星，代表智慧、真理和灵性的完美平衡。</td></tr>
+                    <tr><td>隐士的拐杖</td><td>象征支持和力量，在此也可能象征老人对自己道路的信念。</td></tr>
+                    <tr><td>山</td><td>山通常代表挑战、困难的征途以及对更高意识的追求。</td></tr>
+                    <tr><td>蓝色背景</td><td>蓝色代表内心的平静和精神的稳定。</td></tr>
+                    <tr><td>隐士站立的姿态</td><td>表现出冷静且稳重，可能表明冥想或深思。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：内省、智慧与指引</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：自信，理智，脚踏实地，不喜形于色，中肯的建议，坚持不懈，沉着冷静，闭门静思，养精蓄锐，深刻反省，自我检查，自我纠正，自省，孤独，独自，独居，独立，单独，单身，孤苦伶仃，无依无靠，孤独，寂寞，内在引导行为，精神引导行为，谋定而后动，寻求真理，智慧，指引。</p>
+            <ul>
+                <li>提示语：寻求内在的智慧，寻找生命的真谛，独自沉思，寻求独立，自我反思，追求精神的满足，对生活有深入的理解，追求内心的平静，有独立思考的能力，积极寻找生活的真理。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：暗恋，追求精神层次的结合，永久的恋情，值得信赖的对象，理性的爱恋，柏拉图式的恋情，单相思，单身，深思熟虑，寻求真爱，独立，慎重考虑。</p>
+            <ul>
+                <li>现况：现在感情发展到达一个瓶颈阶段，即使两个人在一起仍然会觉得无聊。</li>
+                <li>桃花：现在并没有发生新感情的机会，就算你积极主动也不会有什么结果，倒不如趁机好好享受自由自在的生活。</li>
+                <li>看法：因对这段感情的熟悉与习惯，渐渐缺乏新鲜的刺激感，如果不小心地去维持这段关系，恐怕会很快分崩离析。</li>
+                <li>复合：两个人之间没有什么情分了，快点习惯一个人的生活，才能让自己变的更快乐。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：努力奋斗必将成功，拟订长期计划，注重细节，杰出的分析能力，追求稳定的工作状态，获得正确的检验，勤勉，遵守规则，一板一眼，正中要害，个人探索，自我学习，专注，建议咨询，深思熟虑之选择。</p>
+            <ul>
+                <li>现况：你已经达到工作的顶峰，但是高处不胜寒，你也会觉得寂寞，应该开始思考如何把工作传下去。</li>
+                <li>建议：这时候应该看看前人怎么解决问题，谨慎地进行处理，即使有点停滞也不要害怕，这件事情一定可以独立完成。</li>
+                <li>关系：这个工作当中彼此往来的互动性不高，大多都是自己做自己的事情，所以不用特别经营人际关系，顾好自己就好。</li>
+                <li>发展：这个工作已经达到发展的极限了，未来也不会有更好的前景，如果要等到退休养老的话，这里会是一个不错的地方。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：开源节流，有自知之明，以礼待人，因内敛受人信赖，肯纳忠言、高度智慧，思虑周密，需要独处，减少社交活动，个人时间，寻求内心平静。</p>
+            <ul>
+                <li>现况：你是属于有点孤僻的人，所以并不会树立什么敌人，朋友也不是很多，但是别人遇到问题又常会想要找你帮忙。</li>
+                <li>建议：试着用包容的心情去看待发生的事情，你会发现这并不是什么严重的事情，等着自己来找你把事情讲清楚就好。</li>
+                <li>财运：财运并不是需要你现在关心的事情，十分的稳定，不要只看到眼前，做好长远大算即可。</li>
+                <li>建议：这个时候并不是很适合买入，能等的话先等一等，买入前要好好检查。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>书法，对弈，远足，拟定计划，写日记。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>可能意味着一段孤独的时期，用于个人反思或让关系发展得更深入。你会更倾向于内省，理解自己在关系中的需求。</td></tr>
+                    <tr><td>财富运势</td><td>表明这是一个评估投资和财务计划的好时机。你会更加谨慎，并寻求深入理解财务状况，做出明智决策。</td></tr>
+                    <tr><td>当前情况</td><td>目前处于自我探索的阶段，寻找更深层次的意义和方向，需要独处的时间来思考生活的下一步。</td></tr>
+                    <tr><td>现在</td><td>鼓励你花时间自我反省，独自寻找指引和答案。你可能正在搜寻一个人生的转折点或新的见解。</td></tr>
+                    <tr><td>未来</td><td>可能揭示了一个精神觉醒的旅程，你可能会寻求新的生活目标和更深层次的自我了解。</td></tr>
+                    <tr><td>挑战</td><td>如何在忙碌的生活中找到时间和空间进行深入的内省和自我发现。</td></tr>
+                    <tr><td>建议</td><td>要花时间独自思考，不要害怕探索未知，信任你的内在智慧会带领你前进。</td></tr>
+                    <tr><td>优势</td><td>你的优势是内在的智慧和强烈的求知欲，这将帮助你找到正确的方向和生活的意义。</td></tr>
+                    <tr><td>弱点</td><td>可能是过于孤立，导致与他人失去联系，也可能是固执于个人的看法而不愿听取外界意见。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：迷失、逃避与隔离</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：口无遮拦，俗气，神经质，为人刻薄，行事不够理智，多疑，隔离状态，孤立状态，撤走，收回，取回，不再参加，退出组织，孤独，隔离，过度内省，遗世独立，迷失方向。</p>
+            <ul>
+                <li>提示语：过分的孤独，逃避现实，不愿与人沟通，过度的自我反思，忽视外界的观点，疏远他人，过于依赖内心的想法，过分的内向，忽视他人的感受，过于偏执的自我。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：守旧，多疑，自闭，孤寂，轻浮的恋情，对爱侣过于刻薄，缺乏告白的勇气，感情冷淡，孤独，情感隔离，不愿意分享，无法建立深厚联系。</p>
+            <ul>
+                <li>现况：感情的状况有点不明，现在究竟是何种关系也还不是很确定，如果不找个机会谈清楚，两个人就会渐行渐远。</li>
+                <li>桃花：现在并没有任何新的感情对象出现，即使你有新的想法也是单相思，应该要渐渐习惯一个人生活。</li>
+                <li>看法：十分小心地维持这段关系，但是对于自己的付出又感觉没有价值，认为对方的表现不太成熟，所以很难维持下去。</li>
+                <li>复合：这段感情没有任何复合的可能性，即使两个人都保持单身也是如此，可以多利用时间去做一些更有意义的事情。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：多疑焦虑，因注意力不够集中而错误百出，实力没有办法发挥，自卑，考试不顺利，因嫉妒肆意贬低他人，迷失方向，固执己见，过度独立，缺乏建设性的建议，避免求助。</p>
+            <ul>
+                <li>现况：是自己要努力学习的时候了，还在摸索当中，没有什么人可以指导你怎么做，常会觉得是在孤身奋斗。</li>
+                <li>建议：这时候应该要自己深入研究问题的状况，找到问题发生的原因，才有可能把问题解决掉，想靠别人是不会成功的。</li>
+                <li>关系：这个工作当中人际关系并不是重要的事情，只要小心别得罪人就好，其他的事情不要花太多心思，免得影响工作。</li>
+                <li>发展：这个工作未来还有一些发展空间，但是仍然会是很辛苦的状况，如果不是发自内心的去工作，留下来反而会更痛苦。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：无畏的开销，不懂节制，对旁人缺乏信任，互相猜疑，受自卑困扰，孤僻，和朋友闹别扭，有怨言，不够通融，铁面无私，疏远，冷淡，不愿意分享，无法理解他人，孤独。</p>
+            <ul>
+                <li>现况：你在人际关系中比较被动，所以并不会有很多朋友，如果想改善你的人际关系，就要改掉自己过于胆小的习惯。</li>
+                <li>建议：其实你和朋友之间没有什么误会，有很多部分是你自己想象出来的，只要你看清楚事情的真相就会知道你们之间没有问题。</li>
+                <li>财运：现在的财运并不是很好，不要想的太美好，金钱的世界是残酷的，要谨慎保守处理问题。</li>
+                <li>建议：接下来投资必须面昨着重大损失，应该当机立断解决问题，如果还追加投资，会血本无归。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>多愁善感，独处，逃避，自虐，心胸狭隘，追逐小利。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>可能意味着在爱情中缺乏深度和真正的连接。你可能会逃避关系中的问题，或者感到孤独和隔离。</td></tr>
+                    <tr><td>财富运势</td><td>可能指向对财务状况的疏忽或不愿意面对现实。可能需要更加积极地寻求指导，而不是逃避财务责任。</td></tr>
+                    <tr><td>当前情况</td><td>目前感到迷失方向，缺乏清晰的生活指导，或许在忽视自省的重要性。</td></tr>
+                    <tr><td>现在</td><td>鼓励你开始面对自身的内在问题，停止逃避并寻找重新连接自我和智慧的途径。</td></tr>
+                    <tr><td>未来</td><td>如果你继续忽视内在声音，可能会感到更加迷失和孤立。重要的是学会倾听自己，找回正确的人生方向。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能在于克服对孤独的恐惧，学会独处，并从中获得力量而不是感到无助。</td></tr>
+                    <tr><td>障碍</td><td>障碍可能是过于依赖他人的看法和意见，这阻碍了你发展个人独立性和自我认知。</td></tr>
+                    <tr><td>建议</td><td>建议你开始正视内在的恐惧和不确定性，寻找指导和支持，重新建立自我信任和方向。</td></tr>
+                    <tr><td>优势</td><td>你的优势可能是潜在的自我寻求能力，一旦你开始关注这一点，就有可能找到新的人生路径。</td></tr>
+                    <tr><td>弱点</td><td>你的弱点可能是逃避现实，不愿面对个人的阴影面，这阻碍了个人的成长和发展。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIII. 力量 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>VIII. 力量</h1> 
+            <p>Strength</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842006/jimeng-2025-12-02-6395-%E5%8F%82%E8%80%83%E5%9B%BE1_%E5%9B%BE2_%E5%9B%BE3_%E5%9B%BE4%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%BB%E9%9D%A2%E4%B8%AD%E5%A4%AE%E6%98%AF%E4%B8%80%E4%BD%8D%E4%BC%98%E9%9B%85%E7%9A%84%E5%8A%9B%E9%87%8F%E5%A5%B3%E7%A5%9E_%E5%A5%B9%E6%9C%89..._dguxvs.png" alt="力量牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>力量女神头顶的无穷大符号（∞）象征着她无尽的力量。她的力量并非蛮力，而是内心的坚韧、怜悯和包容。她用怜悯的目光，轻柔地合上雄狮的嘴，毫不费力地控制住了百兽之王的兽性。这象征着宽容的心才是真正的力量来源。</p>
+            <p>女神头上的花环和腰间的花带象征着她的高贵圣洁和温柔但坚韧的力量。她无所畏惧，拥有不可战胜的勇气、信心和耐心。她提醒我们凭借这些优秀的品质克服内心的野性、恐惧、愤怒和冲动。</p>
+            <p>力量牌的真正意义在于身心，尤其是内心的“强韧”。它展示了人对本能的控制，这种控制是以柔克刚，而非生硬压制。它要求对内具备战士精神，不畏惧怯懦和痛苦；对外怀有慈悲之心，待人友善。这是一种内外兼具的状态。</p>
+            <p>重点：这里的力量并非自己的力量，而是自身所控制的能量。它代表着在人事物中主体对客体的掌握。在行事风格中要以柔克刚，任何想通过蛮力强行推动事物的发展都会失败。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 VIII</td><td>胜利、成就、征服、精神与物质的融合，象征平衡。</td></tr>
+                    <tr><td>白色礼服</td><td>通常象征纯洁和无邪，代表品德上的纯净。</td></tr>
+                    <tr><td>狮子</td><td>象征力量、勇气和我们内在的野性本质。</td></tr>
+                    <tr><td>无限符号（∞）</td><td>头顶上的符号，通常代表无限或永恒，表明力量是无限的。</td></tr>
+                    <tr><td>女性驯服狮子</td><td>代表以柔克刚，通过恩慈和内在力量来对话并引导本能。</td></tr>
+                    <tr><td>山脉</td><td>背景中的山脉代表稳固、障碍以及即将到来的挑战。</td></tr>
+                    <tr><td>黄/蓝色背景</td><td>黄色与活力、优化和幸福有关；蓝色天空代表平静与精神的宽阔。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：柔韧的力量与内在勇气</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：精神抖擞，不屈不挠，意志坚定，潜力十足，胆识过人，信念坚定，体力，力气，力量，强度，毅力，坚强决心，意志力量，勇气，勇敢，无畏，胆量，说服力，影响力，同情，怜悯，自信，控制，权力，坚韧，平衡。</p>
+            <ul>
+                <li>提示语：内心充满力量，有很强的自我控制力，充满决心和勇气，有面对挑战的能力，具备坚持到底的毅力，处事沉着冷静，善于理解和接纳他人。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：过于热情，获得恋情，克服障碍延续爱情，在恋情中起主导地位，对彼此的恋情坚定不移，能够经受住考验，热情，信任，稳定，保护，忠诚，坚定。</p>
+            <ul>
+                <li>现况：现在的感情状态还算稳定，应该要主动付出更多的爱，为彼此带来更多的欢乐。</li>
+                <li>桃花：应该很快就会出现新的感情对象，会是一段值得付出的感情，可以试着去感受。</li>
+                <li>看法：这是一个互补的组合，两个人虽然有很多不同但是可以互相配合，有时自己需扮演导师的角色去引导对方。</li>
+                <li>复合：两人之间还有复合的可能性，也有很多你可以做的地方，对方也想与你复合，别急着放弃。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：攻克难题，升职，全力以赴，坚强信念，刻苦努力，毅力，胜利，坚持，成功，领导，决断力，有很强的职业发展潜力。</p>
+            <ul>
+                <li>现况：工作状况顺利，有不少可以表现的机会，应该把握各种可以彰显的机会才能更上一层楼。</li>
+                <li>建议：有些事情需要和别人相互配合，要考虑到对方的立场，找到双方都可以接受的方法才能顺利地进行下去。</li>
+                <li>关系：每个人都有一定的实力及傲气，所以应该有宽大的心胸接受别人比你强的事实，真心地欣赏对方才能英雄惜英雄。</li>
+                <li>发展：这个工作未来的发展还不错，但同时也会有不少的竞争者，你只有比现在更加努力，才能保持现在的优势。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：热情，受到别人称赞，贪心就会失败，旺盛的斗志，超凡的勇气，神秘的力量，友谊，尊重，理解，友善，支持，公正，有能力处理困扰。</p>
+            <ul>
+                <li>现况：你在人际关系上并没有什么大问题，为别人的付出越多，你就会得到更多朋友的帮助。</li>
+                <li>建议：试着站在对方的立场想事情，也许就可以找到两全齐美的方法，若是你主动提出，很快就会化解僵局。</li>
+                <li>财运：现在财运状况很好，应该要在这个时候多存一点本钱。</li>
+                <li>建议：即使决定买入某些东西，也要去杀价，只有经过谈判才能在感觉上让大伙都满意。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>兼顾工作与爱好，向往刺激的人生，活跃于社团或派对，自我控制力强，有较强的恢复力。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>象征强大的吸引力和深厚的情感联系，能共同克服障碍，关系充满激情和承诺。</td></tr>
+                    <tr><td>财富运势</td><td>有能力通过坚韧和毅力来增强财务状态，实现稳定的收入或投资回报。</td></tr>
+                    <tr><td>当前情况</td><td>正依靠内在的力量和勇气面对挑战，信念和决心为你提供了所需的支持。</td></tr>
+                    <tr><td>现在</td><td>拥有稳定的能力来处理生活中的困难，自信和冷静使你能在压力下保持清晰和专注。</td></tr>
+                    <tr><td>未来</td><td>预示着继续努力将会带来更多的成就和胜利，需保持自律和决心。</td></tr>
+                    <tr><td>挑战</td><td>如何在达成目标的过程中保持平衡和控制，处理内在的冲突或外部阻力。</td></tr>
+                    <tr><td>建议</td><td>保持自信和毅力，面对困难时要保持冷静。一定要相信你的直觉和能力。</td></tr>
+                    <tr><td>优势</td><td>能够控制情绪，以及在面对挑战时展现出来的坚强和耐心。</td></tr>
+                    <tr><td>弱点</td><td>倾向于强压自己的情感，而不是以更温和的方式处理它们。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：缺乏自控与恐惧</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：精力不足，急躁不安，丧失信心，忍耐力不足，自私自大，自我怀疑，自我否定，不自信，精神不振，能力低下，兽性，原欲，靠本能处理问题，做事凭感觉，失控，无力，恐惧，疑虑，软弱，失衡。</p>
+            <ul>
+                <li>提示语：内心缺乏力量，自我控制力不强，缺乏决心和勇气，面对挑战的能力弱，忍耐力不足，处事容易冲动，对生活的困难消极面对，恢复力较弱。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：对感情失去信心，面对爱情懦弱而不能坚持，渴求爱情却无终而返，经不住诱惑，彼此感情牵强，分离，怀疑，不信任，不稳定，背叛，冷淡。</p>
+            <ul>
+                <li>现况：现在的感情状况有点失控，虽然都想让关系更亲密，但因某些事故无法配合起来而陷入僵局。</li>
+                <li>桃花：未来出现的对象不在你的掌控之下，还是等别人主动追求，这样会遇到更合适的对象。</li>
+                <li>看法：感觉上对方很强势，但自己也不愿意什么事情都迁就，需要调整，偶尔还要做一做讨好的事情。</li>
+                <li>复合：复合这件事不难，但两个人有本质问题的不合，即使复合也没有什么办法解决根本矛盾，是否复合还是自己好好想想吧。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：急于求成，没有耐心，一知半解，缺乏实力，危险的赌注，失败，挫折，放弃，困难，颓废，犹豫，职业发展潜力不足。</p>
+            <ul>
+                <li>现况：工作当中遇到比较专治的领导，每天应付他就很累，虽然有表现的机会，但都是听命行事。</li>
+                <li>建议：要鼓起勇气坚持自己的立场，不要在为别人的闲言碎语而退缩，能够继续以自己的方法进行就会有得到理解的结果。</li>
+                <li>关系：工作上的人际关系十分紧张，因此更要小心处理与别人有关的事情，要深思做事会对哪些人产生哪些影响。</li>
+                <li>发展：这个工作未来并不太稳定，但是如果你能突破挑战还会有不错的发展前景，这就要你是否有足够的功夫下到工作中去。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：任性，亏损，上当，失去自信，失去别人的信任，自大，蛮干，故弄玄虚，冲突，不理解，冷漠，敌意，不公，孤立。</p>
+            <ul>
+                <li>现况：人际关系方面你要小心注意，可能会有人想要利用你去达成他的目的，对你不一定有害，但一定会让你不舒服。</li>
+                <li>建议：要注意流言对你产生的伤害，当面找对方把问题讲清楚，不要透过第三方传话，否则事情可能会因此而越描越黑。</li>
+                <li>财运：现在的财运还不错，但并不能让你主观上感到满意，要理性一点，好好评估哪些该花哪些不该花。</li>
+                <li>建议：这时候的买入行为要特别小心，如果无法决定，应该以品牌和质量等参数为准，贪小便宜反而要吃大亏。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>说服他人，目中无人，狂妄自私，不善配合喜独来独往，禁不住诱惑。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>可能意味着缺乏自信或在关系中感到不安全，可能会有控制或激烈争吵的问题。</td></tr>
+                    <tr><td>财富运势</td><td>可能遇到挫折，可能是因为缺乏自律或资金管理不善，建议重新评估财务策略和消费习惯。</td></tr>
+                    <tr><td>当前情况</td><td>感到无力或容易受到打击，内在的恐惧和不确定可能正在影响你的行动和决定。</td></tr>
+                    <tr><td>现在</td><td>正在经历自我怀疑，感到力不从心，可能需要重新找回自己的勇气和信心。</td></tr>
+                    <tr><td>未来</td><td>若想避免挫败感，可能需要学会如何更好地与内心的恐惧和不确定性作斗争，重新掌握主动权。</td></tr>
+                    <tr><td>挑战</td><td>如何战胜内心的软弱，找到重新获得力量和控制的途径。</td></tr>
+                    <tr><td>障碍</td><td>可能会有情绪上的波动或外界的负面影响，使你难以发挥自己真正的力量。</td></tr>
+                    <tr><td>建议</td><td>透过反思弱点来增强你的决心，避免被情绪所左右，尝试找到重新找回控制感的方法。</td></tr>
+                    <tr><td>优势</td><td>此时你的优势可能是自我反思能力强，有机会去识别和解决阻碍你的内在问题。</td></tr>
+                    <tr><td>弱点</td><td>缺乏自信和自我控制，这可能导致你在面对挑战时感到无助和犹豫不决。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

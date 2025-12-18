@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XX. 审判 | Deco 塔罗档案</title> 
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #C8D6E5; /* 审判牌使用银白/淡蓝灰色 */
+            text-shadow: 0 0 10px rgba(200, 214, 229, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #C8D6E5; /* 标题使用银白/淡蓝灰色 */
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #C8D6E5; /* 列表符号使用银白/淡蓝灰色 */
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #C8D6E5; /* 表格头使用银白/淡蓝灰色 */
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decoSpace" class="deco-space"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <div class="card-header">
+            <h1>XX. 审判</h1> 
+            <p>Judgement</p>
+        </div>
+
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/jimeng-2025-12-02-5897-%E5%8F%82%E8%80%83%E5%9B%BE1%E7%9A%84%E5%A1%94%E7%BD%97%E7%89%8C%E9%A3%8E%E6%A0%BC%E5%92%8C%E5%B8%83%E5%B1%80_%E7%94%9F%E6%88%90%E5%AE%A1%E5%88%A4%E7%89%8CJudgement_XX_%E7%94%BB%E9%9D%A2%E9%87%87%E7%94%A8%E7%9B%B8%E5%90%8C%E7%9A%84%E7%99%BD..._czewjq.png" alt="审判牌面" class="card-image-full">
+
+        <div class="card-content">
+
+            <h2>⚖️ 牌面解读与数字奥秘</h2>
+            <p>天使在云端展翅，吹响了号角，传播着上天的福音。这是**审判日**，那一天，信徒将被引领进入天堂。神的审判蕴含着**”精神觉醒”**的意义。在那振奋人心的号角声中，沉睡已久的灵魂一个个走出了自我困惑的内心世界，站立在天使的翅膀下，以感恩的心，聆听上天的福音。</p>
+            <p>审判是大阿尔卡那的倒数第二张牌，可以被视为对大阿尔卡那前二十张人生旅程的一个**回顾和自省**。在接近自我认知极限的世界之前，我们需要反省过去，自我剖析，认清并洗涤过去的错误，坚守曾经的正确，才能最终走向成功之门。</p>
+            <p>你过去的努力**即将开花结果**。审判通常以会审的形式出现，这可以是正式或非正式的考试，考核，检查等等。通过这些考核，过去的努力将以客观的形式展现出来，从而获得相应的回报。在基督教中，最终审判也是死人复活的时刻，这时，审判牌的含义与逆位的宝剑十有些相似——**否极泰来**。就算过去一直受到打压，此刻翻案也并非不可能。</p>
+            <p>总的来说，审判提供的是一个机会，一个展示你过去所作所为的机会。你的行为将被衡量，选择将被评估，付出将有机会获得奖赏，冤案将有机会公诸于众。至于结果如何，通常都有清晰的**因果关系**可以推断。因此，有时候，正位的审判甚至可以理解为，当事人其实已经知道答案，他只是来寻求你的意见——因为不论他是否来咨询你，他的决定和最终的结果都不会有大的差异，**一切都已经清晰地呈现在眼前**。</p>
+            <p>重点：审判描述了人事物已经处在**完结的阶段**，这个阶段是对已经发生的人事物进行总结，总结是**客观的**，并非主观上感受。其特点是**不可对已经发生的人事物进行更改**。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 XX</td><td>象征最终的裁决、自我评估、重生和重大的转变。</td></tr>
+                    <tr><td>天使（加百列）</td><td>天使是**信使**，象征高意识、觉醒、和高级能量或消息的传递，宣布重要事件的到来。</td></tr>
+                    <tr><td>喇叭</td><td>喇叭代表**觉醒的召唤**，宣布重要的宣示或事件的到来。</td></tr>
+                    <tr><td>红色十字旗</td><td>红色十字往往象征**平衡、治疗和加护**，在基督教中还能代表信仰和复兴。</td></tr>
+                    <tr><td>裸体人物（从墓中升起）</td><td>裸体表征**真实、无隐藏和重新出生**。开放的坟墓象征着结束、转变和旧生活的结束。</td></tr>
+                    <tr><td>山脉</td><td>山脉代表稳固和永恒，以及超越日常生活的高位目标或障碍。</td></tr>
+                    <tr><td>集聚的人群</td><td>人群聚集象征社区、家庭或**集体意识**，意味着审判是公开和普遍的。</td></tr>
+                    <tr><td>海洋/水面</td><td>海洋经常象征**情感和无意识的深处**，以及遇见深层真理的可能性。</td></tr>
+                </tbody>
+            </table>
+
+
+            <h2>✨ 正位牌意：觉醒、重生与命运好转</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：**复活的喜悦，命运好转**，作品公然发表，得到好消息，信仰宗教，自信，判断，识别，新生，**复活，复兴，再生**，心声，赦罪，觉醒，裁决，清算，改变，更新。</p>
+            <ul>
+                <li>提示语：**觉醒的时刻，重生的机会**，转折的点，清醒的认知，理解的深化，改变的决定，接受的态度，成长的体验，洗涤的过程，复活的象征。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：真心的恋情，感情公布，即使发生争执仍有**和好的希望，破镜重圆**，深信爱的奇迹，复苏的爱，重逢，复合，痛苦结束后的新生，改变心态，得到裁决。</p>
+            <ul>
+                <li>现况：感情已明确，两人共同面对接下来的事情就好了。</li>
+                <li>桃花：已经出现新的恋情，是你从来没有想过的情况，自己正在慎重的考虑。</li>
+                <li>看法：现在是该做**最后决定**的时候，如果对方不能有一个明确的承诺就应该放手了。</li>
+                <li>复合：这是个**复合的好机会**，对方会给你正面回应的。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：**有复职的可能**，事业脱离窘境，岗位变更，**升迁**，适合于音乐相关的工作，考试顺利，学业更上一层楼，需要复习，成绩优异，光明，清算后的新生，**突破瓶颈**，事业上的重大变革。</p>
+            <ul>
+                <li>现况：现在遇到一个重要抉择，决定之后会产生极大的影响，保持清醒的头脑，造成不要因为时间的压力而随便做决定。</li>
+                <li>建议：遇到无法解决的问题，应该应该**大打阔斧的改革**，变化才有可能盘活。</li>
+                <li>关系：在工作中有一种众人皆醉的感觉，在很多事情上你可以帮助同事，但也会觉得背负很多责任。</li>
+                <li>发展：这个工作未来还会有很大的变动，如果你努力就会**很快升迁**，反之会被迫离职。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：财物**合浦还珠，获意外之财**，友情的裂缝得以修复，备受他人赞许，与多年老友取得联系，与旧友言归于好，与他人建立彼此信赖的关系，坦白，好消息，与他人的关系会有新的发展，解决纷争，和解，重建关系。</p>
+            <ul>
+                <li>现况：你在朋友之间很有影响力，但也因为你好恶分明，喜欢你的人与讨厌你的人都会有一些极端的评价。</li>
+                <li>建议：如果自己有不对的地方应该主动说明并道歉，不能对别人明对自己浑。</li>
+                <li>财运：你现在财运上出现**重要的转机**，应该好好把握这个机会，可能因此在翻身。</li>
+                <li>建议：即使有重大消息宣布，这个时候还是保守回应，要有耐性等待翻身机会的出现。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>旅游可以放松最近疲惫的身心，音乐可以帮你减轻疲惫，退一步海阔天空，自信的演讲。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>象征着一个**转折点**，过去的问题或误解有望得到澄清和解决。关系可能经历重大的积极变化，重生和复苏。</td></tr>
+                    <tr><td>财富运势</td><td>通常表示即将到来的一个重要时刻，你可能会收获之前努力的成果。可能是晋升、加薪、**投资成功**。</td></tr>
+                    <tr><td>当前情况</td><td>当前正处于一个**关键的决策时刻**，需要理智地评估自己的生活，并作出有意义的选择。</td></tr>
+                    <tr><td>现在</td><td>现在是一个**觉醒的时刻**，你正意识到自己的潜力和目的，这将激励你采取行动实现目标。</td></tr>
+                    <tr><td>未来</td><td>未来预示着**重大的变革和进步**。可能会经历一个显著的转变，无论是职业上的、个人发展还是精神层面的。</td></tr>
+                    <tr><td>挑战</td><td>挑战可能是接受真正的自我并愿意进行必要的改变。可能需要面对深藏的真相并克服恐惧。</td></tr>
+                    <tr><td>建议</td><td>诚实地评估自己的生活，**积极接受改变**，并且准备好迎接新的自我和新的人生章节。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <h2>⚡ 逆位牌意：逃避、拒绝改变与停滞不前</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：一蹶不振，尚未开始便已结束，犹豫未定，行为不妥，生活散漫，良心发现内心颇感罪恶，**自我怀疑**，良心受到谴责，不予理睬，**坏消息，逃避，拒绝改变，犹豫不决，停滞不前**。</p>
+            <ul>
+                <li>提示语：**拒绝接受改变，逃避责任**，自我否定，不愿面对现实，固守旧观念，过度批评，感到内疚，过去的阴影，无法释怀，恐惧改变。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：嫉妒心过重，辜负对方的好意，没有办法向对方展开心扉，**没有办法破镜重圆**，对待恋情不够认真，旧情难忘，不舍也得舍，恋情停滞，拒绝复合，无法释怀过去的痛苦。</p>
+            <ul>
+                <li>现况：感情上出现重大选择，面对选择**不知所措**。</li>
+                <li>桃花：出现了桃花也只无法把握或者及回应，关键时刻**迟了一步**。</li>
+                <li>看法：很被动，只是在被要求时进行改进，常犯同样的错误，因此感到无力。</li>
+                <li>复合：**不会复合了**。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：求知遇阻，**事业受挫，面对困难一蹶不振**，颇感心有余而力不足，业绩低迷，考场受挫，对考试期望过高，难以考上理想的学校，缺少目标，没有进展，**固守现状，害怕改变，错过机会**，事业发展停滞。</p>
+            <ul>
+                <li>现况：事情出现重大选择让你不知道怎么办，**左右为难**。</li>
+                <li>建议：清醒一点，只有清楚的看到未来才能解决内心中的问题。</li>
+                <li>关系：同事的关系对你很重要，很多事情都需要同事们配合，得罪人就不可能把任务完成好了。</li>
+                <li>发展：这个工作并没有很好的前景，大部分在做**重复的事情**。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：**丢失财物**，遗失重要的物品，夹在朋友之间左右为难，与旧友没有办法和好，对朋友感到失望，过去被好友背叛致使心里留下阴影，让人误会，关系僵硬，无法解决纷争，**拒绝和解**。</p>
+            <ul>
+                <li>现况：你并不擅长经营自己的朋友圈，好朋友不多但都很值得自己去珍惜。</li>
+                <li>建议：不要下结论，不要表立场，在没弄明白前不做选择与站队。</li>
+                <li>财运：**不是很好**，会产生一些亏损。</li>
+                <li>建议：在心里搞明白前不要有所行动，也许你能看见的答案里就没有正确答案。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>重返故土，因贪玩导致身心疲惫，生活无规律。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>可能代表着困境、拖延或**无法释怀过去**。双方都不愿面对真相，导致关系停滞不前。</td></tr>
+                    <tr><td>财富运势</td><td>可能表示因为缺乏自我反省或努力，**错失了改善财务状况的机会**。推迟决策。</td></tr>
+                    <tr><td>当前情况</td><td>你可能正处于否认、拖延或**逃避的状态**。你可能害怕改变，从而避免做出决定。</td></tr>
+                    <tr><td>现在</td><td>现在是一个**停滞的阶段**，你感到无法前进。你的成长被旧习惯、恐惧或不愿改变的思想模式所阻碍。</td></tr>
+                    <tr><td>未来</td><td>如果持续逃避改变，你的未来可能会持续面临挑战和困难。缺乏行动和决断会导致更多的遗憾。</td></tr>
+                    <tr><td>挑战</td><td>最大的挑战可能是克服**自我怀疑、害怕失败或害怕面对真相的恐惧**。</td></tr>
+                    <tr><td>建议</td><td>**面对现实，停止逃避**。开始认真对待你的责任，勇敢面对需要作出的改变。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

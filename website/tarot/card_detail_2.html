@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 模板标题：已修改为女祭司 -->
+    <title>II. 女祭司 | Deco 塔罗档案</title> 
+    <!-- 字体和图标库与主站保持一致 -->
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@500;700&family=Montserrat:wght@300;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心结构样式 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #E0E0E0;
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+            line-height: 1.7; 
+        }
+
+        /* 替换原 Canvas 样式 */
+        #starfield { display: none; } 
+
+        /* --- 2. Deco 星际背景 (优化 3D 透视 + 性能) --- */
+        .deco-space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 裁剪超出屏幕的 Deco */
+            z-index: -1;
+            perspective: 1000px; /* 增加 3D 透视，营造纵深 */
+            will-change: transform; /* 性能优化 */
+        }
+
+        .deco-star {
+            position: absolute;
+            opacity: 0; 
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap; /* 确保 Deco 不换行 */
+            will-change: transform, opacity; /* 提前告知浏览器优化动画 */
+            transform-origin: center; /* 动画中心对齐 */
+        }
+
+        /* 优化核心动画：随机角度 + 3D 穿梭 + 自然透明度变化 */
+        @keyframes warpSpeed {
+            0% {
+                opacity: 0;
+                transform: translateZ(-800px) scale(0.1); /* 远处：小、透明、深Z轴 */
+            }
+            20% {
+                opacity: 0.8; /* 渐显 */
+            }
+            80% {
+                opacity: 0.8; /* 保持可见 */
+            }
+            100% {
+                opacity: 0;
+                transform: translateZ(500px) scale(3); /* 近处：大、透明、浅Z轴 */
+            }
+        }
+        
+        /* --- 3. 导航栏 (保持主站高级感) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; padding: 10px 40px;
+            z-index: 999;
+        }
+        .logo {
+            font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.4rem; color: #B8A6FF;
+            text-decoration: none; text-shadow: 0 0 10px rgba(184, 166, 255, 0.3);
+        }
+        .wrapper {
+            max-width: 760px; /* 调整为 760px */
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            background: rgba(10, 10, 15, 0.8); /* 增加主体透明度，让背景更明显 */
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 4. 详情内容样式 --- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .card-header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.8rem;
+            color: #8EC5FC;
+            text-shadow: 0 0 10px rgba(142, 197, 252, 0.5);
+            margin-bottom: 5px;
+        }
+        .card-header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 顶部图片 */
+        .card-image-full {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #101015;
+        }
+
+        /* 内容区块标题 */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: #B8A6FF;
+            margin: 40px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0 15px;
+        }
+        /* 针对正/逆位的小标题 */
+        h4 {
+            font-size: 1.1rem;
+            color: #fff; 
+            margin: 20px 0 5px;
+            font-weight: 500;
+        }
+
+        /* **重要修改：普通正文P标签，采用纯白并保持与表格内容一致** */
+        p {
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 1.5em;
+            text-indent: 2em; 
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        /* 关键词和提示语列表 */
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 1.5em;
+        }
+        ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #fff; 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem; 
+        }
+        ul li::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #8EC5FC; 
+            font-weight: bold;
+        }
+        
+        /* --- 5. 表格样式 (极简高级) --- */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #222; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff; 
+        }
+        .info-table th {
+            background-color: #1a1a1a;
+            color: #B8A6FF; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .info-table tbody tr:hover {
+            background-color: #101010; 
+        }
+        .info-table td:first-child {
+            color: #fff; 
+            width: 30%;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .wrapper { padding: 80px 10px 40px; }
+            .card-header h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            .card-image-full { max-height: 300px; }
+            .info-table th, .info-table td, p, ul li {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Deco 星际背景 (CSS/JS 动态生成) -->
+    <div id="decoSpace" class="deco-space"></div>
+
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="logo">Deco.</a>
+            <span style="color:#666; font-size: 0.8rem; margin-left: 10px;">/ 塔罗档案</span>
+        </div>
+        <nav>
+            <a href="tarot.html#major-arcana"><i class="fas fa-undo"></i> 返回塔罗面板</a>
+        </nav>
+    </header>
+
+    <!-- 主内容 -->
+    <div class="wrapper">
+        
+        <!-- 卡牌标题：已修改 -->
+        <div class="card-header">
+            <h1>II. 女祭司</h1> 
+            <p>The High Priestess</p>
+        </div>
+
+        <!-- 顶部卡牌图片：已修改 -->
+        <img src="https://res.cloudinary.com/dbulxrm7b/image/upload/v1764842000/%E8%AF%B7%E6%88%91%E5%B8%AE%E5%81%9A_PPT_1_nvckuj.png" alt="女祭司牌面" class="card-image-full">
+
+        <!-- 详细解读内容：已替换为女祭司牌意 -->
+        <div class="card-content">
+
+            <!-- 整体象征与描述 -->
+            <h2>🌌 牌面解读与数字奥秘</h2>
+            <p>女祭司是大阿卡纳的第三张牌，编号为“II”，代表**直觉、潜意识、神秘、智慧**和**静默的知识**。她端坐于黑白两根柱子之间，这两根柱子分别标有“B”（Boaz，代表消极、黑夜、女性）和“J”（Jachin，代表积极、白天、男性），象征着她处于二元对立的平衡之中，是连接显意识（魔术师）与潜意识的桥梁。</p>
+            <p>女祭司头戴三重冠，象征着月亮女神的三重面向（新月、满月、残月）。她膝上放着一本卷轴，上面写着“Tora”（律法、智慧之源），卷轴被她的披风半遮盖，暗示着**知识的秘密性**——只有那些准备好的人才能理解更深层的真理。</p>
+            <p>她背后是一块布满石榴和棕榈叶图案的帷幕，这块帷幕隐藏着她身后的水体（潜意识的海洋），象征着需要通过内省和直觉才能揭开的秘密。石榴是希腊神话中灵后珀耳塞福涅（Persephone）的象征，代表了生育力、隐藏的潜能以及在不同世界之间的穿梭。</p>
+            <p>女祭司是**阴柔、被动**的代表，与魔术师的阳刚、主动形成对比。她鼓励我们从喧嚣的外界转向内心，寻找内在的真理和声音，在静默中感知宇宙的奥秘。她提醒我们，真正的智慧往往隐藏在表象之下，需要耐心和直觉去发掘。</p>
+            <p>重点：直觉、潜意识、内在智慧、静默、等待时机、秘密、平衡对立。</p>
+
+            <h3>关键要素</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>解释</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>数字 II</td><td>二元性、平衡、合作、潜意识、直觉的阴性力量。</td></tr>
+                    <tr><td>黑白柱（B/J）</td><td>二元对立的平衡（光明/黑暗，积极/消极），她坐于其间，象征中立的智慧。</td></tr>
+                    <tr><td>卷轴 (Tora)</td><td>神圣的知识与律法，半遮盖暗示真理的秘密性。</td></tr>
+                    <tr><td>三重月冠</td><td>象征月亮的周期，与直觉、女性能量和潜意识相关联。</td></tr>
+                    <tr><td>石榴帷幕</td><td>隐藏的奥秘、潜意识、阴性生育力、精神世界的入口。</td></tr>
+                    <tr><td>月亮图案</td><td>裙角的月亮，代表直觉、情感周期和内在的智慧。</td></tr>
+                </tbody>
+            </table>
+
+
+            <!-- 正位牌意 -->
+            <h2>✨ 正位牌意：内在智慧与深层直觉</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：直觉力高，洞察力强，理性知性，文静，富有研究精神，秘密的女性，潜意识，内在真理，天启，圣女，气质，等待正确的时机，控制情绪。</p>
+            <ul>
+                <li>提示语：倾听你内心的声音和直觉，保持静默和内省，去寻找隐藏的真相和智慧。</li>
+            </ul>
+
+            <h4>爱情婚姻</h4>
+            <p>关键词：柏拉图式的精神交流，高冷，对俗事无趣，内在的爱，深度理解，秘密恋情，宁愿单身也不将就，感情发展缓慢但深厚，需要从内心去感受。</p>
+            <ul>
+                <li>现况：感情进入稳定阶段，表面冷清但有深层感情。双方倾向于精神上的交流与联结。</li>
+                <li>桃花：现在没有明显的桃花，这段时间适合你休息和充实自己，利用时间来提升内在魅力。</li>
+                <li>看法：你认为关系需要平衡与和谐，看重深层次的联结，愿意努力克服不同点。</li>
+                <li>复合：这段感情复合的可能性低，保持距离是最好的选择。你需要时间来反省这段感情的意义。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：考运极佳，感觉很准，优秀的判断力，擅长精神或学术研究，需要深度思考的工作，工作稳定，按部就班，灵感与创新，静待时机。</p>
+            <ul>
+                <li>现况：工作情况十分稳定，不宜太过积极，按部就班完成任务即可。适合从事需要直觉和内省的工作。</li>
+                <li>建议：问题尚未完全显露，应该耐心等待，并查阅文件和规定，做好万全准备。</li>
+                <li>人际：工作中的人际关系不重要，互动不多。注意不可随意谈论工作中的秘密。</li>
+                <li>发展：未来发展尚不明朗，维持现状的可能性较高，应保守看待。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：善于理财，不会冲动消费，待人体贴，对物质需求不高，独立自主，有知己，深度同情，神秘联结，有秘密的朋友。</p>
+            <ul>
+                <li>现况：你不积极参与社交，活动空间自由，人际关系保持现状最好。</li>
+                <li>建议：有不同意见时，可寻求公正的第三方仲裁，避免陷入误会。</li>
+                <li>财运：财运稳定，无需担心金钱，但也没有太大的发展空间。</li>
+                <li>建议：现在应保守一点，理性评估新的投资机会，不要冲动变动。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>制作手工艺品，知性的娱乐方式，脑力游戏，无须外出的活动，出众的理解力，同冷静的女性商洽可获得新知，善于洞悉他人。</p>
+
+            <h3>正位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>需要倾听直觉和感受的阶段，探索深层情感联系和内在情感世界。</td></tr>
+                    <tr><td>财富运势</td><td>通过直觉和智慧来做出投资决策，谨慎行事，了解背后的真相和细节。</td></tr>
+                    <tr><td>当前情况</td><td>处于内省和自我反思的时期，鼓励你探索潜意识并依靠直觉。</td></tr>
+                    <tr><td>未来</td><td>未来可能会向你揭示更深层次的真理和知识。通过倾听直觉，可能会找到隐藏的机遇。</td></tr>
+                    <tr><td>挑战</td><td>开发直觉能力，学会信任并理解自己内心深处的声音。</td></tr>
+                    <tr><td>建议</td><td>花时间独处，倾听你的直觉，不要急于行动，等待时机成熟。</td></tr>
+                    <tr><td>优势</td><td>能够接触潜意识，从中获取指导，并让直觉指引方向。</td></tr>
+                    <tr><td>弱点</td><td>可能过于内向和神秘，让人难以理解你的真正意图和感受。</td></tr>
+                </tbody>
+            </table>
+            
+
+            <!-- 逆位牌意 -->
+            <h2>⚡ 逆位牌意：忽视直觉与浅薄表象</h2>
+
+            <h3>基本牌意与提示</h3>
+            <p>关键词：粗心大意，易紧张，神经质，意气用事，缺乏理性，忽视直觉，秘密被揭示，浅薄，知识疏离，感情混乱，欺骗，自我封闭，拒绝回答。</p>
+            <ul>
+                <li>提示语：你忽略了内心的直觉，过于情绪化或表面化，有秘密被揭露或缺乏深度。</li>
+            </ul>
+            
+            <h4>爱情婚姻</h4>
+            <p>关键词：在心仪对象面前六神无主，与女性朋友争执，单相思，隐瞒，不诚实，感情的浅薄，爱情的欺骗，感情生活混乱，晚婚或独身主义。</p>
+            <ul>
+                <li>现况：感情整体稳定，但有很多分歧未化解，容易演变成冷战。可能存在隐瞒或不诚实的行为。</li>
+                <li>桃花：可能会有不合适的恋情出现，如果只是一时冲动开始一段感情，会带来更多问题。</li>
+                <li>看法：你们之间仍有问题需要解决，需要保持热情处理冲突，才能和谐。</li>
+                <li>复合：仍有一丝复合可能，但若无法克服根本问题，再在一起只会更痛苦。</li>
+            </ul>
+
+            <h4>事业学业</h4>
+            <p>关键词：固执，学习能力差，想不通，考核紧张，粗心大意，无知，缺乏理解力，忽视直觉，缺乏创新，知识的疏离，不诚实的行为，台面下暗潮汹涌。</p>
+            <ul>
+                <li>现况：工作看似稳定但台面下暗潮汹涌，一个不小心可能出现大纰漏。工作上有不诚实或粗心大意的行为。</li>
+                <li>建议：整合不同意见，在不同立场之间取得平衡，避免倒向任何一方导致血本无归。</li>
+                <li>人际：无论是好人还是坏人，对工作都无太大帮助，需提防刻意逢迎你的人。</li>
+                <li>发展：未来工作还会有很多变化，应做好应变准备，不宜对现状有过大期待。</li>
+            </ul>
+
+            <h4>人际财富</h4>
+            <p>关键词：人缘差，花钱无节制，神经质，对人冷淡，自我封闭，不理解，隔阂，人际关系的欺骗，财物亏空，投资冲动。</p>
+            <ul>
+                <li>现况：你可能是一个有争议的人，喜欢你的人很喜欢，讨厌你的人很讨厌。财务上已出现亏空。</li>
+                <li>建议：寻找误会发生的原因并好好讨论，以化解冲突。</li>
+                <li>财运：现在已经出现财务上的亏空，小问题可能会发展成大问题，需要诚实面对并及时处理。</li>
+                <li>建议：不宜冲动投资，有赚钱的投资也要快点获利了结，防止意外变化。</li>
+            </ul>
+
+            <h4>其它牌意</h4>
+            <p>无心读书，吵闹的环境使得身心倍感疲惫，过于情绪化，不愿面对真相。</p>
+            
+            <h3>逆位象征释义</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>象征</th><th>释义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>爱情运势</td><td>关系中存在秘密或误解，有人在隐藏情感或不愿意沟通，导致关系疏远。</td></tr>
+                    <tr><td>财富运势</td><td>财务决策中缺乏直觉指导，盲目跟随他人，需要警惕欺诈或隐藏的财务问题。</td></tr>
+                    <tr><td>当前情况</td><td>感觉迷失、混乱或与内在智慧脱节，难以听从直觉或不信任自己的感觉。</td></tr>
+                    <tr><td>过去</td><td>过去忽视直觉，或在情感/智慧上有所保留，导致某些遗憾或错失机会。</td></tr>
+                    <tr><td>未来</td><td>未来可能需要面对揭露秘密或解开误解的挑战，或重新连接直觉的时期。</td></tr>
+                    <tr><td>挑战</td><td>克服内部的恐惧和不确定性，重新找到信任直觉的能力。</td></tr>
+                    <tr><td>建议</td><td>花时间去面对和解决可能已经忽视的内心问题，重建与直觉的联系。</td></tr>
+                    <tr><td>优势</td><td>对内心深处未经解决的问题有更高的认识，从而有机会处理和超越它们。</td></tr>
+                    <tr><td>弱点</td><td>过于依赖逻辑而忽视感觉，或是在面对事实和真相时过于敏感或逃避。</td></tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Deco Tarot Lab.
+    </footer>
+
+    <!-- 脚本：Deco 星际背景核心逻辑 (使用用户提供的代码) -->
+    <script>
+        // 确保在 DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const space = document.getElementById('decoSpace');
+            if (!space) return; // 安全检查
+
+            // 响应式调整数量：移动端减少数量避免卡顿
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 80 : 150; // 移动端80个，桌面端150个
+            
+            // 1. 字体池：随机选字体，让Deco样式更丰富
+            const fonts = [
+              "'ZCOOL KuaiLe', cursive",  // 快乐体（可爱）
+              "'Ma Shan Zheng', cursive", // 马善政（书法感）
+              "'Montserrat', sans-serif", // 无衬线（简洁）
+              "'Noto Serif SC', serif"    // 衬线（精致）
+            ];
+            // 2. 颜色池：随机选颜色，模拟不同星光
+            const colors = [
+              'rgba(255, 255, 255, 0.8)', // 纯白
+              'rgba(255, 158, 188, 0.7)', // 珊瑚粉
+              'rgba(142, 197, 252, 0.7)', // 浅蓝
+              'rgba(184, 166, 255, 0.7)', // 淡紫
+              'rgba(100, 100, 100, 0.5)'  // 暗灰
+            ];
+
+            // 循环生成每个Deco文字
+            for (let i = 0; i < count; i++) {
+              const star = document.createElement('div');
+              star.classList.add('deco-star');
+              star.innerText = 'Deco'; // 核心文字
+
+              // 3. 随机位置：用百分比（0~100%）确保全屏分布
+              const x = Math.random() * 100;
+              const y = Math.random() * 100;
+              
+              // 4. 随机样式：字体、颜色、大小
+              star.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+              star.style.color = colors[Math.floor(Math.random() * colors.length)];
+              const size = Math.random() * 0.6 + 0.2 + 'rem'; // 大小：0.2~0.8rem
+              
+              // 5. 随机动画：时长（3~7s）、延迟（0~15s），避免所有Deco同步运动
+              const duration = Math.random() * 4 + 3 + 's'; 
+              const delay = Math.random() * 10 + 's';
+
+              // 6. 应用样式：绝对定位 + 动画（负延迟让动画立即开始）
+              star.style.left = x + '%';
+              star.style.top = y + '%';
+              star.style.fontSize = size;
+              star.style.animation = `warpSpeed ${duration} linear infinite`;
+              star.style.animationDelay = `-${delay}`; // 关键：负延迟，无需等待直接播放
+
+              space.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>
